@@ -17,7 +17,10 @@ var checkUserPassword = (password) => {
 //     return regex.test(phoneNumber);
 // }
 const validateSignUp = (data) => {
-	if (data.username.length < 6) {
+	if (data.password == ''|| data.username == '' || data.email == '') {
+		return 'không được bỏ trống thông tin';
+	}
+	else if (data.username.length < 6) {
 		return 'Kích thước username không đúng';
 	} else if (!checkEmail(data.email)) {
 		return 'Email không đúng định dạng';
