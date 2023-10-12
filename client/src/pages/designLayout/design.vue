@@ -1,5 +1,6 @@
 <template>
 	<div class="design">
+		<!-- ////HEADER//////////// -->
 		<div class="header">
 			<header class="bg-current p-1">
 				<nav class="flex justify-between items-center w-[92%] mx-auto">
@@ -45,18 +46,17 @@
 			</header>
 		</div>
 
-		<!-- ////HEADER//////////// -->
-
+		<!-- sidebar -->
 		<div class="swap flex w-[100%] h-[90vh]">
 			<div
-				class="swap-sidebar w-fit min-w-[6%] h-[90vh] border-slate-200 border"
+				class="swap-sidebar w-fit min-w-[6%] h-[93vh] border-slate-200 border"
 			>
 				<div
 					v-for="(option, idx) in optionDesign"
 					:key="idx"
-					class="swap-sidebar__option p-4 cursor-pointer grid place-items-center "
+					class="swap-sidebar__option p-4 cursor-pointer grid place-items-center"
 					:class="option.active ? 'border-r-2 border-sky-500' : ''"
-					@click="onMoveOption(idx)"
+					@click="onMoveOption(idx, option.name)"
 				>
 					<icon
 						v-if="option.name != 'Pixabay'"
@@ -75,21 +75,56 @@
 				</div>
 			</div>
 
-			<div
-				class="sidebar-content bg-white w-[20%] h-[90vh] border-slate-200 border"
-			>
-				<!-- danamic components -->
+			<baseSidebar :title="titleOption" :content="contentOption">
+				<template v-slot:upload>
+					<div class="swap-sidebar w-fit h-[93vh]">
+						<label
+							class="swap-sidebar__option p-4 cursor-pointer grid place-items-center w-fit border-dashed border-2 border-indigo-600"
+						>
+							<icon icon="fa-solid fa-upload" size="lg"></icon>
+							<!-- <img v-else src="../../assets/pixabay.svg" /> -->
+							<div class="text-sm p-1">Upload</div>
+							<input
+								class="hidden"
+								type="file"
+								id="file"
+								accept=".png"
+							/>
+						</label>
+					</div>
+				</template>
+			</baseSidebar>
 
-				<div class="swap-sidebar__option"></div>
+			<!-- //// <canvas></canvas>  -->
+
+			<div class="swap-design bg-slate-100 w-[74%] h-[93vh]">
+				<div class="design-nav bg-white w-[100%] h-[5vh]"></div>
+				<div class="canvas"></div>
 			</div>
-<!-- 
-
-			//// <canvas></canvas> -->
-
-			<div class="swap-design"></div>
 		</div>
 	</div>
 </template>
-<script src="./designs">
+<script src="./designs"></script>
+<style>
+.detail-body {
+	/* grid-template-columns: repeat(2, 1fr); */
+	grid-gap: 6px;
+	columns: 2 5px;
 
-</script>
+	grid-auto-flow: dense;
+}
+
+.image {
+	width: 100%;
+	margin-bottom: 5px;
+	break-inside: avoid;
+	height: fit-content;
+	/* overflow: hidden; */
+}
+
+.image img {
+	max-width: 100%;
+	height: auto;
+	object-fit: cover;
+}
+</style>

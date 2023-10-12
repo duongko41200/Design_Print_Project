@@ -21,7 +21,8 @@ import {
 	faShapes,
 	faImage,
 	faFont,    
-	faPencil,   
+	faPencil,  
+	faUpload
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -37,6 +38,7 @@ library.add(
 	faImage,
 	faFont,    
 	faPencil, 
+	faUpload
 );
 
 // import css
