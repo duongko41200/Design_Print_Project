@@ -1,29 +1,37 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import dashboard from '../pages/master/dashboard';
+// import dashboard from '../pages/master/dashboard';
 import login from '@/pages/login/login.vue';
 import signup from '@/pages/signUps/signup.vue';
 import design from '@/pages/designLayout/design';
+import profileDetail from '@/pages/profileDetail/profileDetail'
+import userInfo from '@/pages/userInfoDesign/userInfo'
 
-import home from '../pages/home';
-import profile from '../pages/profile';
+// import home from '../pages/home';
+import homeLayout from '@/pages/home/homeLayout.vue';
+// import profile from '../pages/profile';
 
 const routes = [
 	{
-		name: 'Dashboard',
+		name: 'HomeLayout',
 		path: '/',
-		component: dashboard,
+		component: homeLayout,
 		children: [
 			{
 				name: 'home',
 				path: '/home',
-				component: home,
+				component: homeLayout,
 			},
 			{
 				name: 'profile',
-				path: '/profile',
-				component: profile,
+				path: '/profileDetail',
+				component: profileDetail,
 			},
+			{
+				name: 'userInfo',
+				path: '/userInfo',
+				component: userInfo,
+			}
 		],
 	},
 	{
