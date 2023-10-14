@@ -14,9 +14,9 @@
 					<img
 						:src="imageProfile"
 						alt="AvatarUser"
-						width="60"
-						height="60"
-						class="mr-3"
+						width=60
+						height=60
+						class="mr-3 rounded-full w-[70px] h-[70px]"
 					/>
 					<div
 						class="block w-fit cursor-pointer rounded-lg text-sm text-gray-500 bg-black text-white file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold text-start file:bg-black file:text-white file:cursor-pointer p-2"
