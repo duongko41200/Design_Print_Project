@@ -1,4 +1,3 @@
-
 import ApiService from './api.service';
 
 const baseUrl = 'user/';
@@ -30,6 +29,22 @@ const UserService = {
 	async login(params) {
 		return ApiService.post(baseUrl + 'login', params);
 	},
+	async updateProfile(params) {
+		return ApiService.put(baseUrl + 'update', params);
+	},
+
+	/**
+	 *
+	 * @param {*} params :token
+	 * @returns info user
+	 */
+	async validateAuthToken(params) {
+		return ApiService.post(baseUrl + 'validate', params);
+	},
+	logout() {
+		localStorage.removeItem('tokens');
+	},
+
 	/**
 	 * Send request to retrieve password
 	 * @param {Params} params
@@ -51,15 +66,6 @@ const UserService = {
 	 * @param {Params} params
 	 * @returns {Response} response
 	 */
-	confirmPassword(params) {
-		return ApiService.post(baseUrl + 'password/confirm', params);
-	},
-	/**
-	 * Logout
-	 */
-	logout() {
-		sessionStorage.removeItem('id_token');
-	},
 };
 
 export default UserService;

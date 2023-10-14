@@ -11,14 +11,24 @@ const CreatJWT = (payload)=>{
 
 }
 
-const veryfiToken = (token) =>{
+const veryfiToken = (token) => {
+   
+
     const key =  process.env.JWT_SECRET
-    jwt.verify(token, key, function(err, decoded) {
-        if(err)return null
+   const validate= jwt.verify(token, key, function (err, decoded) {
+        
+        if (err) {
+            console.log({ err })
+            return null
+        }
         console.log(decoded) // bar
 
         return decoded
-      });
+   });
+    
+    return validate
+    
+
 }
 module.exports = {
  CreatJWT,veryfiToken

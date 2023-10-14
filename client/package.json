@@ -19,7 +19,9 @@
     "dotenv-cli": "^7.3.0",
     "vue": "^3.2.13",
     "vue-router": "^4.1.5",
-    "vue-toast-notification": "^3.1.1"
+    "vue-toast-notification": "^3.1.1",
+    "vuex": "^4.1.0",
+    "vuex-map-fields": "^1.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

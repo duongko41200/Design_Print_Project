@@ -52,5 +52,8 @@ export default {
 
 			console.log(this.optionDesign);
 		},
+		onMoveHome() {
+			this.$router.push('/')
+		}
 	},
 };

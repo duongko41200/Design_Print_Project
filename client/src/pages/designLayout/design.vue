@@ -6,6 +6,7 @@
 				<nav class="flex justify-between items-center w-[92%] mx-auto">
 					<div
 						class="text-white cursor-pointer min-h-[5vh] flex justify-between items-center gap-3"
+						@click="onMoveHome"
 					>
 						<icon icon="fa-solid fa-chevron-left" />
 						<div>Home</div>
@@ -104,7 +105,11 @@
 		</div>
 	</div>
 </template>
-<script src="./designs"></script>
+<script src="./designs">
+
+
+
+</script>
 <style>
 .detail-body {
 	/* grid-template-columns: repeat(2, 1fr); */

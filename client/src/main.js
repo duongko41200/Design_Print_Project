@@ -20,10 +20,10 @@ import {
 	faList,
 	faShapes,
 	faImage,
-	faFont,    
-	faPencil,  
+	faFont,
+	faPencil,
 	faUpload,
-	faBell
+	faBell,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -35,10 +35,10 @@ library.add(
 	faEyeSlash,
 	faChevronLeft,
 	faList,
-	faShapes,   
+	faShapes,
 	faImage,
-	faFont,    
-	faPencil, 
+	faFont,
+	faPencil,
 	faUpload,
 	faBell
 );
@@ -48,9 +48,11 @@ import './assets/css/app.css';
 
 // import router
 import router from './router';
+import store from './store';
 
 const app = createApp(App);
 app.use(router);
 app.use(VueToast);
+app.use(store);
 app.component('icon', FontAwesomeIcon);
 app.mount('#app');

@@ -9,8 +9,8 @@
 			to="/"
 			class="bg-black text-white p-2 px-4 rounded-full hidden md:block"
 		>
-			Home </router-link
-		>
+			Home
+		</router-link>
 		<button
 			class="font-bold p-2 px-4 rounded-full"
 			@click="onCreateDesign"
@@ -41,11 +41,11 @@
 				class="inline-flex items-center gap-x-1 text-sm font-bold leading-6 text-gray-900"
 			>
 				<img
-					src="@/assets//man.png"
+					:src="userInfo.image"
 					alt="user-image"
-					width="50"
-					height="50"
-					class="hover:bg-gray-300 p-2 rounded-full cursor-pointer"
+					width=50
+					height=50
+					class="hover:bg-gray-300 p-2 rounded-full cursor-pointer w-[50px] h-[50px]"
 				/>
 				<ChevronDownIcon class="h-6 w-6" aria-hidden="true" />
 			</button>
@@ -67,18 +67,19 @@
 									class="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white"
 								>
 									<img
-										src="@/assets//man.png"
+										:src="userInfo.image"
 										alt="avatarUser"
-										width="50"
-										height="50"
+										width=50
+										height=50
+										class="hover:bg-gray-300 p-2 rounded-full cursor-pointer w-[50px] h-[50px]"
 									/>
 								</div>
 								<div>
 									<div class="font-semibold text-gray-900">
-										UserName
-										<span class="absolute inset-0" />
+										{{ userInfo.username }}
+										<span class="absolute inset-0"></span>
 									</div>
-									<p class="mt-1 text-gray-600">Email@gmail.com</p>
+									<p class="mt-1 text-gray-600">{{ this.email }}</p>
 								</div>
 							</div>
 						</div>
@@ -94,6 +95,7 @@
 							</div>
 							<div
 								class="flex items-center justify-center gap-x-1 cursor-pointer font-semibold text-gray-900 hover:bg-gray-100"
+								@click="onLogout"
 							>
 								Logout
 							</div>
@@ -107,6 +109,9 @@
 </template>
 
 <script>
+import { createNamespacedHelpers } from 'vuex';
+const authMappper = createNamespacedHelpers('auth');
+import UserService from '@/sevices/user.service.js';
 export default {
 	data() {
 		return {
@@ -121,6 +126,12 @@ export default {
 				{ name: 'Logout', href: '#' },
 			],
 		};
+	},
+	computed: {
+		...authMappper.mapState(['email', 'userInfo']),
+	},
+	mounted() {
+		// console.log("userInfo:",this.userInfo);
 	},
 	methods: {
 		togglePopover() {
@@ -138,6 +149,11 @@ export default {
 		},
 		onMoveUserInfo() {
 			this.$router.push('/userInfo');
+			this.isPopoverOpen = !this.isPopoverOpen
+		},
+		async onLogout() {
+			await UserService.logout() 
+			this.$router.push('/login')
 		}
 	},
 };

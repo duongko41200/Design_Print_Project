@@ -114,6 +114,8 @@
 
 <script>
 import UserService from '@/sevices/user.service.js';
+import { createNamespacedHelpers } from 'vuex';
+const authMappper = createNamespacedHelpers('auth');
 export default {
 	data() {
 		return {
@@ -125,6 +127,7 @@ export default {
 	},
 
 	methods: {
+		...authMappper.mapMutations(['SET_USER_INFO','SET_EMAIL']),
 		async onLogin() {
 
 			const login = await UserService.login({
@@ -137,6 +140,11 @@ export default {
 					position: 'top-right',
 					duration: 2000,
 				});
+				this.SET_USER_INFO(login.data.data[0])
+				localStorage.setItem('tokens', login.data.token)
+
+				this.SET_EMAIL(login.data.data[0].email)
+
 				this.$router.push('/');
 			} else {
 				this.$toast.error(`${login.data.reason}`, {

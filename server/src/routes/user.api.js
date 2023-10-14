@@ -7,6 +7,8 @@ const userApi = (app) => {
 	router.post('/signup', ApiControl.handleSignup);
 	router.post('/login', ApiControl.handleLogin);
 	router.get('/logout', ApiControl.handleLogout);
+	router.post('/validate', ApiControl.handleValidateToken)
+	router.put('/update', ApiControl.handleUpdate)
 
 	return app.use('/api/user', router);
 };

@@ -14,7 +14,7 @@ const uploadImageByS3 = (app) => {
 	
 	router.post('/upload', upload.single('file'), async(req, res, next) => { 
 		const file = req.file
-		console.log(file)
+		// console.log("conten file:",file)
 	  
 		// apply filter
 		// resize 
@@ -22,9 +22,15 @@ const uploadImageByS3 = (app) => {
 		const result = await uploadFile(file)
 		console.log("result ; ksdjfkdsfjksdj", result)
 		await unlinkFile(file.path)
-		console.log("result",result)
-		const description = req.body.description
-		res.send({imagePath: `/images/${result.Key}`})
+		console.log("result", result)
+		
+		
+		// const description = req.body.description
+		res.status(200).json({
+			status: 'success',
+			data:result
+			
+		})
 	});
 
 

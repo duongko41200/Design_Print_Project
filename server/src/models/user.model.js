@@ -12,6 +12,10 @@ const userSchema = new mongoose.Schema(
 
 		image: {
 			type: String,
+			default: 'https://designimage.s3.ap-southeast-1.amazonaws.com/default.jpg',
+		},
+		backgroud: {
+			type: String,
 			default: 'users/default.jpg',
 		},
 		email: {
@@ -21,6 +25,11 @@ const userSchema = new mongoose.Schema(
 			unique: true,
 			lowercase: true,
 		},
+		description: {
+			type: String,
+			default: '',
+		},
+
 		role: {
 			type: String,
 			enum: ['admin', 'user'],
