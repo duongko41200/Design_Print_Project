@@ -17,7 +17,9 @@ var checkUserPassword = (password) => {
 //     return regex.test(phoneNumber);
 // }
 const validateSignUp = (data) => {
-	if (data.username.length < 6) {
+	if (data.password == '' || data.username == '' || data.email == '') {
+		return 'không được bỏ trống thông tin';
+	} else if (data.username.length < 6) {
 		return 'Kích thước username không đúng';
 	} else if (!checkEmail(data.email)) {
 		return 'Email không đúng định dạng';
@@ -89,6 +91,8 @@ const handleLogin = async (req, res) => {
 			username: checkLogin[0].username,
 			password: password,
 			email: email,
+			image: checkLogin[0].image,
+			description: checkLogin[0].description
 		});
 
 		return res.status(200).json({
@@ -104,14 +108,73 @@ const handleLogin = async (req, res) => {
 	}
 };
 
+const handleUpdate = async (req, res) => {
+	const body = req.body.param;
+
+	////kiểm tra lại chõ này
+	const bodyCopy = req.body.param
+
+
+
+	const tokenUser = CreatJWT({
+		username: body.username,
+		email: body.email,
+		password: body.password,
+		image: body.image,
+		description: body.description
+	});
+
+	console.log('body request:', body);
+	try {
+		console.log('token request:', tokenUser);
+		const hashPassword = await bcrypt.hash(body.password, 12);
+		body.password = hashPassword;
+		const updateProfile = await User.findOneAndUpdate(
+			{ email: body.email },
+			{
+				username: body.username,
+				email: body.email,
+				password: body.password,
+				image: body.image,
+				description: body.description
+			}
+		);
+
+		return res.status(200).json({
+			status: 'success',
+			token: tokenUser,
+			data: bodyCopy,
+		});
+	} catch (error) {
+		console.log('error', error);
+	}
+};
+
 const handleLogout = (req, res) => {
 	return res.status(200).json({
 		status: 'success',
 	});
 };
 
+const handleValidateToken = async (req, res) => {
+	const token = await req.body.token;
+
+	try {
+		const validateToken = veryfiToken(token);
+
+		return res.status(200).json({
+			status: 'success',
+			data: validateToken,
+		});
+	} catch (error) {
+		console.log({ error });
+	}
+};
+
 module.exports = {
 	handleSignup,
 	handleLogin,
 	handleLogout,
+	handleValidateToken,
+	handleUpdate,
 };
