@@ -56,6 +56,7 @@ export default {
 			});
 			this.titleOption = name;
 			if (name === 'Templates') {
+				this.imagePixaBay=[]
 				this.contentOption = this.images;
 			} else if (name === 'Upload') { 
 				this.imagePixaBay=[]
