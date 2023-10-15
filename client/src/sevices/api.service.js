@@ -71,6 +71,15 @@ const ApiService = {
 	async delete(resource, params) {
 		return await axios.delete(`/${resource}`, { params: params });
 	},
+
+
+	/**
+	 * @param resource
+	 */
+	async pixaBay() {
+		return await axios.get(`https://pixabay.com/api/?key=40057597-c53c6ba2db497a29e02cc9d55`);
+		
+	}
 };
 
 export default ApiService;
