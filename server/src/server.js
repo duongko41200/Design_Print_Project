@@ -2,11 +2,10 @@ const express = require('express')
 var cors = require('cors')
 // const webRouter = require('./routes/routes')
 const userApi = require("./routes/user.api")
+const imageAssetApi = require("./routes/imageassets.api")
 const uploadImageByS3 = require("./routes/image.api")
-// const userApi = require('./routes/apiUser')
 require('dotenv').config()
 const bodyParser = require('body-parser');
-// const connection = require('./config/connectDB ')
 const mongoose = require('mongoose');
 
 
@@ -40,11 +39,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 userApi(app)
 uploadImageByS3(app)
+imageAssetApi(app)
 
-// configViewEngine(app)
-// webRouter(app)
-// ApiRouter(app)
-// ApiUser(app)
+
 
 
 mongoose

@@ -50,7 +50,7 @@
 		<!-- sidebar -->
 		<div class="swap flex w-[100%] h-[90vh]">
 			<div
-				class="swap-sidebar w-fit min-w-[6%] h-[93vh] border-slate-200 border"
+				class="swap-sidebar w-fit min-w-[6%]  border-slate-200 border"
 			>
 				<div
 					v-for="(option, idx) in optionDesign"
@@ -76,9 +76,9 @@
 				</div>
 			</div>
 
-			<baseSidebar :title="titleOption" :content="contentOption">
+			<baseSidebar :title="titleOption" :content="contentOption" :imagePixaBay="imagePixaBay">
 				<template v-slot:upload>
-					<div class="swap-sidebar w-fit h-[93vh]">
+					<div class="swap-sidebar w-fit">
 						<label
 							class="swap-sidebar__option p-4 cursor-pointer grid place-items-center w-fit border-dashed border-2 border-indigo-600"
 						>
@@ -89,7 +89,9 @@
 								class="hidden"
 								type="file"
 								id="file"
+								ref="fileImageAsset"
 								accept=".png"
+								@input="uploadImageAsset"
 							/>
 						</label>
 					</div>
