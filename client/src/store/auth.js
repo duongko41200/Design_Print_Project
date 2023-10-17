@@ -7,6 +7,7 @@ export default {
 		return {
 			userInfo: '',
 			email: '',
+			imageProfile:''
 		};
 	},
 
@@ -29,6 +30,9 @@ export default {
 		SET_EMAIL(state, payload) {
 			state.email = payload;
 		},
+		SET_IMAGE_PROFILE(state, payload) { 
+			state.imageProfile = payload
+		}
 	},
 
 	getters: {

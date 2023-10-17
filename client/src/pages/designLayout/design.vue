@@ -102,7 +102,11 @@
 
 			<div class="swap-design bg-slate-100 w-[74%] h-[93vh]">
 				<div class="design-nav bg-white w-[100%] h-[5vh]"></div>
-				<div class="canvas"></div>
+				<div class="canvas h-[88vh] flex justify-center items-center">
+					<canvas ref="canvas">
+						<!-- <img src="../../assets/anh_test.png" ref="image" /> -->
+					</canvas>
+				</div>
 			</div>
 		</div>
 	</div>

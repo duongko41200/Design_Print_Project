@@ -6,7 +6,7 @@ export default {
 
 	state() {
 		return {
-			imageUpload:''
+			imageProfile:''
 
 		};
 	},
@@ -14,12 +14,21 @@ export default {
 	actions: {
 		async uploadImageByS3({ state }, fileInput) {
 			
-			console.log('image', state.imageUpload);
+			console.log('image', state.imageProfile);
 			const file = fileInput.files[0];
 			let formData = new FormData();
 			formData.append('file', file);
 
 			const upload = await ImageService.uploadImageS3(formData);
+			return upload
+		},
+		async uploadImageByProfile({ state }, fileInput) {
+			console.log('image', state.imageProfile);
+			const file = fileInput.files[0];
+			let formData = new FormData();
+			formData.append('file', file);
+
+			const upload = await ImageService.uploadImageProfile(formData);
 			return upload
 		},
 	},
