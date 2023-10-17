@@ -1,6 +1,7 @@
 import baseSidebar from '@/components/BaseSidebar/baseSidebar.vue';
 import ImageAssetService from '@/sevices/imageAssets.service';
 import ApiService from '@/sevices/api.service';
+import { fabric } from 'fabric';
 import { createNamespacedHelpers } from 'vuex';
 const authMappper = createNamespacedHelpers('auth');
 const globalMappper = createNamespacedHelpers('global');
@@ -32,6 +33,11 @@ export default {
 			],
 
 			imagePixaBay: [],
+
+
+			canvas: '',
+			url:
+			'https://treobangron.com.vn/wp-content/uploads/2022/09/background-dep-5-2.jpg',
 		};
 	},
 	computed: {
@@ -39,6 +45,8 @@ export default {
 	},
 	mounted() {
 		this.contentOption = this.images;
+		this.canvas = this.initCanvas(this.$refs.canvas);
+		this.setBackground(this.url, this.canvas);
 	},
 
 	methods: {
@@ -108,6 +116,31 @@ export default {
 				console.log({ error });
 			}
 		},
+
+
+
+		///canvas
+		initCanvas(id) {
+			return new fabric.Canvas(id, {
+				width: 600,
+				height: 600,
+				backgroundColor: 'green',
+			});
+		},
+		setBackground(url, canvas) {
+			fabric.Image.fromURL(url, (img) => {
+				// img.set({
+				// 	selectable: false,
+				// });
+				canvas.add(img);
+				// this.canvas.renderAll()
+			});
+			console.log('canvas.getObjects()', canvas.getObjects());
+		},
+
+
+		
+
 		onMoveHome() {
 			this.$router.push('/');
 		},

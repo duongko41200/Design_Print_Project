@@ -12,10 +12,10 @@
 				<p class="font-semibold text-start text-start">Ảnh:</p>
 				<div class="flex flex-row items-center">
 					<img
-						:src="imageProfile"
+						:src="require(`@/assets/${imageProfile?imageProfile:'man.png'}`)"
 						alt="AvatarUser"
-						width=60
-						height=60
+						width="60"
+						height="60"
 						class="mr-3 rounded-full w-[70px] h-[70px]"
 					/>
 					<div
@@ -83,10 +83,11 @@ import { createNamespacedHelpers } from 'vuex';
 const authMappper = createNamespacedHelpers('auth');
 const globalMappper = createNamespacedHelpers('global');
 import UserService from '@/sevices/user.service.js';
+
 export default {
 	data() {
 		return {
-			imageProfile: '',
+			// imageProfile: "",
 			username: '',
 			email: '',
 			password: '',
@@ -94,27 +95,38 @@ export default {
 		};
 	},
 	computed: {
-		...authMappper.mapState(['email', 'userInfo']),
+		...authMappper.mapState(['email', 'userInfo','imageProfile']),
+		
+		imageProfiles() {
+			return this.imageProfile
+		}
 	},
 	mounted() {
-		this.imageProfile = this.userInfo.image;
+		this.SET_IMAGE_PROFILE(this.userInfo.image);
 		this.username = this.userInfo.username;
 		this.email = this.userInfo.email;
 		this.password = this.userInfo.password;
 		this.description = this.userInfo.description;
 	},
 	methods: {
-		...authMappper.mapMutations(['SET_USER_INFO']),
-		...globalMappper.mapActions(['uploadImageByS3']),
+		...authMappper.mapMutations(['SET_USER_INFO','SET_IMAGE_PROFILE']),
+		...globalMappper.mapActions([
+			'uploadImageByS3',
+			'uploadImageByProfile',
+		]),
 
 		//uploadImageByS3
 		async uploadImageProfile(e) {
 			e.preventDefault();
 			const fileInput = this.$refs.fileInput;
 
-			const upload = await this.uploadImageByS3(fileInput);
+			const upload = await this.uploadImageByProfile(fileInput);
+			console.log('Upload', upload.data.data);
+			setTimeout(() => {
+				this.SET_IMAGE_PROFILE(upload.data.data);
+			}, 1000);
 
-			this.imageProfile = upload.data.data.Location;
+		
 		},
 
 		//updateProfile

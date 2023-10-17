@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema(
 
 		image: {
 			type: String,
-			default: 'https://designimage.s3.ap-southeast-1.amazonaws.com/default.jpg',
+			default: 'man.png',
 		},
 		backgroud: {
 			type: String,
