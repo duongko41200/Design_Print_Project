@@ -50,7 +50,7 @@
 		<!-- sidebar -->
 		<div class="swap flex w-[100%] h-[90vh]">
 			<div
-				class="swap-sidebar w-fit min-w-[6%]  border-slate-200 border"
+				class="swap-sidebar w-fit min-w-[6%] border-slate-200 border"
 			>
 				<div
 					v-for="(option, idx) in optionDesign"
@@ -76,7 +76,11 @@
 				</div>
 			</div>
 
-			<baseSidebar :title="titleOption" :content="contentOption" :imagePixaBay="imagePixaBay">
+			<baseSidebar
+				:title="titleOption"
+				:content="contentOption"
+				:imagePixaBay="imagePixaBay"
+			>
 				<template v-slot:upload>
 					<div class="swap-sidebar w-fit">
 						<label
@@ -101,7 +105,124 @@
 			<!-- //// <canvas></canvas>  -->
 
 			<div class="swap-design bg-slate-100 w-[74%] h-[93vh]">
-				<div class="design-nav bg-white w-[100%] h-[5vh]"></div>
+				<div class="design-nav bg-white w-[100%] h-[5vh]">
+					<!-- <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor> -->
+
+					<!-- tool text -->
+
+					<div class="flex justify-center items-center">
+						<div
+							class="container max-w-max mx-auto bg-white rounded-lg overflow-hidden"
+						>
+							<div class="toolbar p-1">
+								<div class="btn-toolbar flex flex-wrap items-center">
+									<div class="flex mr-3">
+										<button
+											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+										>
+											<icon icon="fa-solid fa-undo" />
+										</button>
+										<button
+											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+										>
+											<icon icon="fa-solid fa-redo" />
+										</button>
+									</div>
+									<div
+										class="mr-3 h-10 color bg-white border border-gray-400 rounded outline-none cursor-pointer flex items-center gap-2 px-2"
+									>
+										<span>Color</span>
+										<input
+											type="color"
+											v-model="textDesign.textColor"
+											@input="changeTextDesign"
+										/>
+									</div>
+									<div
+										class="me-3 h-10 color bg-white border border-gray-400 rounded outline-none cursor-pointer flex items-center gap-2 px-2"
+									>
+										<span>Background</span>
+										<input
+											type="color"
+											v-model="textDesign.bgColor"
+											@input="changeTextDesign"
+										/>
+									</div>
+									<select
+										class="mr-3 h-10 bg-white border border-gray-400 rounded outline-none cursor-pointer"
+										v-model="textDesign.fontSize"
+										@change="changeTextDesign"
+									>
+										<option value="" selected hidden disabled>
+											Font size
+										</option>
+										<option value="20">Extra small</option>
+										<option value="35">Small</option>
+										<option value="40">Regular</option>
+										<option value="44">Medium</option>
+										<option value="48">Large</option>
+										<option value="55">Extra Large</option>
+										<option value="60">Big</option>
+									</select>
+									<div class="flex mr-3">
+										<button
+											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+											@click="changeTextStyle('bold')"
+										>
+											<icon icon=" fa-solid fa-bold" />
+										</button>
+										<div
+											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+											@click="changeTextStyle('underline')"
+										>
+											<icon icon=" fa-solid fa-underline" />
+										</div>
+										<button
+											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+											@click="changeTextStyle('italic')"
+										>
+											<icon icon=" fa-solid fa-italic" />
+										</button>
+									</div>
+									<div class="flex mr-3">
+										<button
+											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+										>
+											<icon icon=" fa-solid fa-align-left" />
+										</button>
+										<button
+											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+										>
+											<icon icon=" fa-solid fa-align-right" />
+										</button>
+										<button
+											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+										>
+											<icon icon=" fa-solid fa-align-center" />
+										</button>
+										<button
+											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+										>
+											<icon icon=" fa-solid fa-align-justify" />
+										</button>
+									</div>
+									<div class="flex mr-3">
+										<button
+											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+										>
+											<icon icon=" fa-solid fa-list-ol" />
+										</button>
+										<button
+											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+										>
+											<icon icon=" fa-solid fa-list-ul" />
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 				<div class="canvas h-[88vh] flex justify-center items-center">
 					<canvas ref="canvas">
 						<!-- <img src="../../assets/anh_test.png" ref="image" /> -->
@@ -111,14 +232,11 @@
 		</div>
 	</div>
 </template>
-<script src="./designs">
-
-
-
-</script>
+<script src="./designs"></script>
 <style>
 .detail-body {
 	/* grid-template-columns: repeat(2, 1fr); */
+
 	grid-gap: 6px;
 	columns: 2 5px;
 
@@ -137,5 +255,8 @@
 	max-width: 100%;
 	height: auto;
 	object-fit: cover;
+}
+.swap-sidebar {
+	display: inline-block;
 }
 </style>

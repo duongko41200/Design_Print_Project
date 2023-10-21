@@ -34,19 +34,78 @@ export default {
 
 			imagePixaBay: [],
 
+			url: 'https://treobangron.com.vn/wp-content/uploads/2022/09/background-dep-5-2.jpg',
 
-			canvas: '',
-			url:
-			'https://treobangron.com.vn/wp-content/uploads/2022/09/background-dep-5-2.jpg',
+			currentMode: '',
+			mousePressed: false,
+			modes: {
+				pan: 'pan',
+				drawing: 'drawing',
+				eraser: 'eraser',
+			},
+
+			// textColor: 'black',
+			// bgColor: '',
+
+			//////////////////////-------TextBOx-------------------------
+			isBoldText: false,
+			isItalicText: false,
+			textDesign: {
+				textColor: 'black',
+				bgColor: '',
+				fontFamily: '',
+				fontSize: '40',
+				textDecoration: '',
+				textAlign: '',
+				underline: false,
+				fontWeight: '',
+				fontStyle: '',
+			},
 		};
 	},
 	computed: {
 		...authMappper.mapState(['email', 'userInfo']),
 	},
-	mounted() {
+	async mounted() {
 		this.contentOption = this.images;
-		this.canvas = this.initCanvas(this.$refs.canvas);
-		this.setBackground(this.url, this.canvas);
+		this.canvas = await this.initCanvas(this.$refs.canvas);
+		this.canvas.selection = true;
+		// this.setPanEvents(this.canvas);
+		// this.setBackground(this.url, this.canvas);
+
+		this.canvas.on('selection:created', () => {
+			let activeObject = this.canvas.getActiveObject();
+			if (activeObject && activeObject.type === 'text') {
+				this.textDesign.textColor = activeObject.fill;
+				this.textDesign.bgColor = activeObject.backgroundColor;
+				this.textDesign.fontSize = activeObject.fontSize;
+				this.textDesign.underline = activeObject.underline;
+				this.textDesign.fontWeight = activeObject.fontWeight;
+				this.textDesign.fontStyle = activeObject.fontStyle;
+			}
+
+			console.log('cavas value:', activeObject);
+		});
+		this.canvas.on('selection:updated', () => {
+			let activeObject = this.canvas.getActiveObject();
+			if (activeObject && activeObject.type === 'text') {
+				this.textDesign.textColor = activeObject.fill;
+				this.textDesign.bgColor = activeObject.backgroundColor;
+				this.textDesign.fontSize = activeObject.fontSize;
+				this.textDesign.underline = activeObject.underline;
+				this.textDesign.fontWeight = activeObject.fontWeight;
+				this.textDesign.fontStyle = activeObject.fontStyle;
+			}
+
+			console.log('cavas value:', activeObject);
+		});
+
+		this.canvas.on('selection:cleared', () => {
+
+	
+		});
+
+	
 	},
 
 	methods: {
@@ -64,10 +123,10 @@ export default {
 			});
 			this.titleOption = name;
 			if (name === 'Templates') {
-				this.imagePixaBay=[]
+				this.imagePixaBay = [];
 				this.contentOption = this.images;
-			} else if (name === 'Upload') { 
-				this.imagePixaBay=[]
+			} else if (name === 'Upload') {
+				this.imagePixaBay = [];
 				const imageAsset = await ImageAssetService.getAllImagAsset({
 					email: this.email,
 				});
@@ -76,19 +135,22 @@ export default {
 			} else if (name === 'Pixabay') {
 				this.contentOption = [];
 				const pixaBay = await ApiService.pixaBay();
-				this.imagePixaBay = pixaBay.data.hits
-				
+				this.imagePixaBay = pixaBay.data.hits;
+
 				console.log('pixaBay', pixaBay);
+			} else if (name === 'Texts') {
+				this.contentOption = [];
+				this.imagePixaBay = [];
+				this.addHeading();
+			} else if (name === 'Draw') {
+				this.onToggleDraw(this.canvas);
 			} else {
 				this.contentOption = [];
-				this.imagePixaBay=[]
+				this.imagePixaBay = [];
 			}
-
-			console.log(this.optionDesign);
 		},
 
-
-		//upload imageassets 
+		//upload imageassets
 		async uploadImageAsset(e) {
 			e.preventDefault();
 			const fileImageAsset = this.$refs.fileImageAsset;
@@ -117,32 +179,158 @@ export default {
 			}
 		},
 
-
-
 		///canvas
 		initCanvas(id) {
 			return new fabric.Canvas(id, {
+				preserveObjectStacking: true,
 				width: 600,
 				height: 600,
 				backgroundColor: 'green',
 			});
 		},
-		setBackground(url, canvas) {
-			fabric.Image.fromURL(url, (img) => {
-				// img.set({
-				// 	selectable: false,
-				// });
-				canvas.add(img);
-				// this.canvas.renderAll()
-			});
-			console.log('canvas.getObjects()', canvas.getObjects());
-		},
-
-
-		
+		// setBackground(url, canvas) {
+		// 	fabric.Image.fromURL(url, (img) => {
+		// 		// img.set({
+		// 		// 	selectable: false,
+		// 		// });
+		// 		canvas.add(img);
+		// 		// this.canvas.renderAll()
+		// 	});
+		// 	console.log('canvas.getObjects()', canvas.getObjects());
+		// },
 
 		onMoveHome() {
 			this.$router.push('/');
+		},
+
+		addHeading() {
+			var text = new fabric.Textbox('Chỉnh sửa tôi!', {
+				type: 'text',
+
+				opacity: 1,
+				shadow: undefined,
+				visible: true,
+				backgroundColor: '',
+				fillRule: 'nonzero',
+				paintFirst: 'fill',
+				fill: 'black',
+				globalCompositeOperation: 'source-over',
+				skewX: 0,
+				skewY: 0,
+				lineHeight: 1.16,
+				overline: false,
+				linethrough: false,
+				textAlign: 'center',
+				textBackgroundColor: '',
+				charSpacing: 0,
+				width: 300,
+				splitByGrapheme: true,
+				styles: {},
+			});
+			console.log('text : ', text);
+			text.editable = true;
+
+			this.canvas.add(text);
+
+			text.on('editing:exited', () => {
+				console.log('perform updates here!', text._savedProps);
+
+				console.log('cavas value:', this.canvas.toJSON());
+				// text.dirty = true;
+				// text.set({ fill: 'red' });
+				// this.canvas.requestRenderAll();
+			});
+		},
+
+		// setPanEvents(canvas) {
+		// 	canvas.on('mouse:move', (event) => {
+		// 		// console.log(event)
+		// 		// console.log('event mouse move: ', this.mousePressed);
+		// 		if (this.mousePressed && this.currentMode === this.modes.pan) {
+		// 			canvas.setCursor('grab');
+		// 			canvas.renderAll();
+		// 			const mEvent = event.e;
+		// 			const delta = new fabric.Point(
+		// 				mEvent.movementX,
+		// 				mEvent.movementY
+		// 			);
+		// 			canvas.relativePan(delta);
+		// 			console.log('canvas.getObjects()', canvas.getObjects());
+		// 		} else if (
+		// 			this.mousePressed &&
+		// 			this.currentMode === this.modes.drawing
+		// 		) {
+		// 			canvas.isDrawingMode = true;
+		// 			console.log('canvas.getObjects()', canvas.getObjects());
+		// 		} else if (
+		// 			this.mousePressed &&
+		// 			this.currentMode == this.modes.eraser
+		// 		) {
+		// 			canvas.isDrawingMode = true;
+		// 		}
+		// 	});
+		// 	// keep track of mouse down/up
+		// 	this.canvas.on('mouse:down', () => {
+		// 		this.mousePressed = true;
+		// 		if (this.currentMode === this.modes.pan) {
+		// 			canvas.setCursor('grab');
+		// 		}
+		// 	});
+		// 	this.canvas.on('mouse:up', () => {
+		// 		this.mousePressed = false;
+		// 		canvas.setCursor('default');
+		// 	});
+		// },
+
+		onToggleDraw() {
+			if (this.currentMode != 'drawing') {
+				console.log('this.currentMode', this.currentMode);
+				this.currentMode = 'drawing';
+				this.canvas.freeDrawingBrush.color = 'black'; //corlor
+				this.canvas.freeDrawingBrush.width = 15;
+				this.canvas.isDrawingMode = true;
+			} else {
+				console.log('currentMode', this.currentMode);
+				this.currentMode = '';
+				this.canvas.isDrawingMode = false;
+			}
+		},
+
+		changeTextDesign() {
+			console.log('da vaof changed text design');
+			const deepCode = structuredClone(this.textDesign);
+			this.textDesign = deepCode;
+		},
+		changeTextStyle(value) {
+			if (value === 'underline') {
+				console.log('underline');
+				this.textDesign.underline = !this.textDesign.underline;
+			} else if (value === 'bold') {
+				this.isBoldText = !this.isBoldText;
+				this.textDesign.fontWeight = this.isBoldText ? 'bold' : '';
+			} else if (value === 'italic') {
+				this.isItalicText = !this.isItalicText;
+				this.textDesign.fontStyle = this.isItalicText ? 'italic' : '';
+			}
+			this.changeTextDesign();
+		},
+	},
+
+	watch: {
+		textDesign() {
+			let activeObject = this.canvas.getActiveObject();
+			console.log('activeObject', activeObject);
+			if (activeObject) {
+				activeObject.set({
+					fill: this.textDesign.textColor,
+					backgroundColor: this.textDesign.bgColor,
+					fontSize: parseInt(this.textDesign.fontSize),
+					underline: this.textDesign.underline,
+					fontWeight: this.textDesign.fontWeight,
+					fontStyle: this.textDesign.fontStyle,
+				});
+				this.canvas.requestRenderAll();
+			}
 		},
 	},
 };

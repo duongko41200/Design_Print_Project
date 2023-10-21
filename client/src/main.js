@@ -24,6 +24,17 @@ import {
 	faPencil,
 	faUpload,
 	faBell,
+	faAlignLeft,
+	faAlignCenter,
+	faAlignRight,
+	faAlignJustify,
+	faListOl,
+	faListUl,
+	faUndo,
+	faRedo,
+	faBold,
+	faUnderline,
+	faItalic
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -40,7 +51,18 @@ library.add(
 	faFont,
 	faPencil,
 	faUpload,
-	faBell
+	faBell,
+	faAlignLeft,
+	faAlignCenter,
+	faAlignRight,
+	faAlignJustify,
+	faListOl,
+	faListUl,
+	faUndo,
+	faRedo,
+	faBold,
+	faUnderline,
+	faItalic
 );
 
 // import css
