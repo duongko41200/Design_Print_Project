@@ -110,7 +110,7 @@
 
 					<!-- tool text -->
 
-					<div class="flex justify-center items-center">
+					<div class="flex justify-center items-center" v-show="isBoxEditText">
 						<div
 							class="container max-w-max mx-auto bg-white rounded-lg overflow-hidden"
 						>
@@ -187,21 +187,25 @@
 									<div class="flex mr-3">
 										<button
 											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+											@click="changeTextStyle('align-left')"
 										>
 											<icon icon=" fa-solid fa-align-left" />
 										</button>
 										<button
 											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+											@click="changeTextStyle('align-right')"
 										>
 											<icon icon=" fa-solid fa-align-right" />
 										</button>
 										<button
 											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+											@click="changeTextStyle('align-center')"
 										>
 											<icon icon=" fa-solid fa-align-center" />
 										</button>
 										<button
 											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+											@click="changeTextStyle('align-justify')"
 										>
 											<icon icon=" fa-solid fa-align-justify" />
 										</button>

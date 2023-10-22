@@ -48,8 +48,14 @@ export default {
 			// bgColor: '',
 
 			//////////////////////-------TextBOx-------------------------
+			isBoxEditText: false,
 			isBoldText: false,
 			isItalicText: false,
+			isAlignLeft: true,
+			isAlignRight: false,
+			isAlignCenter: false,
+			isAlignjustify:false,
+			
 			textDesign: {
 				textColor: 'black',
 				bgColor: '',
@@ -76,12 +82,14 @@ export default {
 		this.canvas.on('selection:created', () => {
 			let activeObject = this.canvas.getActiveObject();
 			if (activeObject && activeObject.type === 'text') {
+				this.isBoxEditText = true;
 				this.textDesign.textColor = activeObject.fill;
 				this.textDesign.bgColor = activeObject.backgroundColor;
 				this.textDesign.fontSize = activeObject.fontSize;
 				this.textDesign.underline = activeObject.underline;
 				this.textDesign.fontWeight = activeObject.fontWeight;
 				this.textDesign.fontStyle = activeObject.fontStyle;
+				this.textDesign.textAlign = activeObject.textAlign;
 			}
 
 			console.log('cavas value:', activeObject);
@@ -89,23 +97,24 @@ export default {
 		this.canvas.on('selection:updated', () => {
 			let activeObject = this.canvas.getActiveObject();
 			if (activeObject && activeObject.type === 'text') {
+				this.isBoxEditText = true;
 				this.textDesign.textColor = activeObject.fill;
 				this.textDesign.bgColor = activeObject.backgroundColor;
 				this.textDesign.fontSize = activeObject.fontSize;
 				this.textDesign.underline = activeObject.underline;
 				this.textDesign.fontWeight = activeObject.fontWeight;
 				this.textDesign.fontStyle = activeObject.fontStyle;
+				this.textDesign.textAlign = activeObject.textAlign;
+			} else {
+				this.isBoxEditText = false;
 			}
 
 			console.log('cavas value:', activeObject);
 		});
 
 		this.canvas.on('selection:cleared', () => {
-
-	
+			this.isBoxEditText = false;
 		});
-
-	
 	},
 
 	methods: {
@@ -220,7 +229,7 @@ export default {
 				lineHeight: 1.16,
 				overline: false,
 				linethrough: false,
-				textAlign: 'center',
+				textAlign: 'left',
 				textBackgroundColor: '',
 				charSpacing: 0,
 				width: 300,
@@ -302,15 +311,51 @@ export default {
 			this.textDesign = deepCode;
 		},
 		changeTextStyle(value) {
-			if (value === 'underline') {
-				console.log('underline');
-				this.textDesign.underline = !this.textDesign.underline;
-			} else if (value === 'bold') {
-				this.isBoldText = !this.isBoldText;
-				this.textDesign.fontWeight = this.isBoldText ? 'bold' : '';
-			} else if (value === 'italic') {
-				this.isItalicText = !this.isItalicText;
-				this.textDesign.fontStyle = this.isItalicText ? 'italic' : '';
+			switch (value) {
+				case 'underline':
+					this.textDesign.underline = !this.textDesign.underline;
+						break;
+				case 'bold':
+					this.isBoldText = !this.isBoldText;
+					this.textDesign.fontWeight = this.isBoldText ? 'bold' : '';
+						break;
+				case 'italic':
+					this.isItalicText = !this.isItalicText;
+					this.textDesign.fontStyle = this.isItalicText ? 'italic' : '';
+						break;
+				case 'align-left':
+					this.isAlignLeft = true;
+					this.isAlignCenter = false,
+					this.isAlignRight = false,
+					this.isAlignjustify = false,
+					this.textDesign.textAlign = this.isAlignLeft ? 'left' : ''
+						break;
+				case 'align-right':
+					this.isAlignLeft = false;
+					this.isAlignCenter = false,
+					this.isAlignRight = true,
+					this.isAlignjustify = false,
+					this.textDesign.textAlign = this.isAlignRight ? 'right' : ''
+						break;
+				case 'align-center':
+					this.isAlignLeft = false;
+					this.isAlignCenter = true,
+					this.isAlignRight = false,
+					this.isAlignjustify = false,
+					this.textDesign.textAlign = this.isAlignCenter ? 'center' : ''
+					break;
+				
+				case 'align-justify':
+					this.isAlignLeft = false;
+					this.isAlignCenter = false,
+					this.isAlignRight = false,
+					this.isAlignjustify = true,
+					this.textDesign.textAlign = this.isAlignjustify ? 'justify' : ''
+							break;
+					
+
+				default:
+					break;
 			}
 			this.changeTextDesign();
 		},
@@ -328,6 +373,7 @@ export default {
 					underline: this.textDesign.underline,
 					fontWeight: this.textDesign.fontWeight,
 					fontStyle: this.textDesign.fontStyle,
+					textAlign: this.textDesign.textAlign
 				});
 				this.canvas.requestRenderAll();
 			}
