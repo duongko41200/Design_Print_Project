@@ -44,8 +44,7 @@ export default {
 				eraser: 'eraser',
 			},
 
-			// textColor: 'black',
-			// bgColor: '',
+
 
 			//////////////////////-------TextBOx-------------------------
 			isBoxEditText: false,
@@ -54,8 +53,8 @@ export default {
 			isAlignLeft: true,
 			isAlignRight: false,
 			isAlignCenter: false,
-			isAlignjustify:false,
-			
+			isAlignjustify: false,
+
 			textDesign: {
 				textColor: 'black',
 				bgColor: '',
@@ -78,43 +77,7 @@ export default {
 		this.canvas.selection = true;
 		// this.setPanEvents(this.canvas);
 		// this.setBackground(this.url, this.canvas);
-
-		this.canvas.on('selection:created', () => {
-			let activeObject = this.canvas.getActiveObject();
-			if (activeObject && activeObject.type === 'text') {
-				this.isBoxEditText = true;
-				this.textDesign.textColor = activeObject.fill;
-				this.textDesign.bgColor = activeObject.backgroundColor;
-				this.textDesign.fontSize = activeObject.fontSize;
-				this.textDesign.underline = activeObject.underline;
-				this.textDesign.fontWeight = activeObject.fontWeight;
-				this.textDesign.fontStyle = activeObject.fontStyle;
-				this.textDesign.textAlign = activeObject.textAlign;
-			}
-
-			console.log('cavas value:', activeObject);
-		});
-		this.canvas.on('selection:updated', () => {
-			let activeObject = this.canvas.getActiveObject();
-			if (activeObject && activeObject.type === 'text') {
-				this.isBoxEditText = true;
-				this.textDesign.textColor = activeObject.fill;
-				this.textDesign.bgColor = activeObject.backgroundColor;
-				this.textDesign.fontSize = activeObject.fontSize;
-				this.textDesign.underline = activeObject.underline;
-				this.textDesign.fontWeight = activeObject.fontWeight;
-				this.textDesign.fontStyle = activeObject.fontStyle;
-				this.textDesign.textAlign = activeObject.textAlign;
-			} else {
-				this.isBoxEditText = false;
-			}
-
-			console.log('cavas value:', activeObject);
-		});
-
-		this.canvas.on('selection:cleared', () => {
-			this.isBoxEditText = false;
-		});
+		this.handleEvents();
 	},
 
 	methods: {
@@ -197,16 +160,7 @@ export default {
 				backgroundColor: 'green',
 			});
 		},
-		// setBackground(url, canvas) {
-		// 	fabric.Image.fromURL(url, (img) => {
-		// 		// img.set({
-		// 		// 	selectable: false,
-		// 		// });
-		// 		canvas.add(img);
-		// 		// this.canvas.renderAll()
-		// 	});
-		// 	console.log('canvas.getObjects()', canvas.getObjects());
-		// },
+
 
 		onMoveHome() {
 			this.$router.push('/');
@@ -314,50 +268,119 @@ export default {
 			switch (value) {
 				case 'underline':
 					this.textDesign.underline = !this.textDesign.underline;
-						break;
+					break;
 				case 'bold':
 					this.isBoldText = !this.isBoldText;
 					this.textDesign.fontWeight = this.isBoldText ? 'bold' : '';
-						break;
+					break;
 				case 'italic':
 					this.isItalicText = !this.isItalicText;
 					this.textDesign.fontStyle = this.isItalicText ? 'italic' : '';
-						break;
+					break;
 				case 'align-left':
 					this.isAlignLeft = true;
-					this.isAlignCenter = false,
-					this.isAlignRight = false,
-					this.isAlignjustify = false,
-					this.textDesign.textAlign = this.isAlignLeft ? 'left' : ''
-						break;
+					(this.isAlignCenter = false),
+						(this.isAlignRight = false),
+						(this.isAlignjustify = false),
+						(this.textDesign.textAlign = this.isAlignLeft
+							? 'left'
+							: '');
+					break;
 				case 'align-right':
 					this.isAlignLeft = false;
-					this.isAlignCenter = false,
-					this.isAlignRight = true,
-					this.isAlignjustify = false,
-					this.textDesign.textAlign = this.isAlignRight ? 'right' : ''
-						break;
+					(this.isAlignCenter = false),
+						(this.isAlignRight = true),
+						(this.isAlignjustify = false),
+						(this.textDesign.textAlign = this.isAlignRight
+							? 'right'
+							: '');
+					break;
 				case 'align-center':
 					this.isAlignLeft = false;
-					this.isAlignCenter = true,
-					this.isAlignRight = false,
-					this.isAlignjustify = false,
-					this.textDesign.textAlign = this.isAlignCenter ? 'center' : ''
+					(this.isAlignCenter = true),
+						(this.isAlignRight = false),
+						(this.isAlignjustify = false),
+						(this.textDesign.textAlign = this.isAlignCenter
+							? 'center'
+							: '');
 					break;
-				
+
 				case 'align-justify':
 					this.isAlignLeft = false;
-					this.isAlignCenter = false,
-					this.isAlignRight = false,
-					this.isAlignjustify = true,
-					this.textDesign.textAlign = this.isAlignjustify ? 'justify' : ''
-							break;
-					
+					(this.isAlignCenter = false),
+						(this.isAlignRight = false),
+						(this.isAlignjustify = true),
+						(this.textDesign.textAlign = this.isAlignjustify
+							? 'justify'
+							: '');
+					break;
 
 				default:
 					break;
 			}
 			this.changeTextDesign();
+		},
+
+		handleEvents() {
+			this.canvas.on('selection:created', () => {
+				let activeObject = this.canvas.getActiveObject();
+				if (activeObject && activeObject.type === 'text') {
+					this.isBoxEditText = true;
+					this.textDesign.textColor = activeObject.fill;
+					this.textDesign.bgColor = activeObject.backgroundColor;
+					this.textDesign.fontSize = activeObject.fontSize;
+					this.textDesign.underline = activeObject.underline;
+					this.textDesign.fontWeight = activeObject.fontWeight;
+					this.textDesign.fontStyle = activeObject.fontStyle;
+					this.textDesign.textAlign = activeObject.textAlign;
+				}
+
+				console.log('cavas value:', activeObject);
+			});
+			this.canvas.on('selection:updated', () => {
+				let activeObject = this.canvas.getActiveObject();
+				if (activeObject && activeObject.type === 'text') {
+					this.isBoxEditText = true;
+					this.textDesign.textColor = activeObject.fill;
+					this.textDesign.bgColor = activeObject.backgroundColor;
+					this.textDesign.fontSize = activeObject.fontSize;
+					this.textDesign.underline = activeObject.underline;
+					this.textDesign.fontWeight = activeObject.fontWeight;
+					this.textDesign.fontStyle = activeObject.fontStyle;
+					this.textDesign.textAlign = activeObject.textAlign;
+				} else {
+					this.isBoxEditText = false;
+				}
+
+				console.log('cavas value:', activeObject);
+			});
+
+			this.canvas.on('selection:cleared', () => {
+				this.isBoxEditText = false;
+			});
+		},
+
+		onClickImageUpload(image) {
+			console.log('uploading image', image);
+
+			fabric.Image.fromURL(image.image, (img) => {
+				// img.set({
+				// 	selectable: false,
+				// });
+				this.canvas.add(img);
+				// this.canvas.renderAll()
+			});
+		},
+		onClickImageFixabay(image) {
+			console.log('fixabay image', image);
+
+			fabric.Image.fromURL(image.previewURL, (img) => {
+				// img.set({
+				// 	selectable: false,
+				// });
+				this.canvas.add(img);
+				// this.canvas.renderAll()
+			});
 		},
 	},
 
@@ -373,7 +396,7 @@ export default {
 					underline: this.textDesign.underline,
 					fontWeight: this.textDesign.fontWeight,
 					fontStyle: this.textDesign.fontStyle,
-					textAlign: this.textDesign.textAlign
+					textAlign: this.textDesign.textAlign,
 				});
 				this.canvas.requestRenderAll();
 			}

@@ -80,6 +80,8 @@
 				:title="titleOption"
 				:content="contentOption"
 				:imagePixaBay="imagePixaBay"
+				@onClickImageUpload="onClickImageUpload"
+				@onClickImageFixabay="onClickImageFixabay"
 			>
 				<template v-slot:upload>
 					<div class="swap-sidebar w-fit">
@@ -226,6 +228,8 @@
 							</div>
 						</div>
 					</div>
+
+
 				</div>
 				<div class="canvas h-[88vh] flex justify-center items-center">
 					<canvas ref="canvas">
