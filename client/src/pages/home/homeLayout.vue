@@ -41,7 +41,7 @@
 				class="inline-flex items-center gap-x-1 text-sm font-bold leading-6 text-gray-900"
 			>
 				<img
-					:src="require(`@/assets/${userInfo.image?userInfo.image:'man.png'}`)"
+					:src="require(`@/uploadImage/${userInfo.image?userInfo.image:'man.png'}`)"
 					alt="user-image"
 					width=50
 					height=50
@@ -67,7 +67,7 @@
 									class="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white"
 								>
 									<img
-										:src="require(`@/assets/${userInfo.image?userInfo.image:'man.png'}`)"
+										:src="require(`@/uploadImage/${userInfo.image?userInfo.image:'man.png'}`)"
 										alt="avatarUser"
 										width=50
 										height=50

@@ -43,8 +43,7 @@ export default {
 				drawing: 'drawing',
 				eraser: 'eraser',
 			},
-
-
+			mode: true,
 
 			//////////////////////-------TextBOx-------------------------
 			isBoxEditText: false,
@@ -72,7 +71,7 @@ export default {
 		...authMappper.mapState(['email', 'userInfo']),
 	},
 	async mounted() {
-		this.contentOption = this.images;
+		// this.contentOption = this.images;
 		this.canvas = await this.initCanvas(this.$refs.canvas);
 		this.canvas.selection = true;
 		// this.setPanEvents(this.canvas);
@@ -81,7 +80,10 @@ export default {
 	},
 
 	methods: {
-		...globalMappper.mapActions(['uploadImageByS3']),
+		...globalMappper.mapActions([
+			'uploadImageByS3',
+			'uploadImageByDesign',
+		]),
 
 		/// choose option design
 		async onMoveOption(idx, name) {
@@ -96,7 +98,8 @@ export default {
 			this.titleOption = name;
 			if (name === 'Templates') {
 				this.imagePixaBay = [];
-				this.contentOption = this.images;
+				this.contentOption = [];
+				// this.contentOption = this.images;
 			} else if (name === 'Upload') {
 				this.imagePixaBay = [];
 				const imageAsset = await ImageAssetService.getAllImagAsset({
@@ -128,24 +131,27 @@ export default {
 			const fileImageAsset = this.$refs.fileImageAsset;
 
 			try {
-				const upload = await this.uploadImageByS3(fileImageAsset);
-				const imageUrl = upload.data.data.Location;
-				const filename = upload.data.data.key;
+				const upload = await this.uploadImageByDesign(fileImageAsset);
+				console.log('upload laf: ', upload);
+				const imageUrl = upload.data.data;
+				// const filename = upload.data.data.key;
 				await ImageAssetService.createImagAsset({
 					email: this.email,
 					imageUrl: imageUrl,
-					filename: filename,
+					filename: this.userInfo.username,
 				});
 
 				const imageAsset = await ImageAssetService.getAllImagAsset({
 					email: this.email,
 				});
+				setTimeout(() => {
+					this.contentOption = imageAsset.data.data;
 
-				this.contentOption = imageAsset.data.data;
-				this.$toast.success('update image success', {
-					position: 'top-right',
-					duration: 2000,
-				});
+					this.$toast.success('update image success', {
+						position: 'top-right',
+						duration: 2000,
+					});
+				}, 1000);
 			} catch (error) {
 				console.log({ error });
 			}
@@ -155,12 +161,12 @@ export default {
 		initCanvas(id) {
 			return new fabric.Canvas(id, {
 				preserveObjectStacking: true,
+				mode: true,
 				width: 600,
 				height: 600,
 				backgroundColor: 'green',
 			});
 		},
-
 
 		onMoveHome() {
 			this.$router.push('/');
@@ -361,14 +367,20 @@ export default {
 		},
 
 		onClickImageUpload(image) {
-			console.log('uploading image', image);
+			console.log('uploading image',);
+			
+			
 
-			fabric.Image.fromURL(image.image, (img) => {
-				// img.set({
-				// 	selectable: false,
-				// });
+			fabric.Image.fromURL(require(`@/uploadImage/${image.image}`), (img) => {
+				img.set({
+					// selectable: false,
+					scaleX: 0.3,
+					scaleY: 0.3
+					
+					
+				});
 				this.canvas.add(img);
-				// this.canvas.renderAll()
+				this.canvas.renderAll()
 			});
 		},
 		onClickImageFixabay(image) {
@@ -381,6 +393,19 @@ export default {
 				this.canvas.add(img);
 				// this.canvas.renderAll()
 			});
+		},
+
+		changeMode() {
+			this.mode = !this.mode;
+
+			console.log('get object mode', this.canvas.getObjects());
+
+			this.canvas.getObjects().forEach((object) => {
+				console.log('object:', object);
+				object.visible = object.canvas.mode != this.mode ? false : true;
+			});
+			this.canvas.discardActiveObject();
+			this.canvas.renderAll();
 		},
 	},
 

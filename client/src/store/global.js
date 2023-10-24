@@ -31,6 +31,15 @@ export default {
 			const upload = await ImageService.uploadImageProfile(formData);
 			return upload
 		},
+		async uploadImageByDesign({ state }, fileInput) {
+			console.log('image', state.imageProfile);
+			const file = fileInput.files[0];
+			let formData = new FormData();
+			formData.append('file', file);
+
+			const upload = await ImageService.uploadImageDesign(formData);
+			return upload
+		},
 	},
 
 	mutations: {

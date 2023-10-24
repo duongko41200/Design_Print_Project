@@ -8,9 +8,15 @@
 			<div class="detail-tiltle pb-8">{{ title }}</div>
 			<div class="detail-body p-3">
 				<slot v-if="title === 'Upload'" name="upload"></slot>
-				<div v-for="(image, idx) in content" :key="idx" class="image">
-					<img :src="image.image" @click="onClickImage(image)" />
-				</div>
+			
+					<div v-for="(image, idx) in content" :key="idx" class="image">
+						<img
+							:src="require(`@/uploadImage/${image.image?image.image:'man.png'}`)"
+							@click="onClickImage(image)"
+						/>
+					</div>
+			
+
 				<div
 					v-for="(image, idx) in imagePixaBay"
 					:key="idx"
@@ -31,6 +37,9 @@ export default {
 		title: String,
 		content: Array,
 		imagePixaBay: Array,
+	},
+	mounted() {
+		console.log('content;', this.content.length);
 	},
 	methods: {
 		onClickImage(image) {

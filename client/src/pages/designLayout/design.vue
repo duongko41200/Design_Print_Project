@@ -231,6 +231,8 @@
 
 
 				</div>
+
+				<div @click="changeMode">kfjksdjfkjsdfkjklsdjf</div>
 				<div class="canvas h-[88vh] flex justify-center items-center">
 					<canvas ref="canvas">
 						<!-- <img src="../../assets/anh_test.png" ref="image" /> -->
