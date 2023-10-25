@@ -43,7 +43,7 @@ export default {
 				drawing: 'drawing',
 				eraser: 'eraser',
 			},
-			mode: true,
+			mode: "front",
 
 			//////////////////////-------TextBOx-------------------------
 			isBoxEditText: false,
@@ -161,8 +161,8 @@ export default {
 		initCanvas(id) {
 			return new fabric.Canvas(id, {
 				preserveObjectStacking: true,
-				mode: true,
-				width: 600,
+				mode: this.mode,
+				width: 800,
 				height: 600,
 				backgroundColor: 'green',
 			});
@@ -175,6 +175,8 @@ export default {
 		addHeading() {
 			var text = new fabric.Textbox('Chỉnh sửa tôi!', {
 				type: 'text',
+
+				mode: this.mode,
 
 				opacity: 1,
 				shadow: undefined,
@@ -257,6 +259,7 @@ export default {
 				this.currentMode = 'drawing';
 				this.canvas.freeDrawingBrush.color = 'black'; //corlor
 				this.canvas.freeDrawingBrush.width = 15;
+				this.canvas.freeDrawingBrush.mode = this.mode;
 				this.canvas.isDrawingMode = true;
 			} else {
 				console.log('currentMode', this.currentMode);
@@ -375,7 +378,8 @@ export default {
 				img.set({
 					// selectable: false,
 					scaleX: 0.3,
-					scaleY: 0.3
+					scaleY: 0.3,
+					mode: this.mode,
 					
 					
 				});
@@ -387,23 +391,26 @@ export default {
 			console.log('fixabay image', image);
 
 			fabric.Image.fromURL(image.previewURL, (img) => {
-				// img.set({
-				// 	selectable: false,
-				// });
+				img.set({
+					// selectable: false,
+					mode: this.mode,
+				});
 				this.canvas.add(img);
 				// this.canvas.renderAll()
 			});
 		},
 
-		changeMode() {
-			this.mode = !this.mode;
+		changeMode(mode) {
+			
+			this.mode = mode;
 
 			console.log('get object mode', this.canvas.getObjects());
 
 			this.canvas.getObjects().forEach((object) => {
 				console.log('object:', object);
-				object.visible = object.canvas.mode != this.mode ? false : true;
+				object.visible = object.mode != mode ? false : true;
 			});
+			
 			this.canvas.discardActiveObject();
 			this.canvas.renderAll();
 		},

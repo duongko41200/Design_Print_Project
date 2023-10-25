@@ -112,7 +112,10 @@
 
 					<!-- tool text -->
 
-					<div class="flex justify-center items-center" v-show="isBoxEditText">
+					<div
+						class="flex justify-center items-center"
+						v-show="isBoxEditText"
+					>
 						<div
 							class="container max-w-max mx-auto bg-white rounded-lg overflow-hidden"
 						>
@@ -228,15 +231,20 @@
 							</div>
 						</div>
 					</div>
-
-
 				</div>
 
-				<div @click="changeMode">kfjksdjfkjsdfkjklsdjf</div>
-				<div class="canvas h-[88vh] flex justify-center items-center">
-					<canvas ref="canvas">
-						<!-- <img src="../../assets/anh_test.png" ref="image" /> -->
-					</canvas>
+				<div class="  h-[85vh] w-[80%] flex justify-center pt-8"  >
+					<div
+						class="canvas flex justify-center p-1 shadow-xl"
+					>
+						<div class="w-[13vh] h-[30vh] bg-current gap-1 grid">
+							<div @click="changeMode('front')" class="bg-red-500">front</div>
+							<div @click="changeMode('back')" class="bg-red-500">back</div>
+						</div>
+						<canvas ref="canvas" class="shadow-lg">
+							<!-- <img src="../../assets/anh_test.png" ref="image" /> -->
+						</canvas>
+					</div>
 				</div>
 			</div>
 		</div>

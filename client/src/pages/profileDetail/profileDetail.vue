@@ -13,6 +13,7 @@
 				<div class="flex flex-row items-center">
 					<img
 						:src="require(`@/uploadImage/${imageProfile?imageProfile:'man.png'}`)"
+						
 						alt="AvatarUser"
 						width="60"
 						height="60"
