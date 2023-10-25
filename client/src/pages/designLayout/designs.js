@@ -3,11 +3,13 @@ import ImageAssetService from '@/sevices/imageAssets.service';
 import ApiService from '@/sevices/api.service';
 import { fabric } from 'fabric';
 import { createNamespacedHelpers } from 'vuex';
+import logoUser from '@/components/logoUser/logoUser.vue';
 const authMappper = createNamespacedHelpers('auth');
 const globalMappper = createNamespacedHelpers('global');
 export default {
 	components: {
 		baseSidebar,
+		logoUser,
 	},
 	data() {
 		return {
@@ -21,29 +23,13 @@ export default {
 				{ icon: 'fa-solid fa-font', name: 'Texts', active: false },
 				{ icon: 'fa-solid fa-pencil', name: 'Draw', active: false },
 			],
+			isImage: true,
 
 			//DEMO IMAGE LIST
-			images: [
-				{ image: 'https://source.unsplash.com/OyCl7Y4y0Bk' },
-				{ image: 'https://source.unsplash.com/55btQzyDiO8' },
-				{ image: 'https://source.unsplash.com/v1OW17UcR-Q' },
-				{ image: 'https://source.unsplash.com/OyCl7Y4y0Bk' },
-				{ image: 'https://source.unsplash.com/v1OW17UcR-Q' },
-				{ image: 'https://source.unsplash.com/v1OW17UcR-Q' },
-			],
 
 			imagePixaBay: [],
 
-			url: 'https://treobangron.com.vn/wp-content/uploads/2022/09/background-dep-5-2.jpg',
-
-			currentMode: '',
-			mousePressed: false,
-			modes: {
-				pan: 'pan',
-				drawing: 'drawing',
-				eraser: 'eraser',
-			},
-			mode: "front",
+			mode: 'front',
 
 			//////////////////////-------TextBOx-------------------------
 			isBoxEditText: false,
@@ -65,6 +51,16 @@ export default {
 				fontWeight: '',
 				fontStyle: '',
 			},
+
+			/// Draw ////
+
+			isDrawing: false, ///
+			strokeDrawing: [
+				{ stroke: '20', image: 'brushStroke1.svg',active: false },
+				{ stroke: '15', image: 'brushStroke2.svg',active: false },
+				{ stroke: '10', image: 'brushStroke3.svg',active: false },
+				{ stroke: '5', image: 'brushStroke4.svg',active: false },
+			],
 		};
 	},
 	computed: {
@@ -96,19 +92,26 @@ export default {
 				return value;
 			});
 			this.titleOption = name;
+
 			if (name === 'Templates') {
+				this.isImage = true;
 				this.imagePixaBay = [];
 				this.contentOption = [];
+				this.canvas.isDrawingMode = false;
 				// this.contentOption = this.images;
 			} else if (name === 'Upload') {
+				this.isImage = true;
 				this.imagePixaBay = [];
+				this.canvas.isDrawingMode = false;
 				const imageAsset = await ImageAssetService.getAllImagAsset({
 					email: this.email,
 				});
 				console.log('imageAsset', imageAsset.data.data);
 				this.contentOption = imageAsset.data.data;
 			} else if (name === 'Pixabay') {
+				this.isImage = true;
 				this.contentOption = [];
+				this.canvas.isDrawingMode = false;
 				const pixaBay = await ApiService.pixaBay();
 				this.imagePixaBay = pixaBay.data.hits;
 
@@ -116,9 +119,14 @@ export default {
 			} else if (name === 'Texts') {
 				this.contentOption = [];
 				this.imagePixaBay = [];
+				this.isImage = true;
+				this.canvas.isDrawingMode = false;
 				this.addHeading();
 			} else if (name === 'Draw') {
-				this.onToggleDraw(this.canvas);
+				this.contentOption = [];
+				this.imagePixaBay = [];
+				this.isImage = false;
+				// this.onToggleDraw(this.canvas);
 			} else {
 				this.contentOption = [];
 				this.imagePixaBay = [];
@@ -161,10 +169,9 @@ export default {
 		initCanvas(id) {
 			return new fabric.Canvas(id, {
 				preserveObjectStacking: true,
-				mode: this.mode,
 				width: 800,
-				height: 600,
-				backgroundColor: 'green',
+				height: 640,
+				backgroundColor: 'white',
 			});
 		},
 
@@ -213,59 +220,42 @@ export default {
 			});
 		},
 
-		// setPanEvents(canvas) {
-		// 	canvas.on('mouse:move', (event) => {
-		// 		// console.log(event)
-		// 		// console.log('event mouse move: ', this.mousePressed);
-		// 		if (this.mousePressed && this.currentMode === this.modes.pan) {
-		// 			canvas.setCursor('grab');
-		// 			canvas.renderAll();
-		// 			const mEvent = event.e;
-		// 			const delta = new fabric.Point(
-		// 				mEvent.movementX,
-		// 				mEvent.movementY
-		// 			);
-		// 			canvas.relativePan(delta);
-		// 			console.log('canvas.getObjects()', canvas.getObjects());
-		// 		} else if (
-		// 			this.mousePressed &&
-		// 			this.currentMode === this.modes.drawing
-		// 		) {
-		// 			canvas.isDrawingMode = true;
-		// 			console.log('canvas.getObjects()', canvas.getObjects());
-		// 		} else if (
-		// 			this.mousePressed &&
-		// 			this.currentMode == this.modes.eraser
-		// 		) {
-		// 			canvas.isDrawingMode = true;
-		// 		}
-		// 	});
-		// 	// keep track of mouse down/up
-		// 	this.canvas.on('mouse:down', () => {
-		// 		this.mousePressed = true;
-		// 		if (this.currentMode === this.modes.pan) {
-		// 			canvas.setCursor('grab');
-		// 		}
-		// 	});
-		// 	this.canvas.on('mouse:up', () => {
-		// 		this.mousePressed = false;
-		// 		canvas.setCursor('default');
-		// 	});
-		// },
+		onClickStrokeDraw(value) {
+			const deepCode = structuredClone(this.strokeDrawing)
 
-		onToggleDraw() {
-			if (this.currentMode != 'drawing') {
-				console.log('this.currentMode', this.currentMode);
-				this.currentMode = 'drawing';
-				this.canvas.freeDrawingBrush.color = 'black'; //corlor
-				this.canvas.freeDrawingBrush.width = 15;
-				this.canvas.freeDrawingBrush.mode = this.mode;
-				this.canvas.isDrawingMode = true;
-			} else {
-				console.log('currentMode', this.currentMode);
-				this.currentMode = '';
-				this.canvas.isDrawingMode = false;
+			for (let i = 0; i < this.strokeDrawing.length; i++) {
+				if (value.stroke === this.strokeDrawing[i].stroke) { 
+					this.strokeDrawing[i].active = !this.strokeDrawing[i].active 
+				} else {
+					this.strokeDrawing[i].active = false
+				}
+
+				
 			}
+			this.isDrawing = !this.isDrawing;
+
+			const pencilBrush = new fabric.PencilBrush(this.canvas);
+			pencilBrush.color = 'black';
+			pencilBrush.width = parseInt(value.stroke);
+
+			// Kích hoạt chế độ vẽ bằng bút
+			this.canvas.isDrawingMode = !this.canvas.isDrawingMode ;
+			this.canvas.freeDrawingBrush = pencilBrush;
+			this.canvas.on('mouse:up', () => {
+				if (this.isDrawing === true) {
+					// add mode for canvas to handle font and back
+					const object = this.canvas.getObjects();
+					object.map((value) => {
+						if (!value.mode) {
+							value.mode = this.mode;
+						}
+					});
+					this.strokeDrawing = deepCode
+					this.isDrawing = false;
+				}
+
+				this.canvas.isDrawingMode = false;
+			});
 		},
 
 		changeTextDesign() {
@@ -370,22 +360,21 @@ export default {
 		},
 
 		onClickImageUpload(image) {
-			console.log('uploading image',);
-			
-			
+			console.log('uploading image');
 
-			fabric.Image.fromURL(require(`@/uploadImage/${image.image}`), (img) => {
-				img.set({
-					// selectable: false,
-					scaleX: 0.3,
-					scaleY: 0.3,
-					mode: this.mode,
-					
-					
-				});
-				this.canvas.add(img);
-				this.canvas.renderAll()
-			});
+			fabric.Image.fromURL(
+				require(`@/uploadImage/${image.image}`),
+				(img) => {
+					img.set({
+						// selectable: false,
+						scaleX: 0.3,
+						scaleY: 0.3,
+						mode: this.mode,
+					});
+					this.canvas.add(img);
+					this.canvas.renderAll();
+				}
+			);
 		},
 		onClickImageFixabay(image) {
 			console.log('fixabay image', image);
@@ -401,7 +390,6 @@ export default {
 		},
 
 		changeMode(mode) {
-			
 			this.mode = mode;
 
 			console.log('get object mode', this.canvas.getObjects());
@@ -410,7 +398,7 @@ export default {
 				console.log('object:', object);
 				object.visible = object.mode != mode ? false : true;
 			});
-			
+
 			this.canvas.discardActiveObject();
 			this.canvas.renderAll();
 		},

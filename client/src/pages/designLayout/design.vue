@@ -31,18 +31,8 @@
 							/>
 						</label>
 					</div>
-					<div class="flex items-center gap-6">
-						<button
-							class="bg-[#a6c1ee] text-white px-5 py-2 rounded-full hover:bg-[#87acec]"
-						>
-							Sign in
-						</button>
-						<ion-icon
-							onclick="onToggleMenu(this)"
-							name="menu"
-							class="text-3xl cursor-pointer md:hidden"
-						></ion-icon>
-					</div>
+					<!-- /// logo -->
+		<logoUser></logoUser>
 				</nav>
 			</header>
 		</div>
@@ -80,8 +70,11 @@
 				:title="titleOption"
 				:content="contentOption"
 				:imagePixaBay="imagePixaBay"
+				:isImage="isImage"
+				:strokeDrawing =strokeDrawing
 				@onClickImageUpload="onClickImageUpload"
 				@onClickImageFixabay="onClickImageFixabay"
+				@onClickStrokeDraw="onClickStrokeDraw"
 			>
 				<template v-slot:upload>
 					<div class="swap-sidebar w-fit">
@@ -102,11 +95,14 @@
 						</label>
 					</div>
 				</template>
+
+
+				
 			</baseSidebar>
 
 			<!-- //// <canvas></canvas>  -->
 
-			<div class="swap-design bg-slate-100 w-[74%] h-[93vh]">
+			<div class="swap-design relative bg-slate-100 w-[78%] h-[93vh]">
 				<div class="design-nav bg-white w-[100%] h-[5vh]">
 					<!-- <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor> -->
 
@@ -215,7 +211,7 @@
 											<icon icon=" fa-solid fa-align-justify" />
 										</button>
 									</div>
-									<div class="flex mr-3">
+									<!-- <div class="flex mr-3">
 										<button
 											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
 										>
@@ -226,22 +222,41 @@
 										>
 											<icon icon=" fa-solid fa-list-ul" />
 										</button>
-									</div>
+									</div> -->
 								</div>
 							</div>
 						</div>
 					</div>
+
+
+					<!-- tool drawing -->
+
 				</div>
 
-				<div class="  h-[85vh] w-[80%] flex justify-center pt-8"  >
+
+				<!-- canvas content -->
+
+				<div class="fit-h w-[80%] absolute left-[6%] pt-6 pl-0">
 					<div
-						class="canvas flex justify-center p-1 shadow-xl"
+						class="canvas absolute flex justify-center bg-white p-1 shadow-xl border p-6 rounded-2xl"
 					>
-						<div class="w-[13vh] h-[30vh] bg-current gap-1 grid">
-							<div @click="changeMode('front')" class="bg-red-500">front</div>
-							<div @click="changeMode('back')" class="bg-red-500">back</div>
+						<div class="w-[10vh] h-[100%]  rounded p-2">
+							<div
+								@click="changeMode('front')"
+								class="w-[100%] h-[13vh] cursor-pointer rounded border-4  shadow-lg bg-white"
+								:class="mode === 'front'?'border-red-500':'border-gray-200'"
+							>
+								front
+							</div>
+							<div
+								@click="changeMode('back')"
+								class="w-[100%] h-[13vh] cursor-pointer mt-3 rounded border-4  shadow-lg bg-white"
+								:class="mode === 'back'?'border-red-500':'border-gray-200'"
+							>
+								back
+							</div>
 						</div>
-						<canvas ref="canvas" class="shadow-lg">
+						<canvas ref="canvas" class="absolute">
 							<!-- <img src="../../assets/anh_test.png" ref="image" /> -->
 						</canvas>
 					</div>
