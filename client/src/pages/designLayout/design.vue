@@ -32,7 +32,7 @@
 						</label>
 					</div>
 					<!-- /// logo -->
-		<logoUser></logoUser>
+					<logoUser></logoUser>
 				</nav>
 			</header>
 		</div>
@@ -71,7 +71,7 @@
 				:content="contentOption"
 				:imagePixaBay="imagePixaBay"
 				:isImage="isImage"
-				:strokeDrawing =strokeDrawing
+				:strokeDrawing="strokeDrawing"
 				@onClickImageUpload="onClickImageUpload"
 				@onClickImageFixabay="onClickImageFixabay"
 				@onClickStrokeDraw="onClickStrokeDraw"
@@ -95,15 +95,12 @@
 						</label>
 					</div>
 				</template>
-
-
-				
 			</baseSidebar>
 
 			<!-- //// <canvas></canvas>  -->
 
 			<div class="swap-design relative bg-slate-100 w-[78%] h-[93vh]">
-				<div class="design-nav bg-white w-[100%] h-[5vh]">
+				<div class="design-nav bg-white w-[100%] h-[6vh]">
 					<!-- <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor> -->
 
 					<!-- tool text -->
@@ -117,18 +114,17 @@
 						>
 							<div class="toolbar p-1">
 								<div class="btn-toolbar flex flex-wrap items-center">
-									<div class="flex mr-3">
-										<button
-											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
-										>
-											<icon icon="fa-solid fa-undo" />
-										</button>
-										<button
-											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
-										>
-											<icon icon="fa-solid fa-redo" />
-										</button>
-									</div>
+									<select
+										class="mr-3 w-[200px] h-10 bg-white border border-gray-400 rounded outline-none cursor-pointer"
+										v-model="textDesign.fontFamily"
+										@change="changeTextDesign"
+									>
+										<option value="" selected hidden disabled>
+											Font size
+										</option>
+										<option v-for="(fontFamily, idx) in fontFamilyOptions" :key="idx" :style="{ 'font-family': fontFamily }">{{fontFamily}}</option>
+			
+									</select>
 									<div
 										class="mr-3 h-10 color bg-white border border-gray-400 rounded outline-none cursor-pointer flex items-center gap-2 px-2"
 									>
@@ -211,54 +207,69 @@
 											<icon icon=" fa-solid fa-align-justify" />
 										</button>
 									</div>
-									<!-- <div class="flex mr-3">
-										<button
-											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
-										>
-											<icon icon=" fa-solid fa-list-ol" />
-										</button>
-										<button
-											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
-										>
-											<icon icon=" fa-solid fa-list-ul" />
-										</button>
-									</div> -->
+
 								</div>
 							</div>
 						</div>
 					</div>
 
-
 					<!-- tool drawing -->
-
 				</div>
-
 
 				<!-- canvas content -->
 
 				<div class="fit-h w-[80%] absolute left-[6%] pt-6 pl-0">
 					<div
-						class="canvas absolute flex justify-center bg-white p-1 shadow-xl border p-6 rounded-2xl"
+						class="canvas w-[100%] fit-w absolute flex justify-start bg-white p-1 shadow-xl border p-6 rounded-2xl"
 					>
-						<div class="w-[10vh] h-[100%]  rounded p-2">
+						<div class="w-[11vh] h-[100%] rounded p-2">
 							<div
 								@click="changeMode('front')"
-								class="w-[100%] h-[13vh] cursor-pointer rounded border-4  shadow-lg bg-white"
-								:class="mode === 'front'?'border-red-500':'border-gray-200'"
+								class="w-[100%] h-[13vh] cursor-pointer rounded border-2 shadow-lg bg-white"
+								:class="
+									mode === 'front'
+										? 'border-sky-300'
+										: 'border-gray-200'
+								"
 							>
 								front
 							</div>
 							<div
 								@click="changeMode('back')"
-								class="w-[100%] h-[13vh] cursor-pointer mt-3 rounded border-4  shadow-lg bg-white"
-								:class="mode === 'back'?'border-red-500':'border-gray-200'"
+								class="w-[100%] h-[13vh] cursor-pointer mt-3 rounded border-2 shadow-lg bg-white"
+								:class="
+									mode === 'back' ? 'border-sky-300' : 'border-gray-200'
+								"
 							>
 								back
 							</div>
 						</div>
-						<canvas ref="canvas" class="absolute">
-							<!-- <img src="../../assets/anh_test.png" ref="image" /> -->
-						</canvas>
+						<div class="w-[1000px] flex justify-center">
+							<canvas ref="canvas" class="">
+								<!-- <img src="../../assets/anh_test.png" ref="image" /> -->
+							</canvas>
+						</div>
+
+						<div
+							class="w-[60px] h-[100%]  rounded p-2 flex justify-center flex-col"
+						>
+							<div
+								@click="copySelectedObject"
+								class="w-[100%] h-[4vh] cursor-pointer rounded border-2 p-1 shadow-lg bg-white"
+							>
+								<icon icon="fa-solid fa-copy" class="w-[2vh] h-[3vh]" />
+							</div>
+							<div
+								@click="deleteSelectedObject"
+								class="w-[100%] h-[4vh] cursor-pointer mt-3 rounded border-2 p-1 shadow-lg bg-white"
+							>
+								<icon
+									icon="fa-solid fa-trash"
+									class="w-[2vh] h-[3vh]"
+								/>
+							</div>
+							
+						</div>
 					</div>
 				</div>
 			</div>

@@ -34,8 +34,12 @@ import {
 	faRedo,
 	faBold,
 	faUnderline,
-	faItalic
+	faItalic,
+	faCopy,
+	faTrash
 } from '@fortawesome/free-solid-svg-icons';
+
+// import {faCopy} from '@fortawesome/free-regular-svg-icons'
 
 library.add(
 	faUserSecret,
@@ -62,7 +66,9 @@ library.add(
 	faRedo,
 	faBold,
 	faUnderline,
-	faItalic
+	faItalic,
+	faCopy,
+	faTrash
 );
 
 // import css

@@ -79,7 +79,11 @@ const ApiService = {
 	async pixaBay() {
 		return await axios.get(`https://pixabay.com/api/?key=40057597-c53c6ba2db497a29e02cc9d55`);
 		
-	}
+	},
+	// async getFontFamily() {
+	// 	return await axios.get(`https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyCuGzSbiKK9tsav3UXNK6B9NfmE-XicGo4&sort=popularity`);
+		
+	// }
 };
 
 export default ApiService;

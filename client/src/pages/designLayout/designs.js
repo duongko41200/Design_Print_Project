@@ -4,6 +4,12 @@ import ApiService from '@/sevices/api.service';
 import { fabric } from 'fabric';
 import { createNamespacedHelpers } from 'vuex';
 import logoUser from '@/components/logoUser/logoUser.vue';
+import {
+	AvailableFontFamilies,
+
+} from '@/Contant/WebFontConfig';
+import WebFontConfig from "@/Contant/WebFontConfig";
+import WebFont from 'webfontloader';
 const authMappper = createNamespacedHelpers('auth');
 const globalMappper = createNamespacedHelpers('global');
 export default {
@@ -43,7 +49,7 @@ export default {
 			textDesign: {
 				textColor: 'black',
 				bgColor: '',
-				fontFamily: '',
+				fontFamily: "Roboto",
 				fontSize: '40',
 				textDecoration: '',
 				textAlign: '',
@@ -52,14 +58,16 @@ export default {
 				fontStyle: '',
 			},
 
+			fontFamilyOptions: [],
+
 			/// Draw ////
 
 			isDrawing: false, ///
 			strokeDrawing: [
-				{ stroke: '20', image: 'brushStroke1.svg',active: false },
-				{ stroke: '15', image: 'brushStroke2.svg',active: false },
-				{ stroke: '10', image: 'brushStroke3.svg',active: false },
-				{ stroke: '5', image: 'brushStroke4.svg',active: false },
+				{ stroke: '20', image: 'brushStroke1.svg', active: false },
+				{ stroke: '15', image: 'brushStroke2.svg', active: false },
+				{ stroke: '10', image: 'brushStroke3.svg', active: false },
+				{ stroke: '5', image: 'brushStroke4.svg', active: false },
 			],
 		};
 	},
@@ -70,9 +78,11 @@ export default {
 		// this.contentOption = this.images;
 		this.canvas = await this.initCanvas(this.$refs.canvas);
 		this.canvas.selection = true;
-		// this.setPanEvents(this.canvas);
 		// this.setBackground(this.url, this.canvas);
 		this.handleEvents();
+		this.fontFamilyOptions = AvailableFontFamilies;
+		WebFont.load(WebFontConfig);
+
 	},
 
 	methods: {
@@ -80,6 +90,20 @@ export default {
 			'uploadImageByS3',
 			'uploadImageByDesign',
 		]),
+
+		///canvas
+		initCanvas(id) {
+			return new fabric.Canvas(id, {
+				preserveObjectStacking: true,
+				width: 900,
+				height: 600,
+				backgroundColor: 'white',
+			});
+		},
+
+		onMoveHome() {
+			this.$router.push('/');
+		},
 
 		/// choose option design
 		async onMoveOption(idx, name) {
@@ -165,26 +189,12 @@ export default {
 			}
 		},
 
-		///canvas
-		initCanvas(id) {
-			return new fabric.Canvas(id, {
-				preserveObjectStacking: true,
-				width: 800,
-				height: 640,
-				backgroundColor: 'white',
-			});
-		},
-
-		onMoveHome() {
-			this.$router.push('/');
-		},
-
 		addHeading() {
 			var text = new fabric.Textbox('Chỉnh sửa tôi!', {
 				type: 'text',
 
 				mode: this.mode,
-
+				fontFamily: "Roboto",
 				opacity: 1,
 				shadow: undefined,
 				visible: true,
@@ -209,28 +219,17 @@ export default {
 			text.editable = true;
 
 			this.canvas.add(text);
-
-			text.on('editing:exited', () => {
-				console.log('perform updates here!', text._savedProps);
-
-				console.log('cavas value:', this.canvas.toJSON());
-				// text.dirty = true;
-				// text.set({ fill: 'red' });
-				// this.canvas.requestRenderAll();
-			});
 		},
 
 		onClickStrokeDraw(value) {
-			const deepCode = structuredClone(this.strokeDrawing)
+			const deepCode = structuredClone(this.strokeDrawing);
 
 			for (let i = 0; i < this.strokeDrawing.length; i++) {
-				if (value.stroke === this.strokeDrawing[i].stroke) { 
-					this.strokeDrawing[i].active = !this.strokeDrawing[i].active 
+				if (value.stroke === this.strokeDrawing[i].stroke) {
+					this.strokeDrawing[i].active = !this.strokeDrawing[i].active;
 				} else {
-					this.strokeDrawing[i].active = false
+					this.strokeDrawing[i].active = false;
 				}
-
-				
 			}
 			this.isDrawing = !this.isDrawing;
 
@@ -239,7 +238,7 @@ export default {
 			pencilBrush.width = parseInt(value.stroke);
 
 			// Kích hoạt chế độ vẽ bằng bút
-			this.canvas.isDrawingMode = !this.canvas.isDrawingMode ;
+			this.canvas.isDrawingMode = !this.canvas.isDrawingMode;
 			this.canvas.freeDrawingBrush = pencilBrush;
 			this.canvas.on('mouse:up', () => {
 				if (this.isDrawing === true) {
@@ -250,7 +249,7 @@ export default {
 							value.mode = this.mode;
 						}
 					});
-					this.strokeDrawing = deepCode
+					this.strokeDrawing = deepCode;
 					this.isDrawing = false;
 				}
 
@@ -332,6 +331,7 @@ export default {
 					this.textDesign.fontWeight = activeObject.fontWeight;
 					this.textDesign.fontStyle = activeObject.fontStyle;
 					this.textDesign.textAlign = activeObject.textAlign;
+					this.textDesign.fontFamily = activeObject.fontFamily
 				}
 
 				console.log('cavas value:', activeObject);
@@ -347,6 +347,7 @@ export default {
 					this.textDesign.fontWeight = activeObject.fontWeight;
 					this.textDesign.fontStyle = activeObject.fontStyle;
 					this.textDesign.textAlign = activeObject.textAlign;
+					this.textDesign.fontFamily = activeObject.fontFamily
 				} else {
 					this.isBoxEditText = false;
 				}
@@ -357,6 +358,32 @@ export default {
 			this.canvas.on('selection:cleared', () => {
 				this.isBoxEditText = false;
 			});
+		},
+
+		deleteSelectedObject() {
+			const activeObject = this.canvas.getActiveObject();
+			if (activeObject) {
+				this.canvas.remove(activeObject);
+				this.canvas.renderAll();
+			}
+		},
+		copySelectedObject() {
+			let copiedObject = null;
+			let activeObject = this.canvas.getActiveObject();
+			if (activeObject) {
+				// Tạo một bản sao của đối tượng
+
+				copiedObject = fabric.util.object.clone(activeObject);
+
+				copiedObject.set('top', copiedObject.top + 20);
+				copiedObject.set('left', copiedObject.left + 20);
+				if (copiedObject) {
+					// Thêm bản sao vào canvas
+					this.canvas.add(copiedObject);
+					this.canvas.setActiveObject(copiedObject);
+					this.canvas.requestRenderAll();
+				}
+			}
 		},
 
 		onClickImageUpload(image) {
@@ -409,6 +436,7 @@ export default {
 			let activeObject = this.canvas.getActiveObject();
 			console.log('activeObject', activeObject);
 			if (activeObject) {
+				console.log('activeObject ádfsdfdsf', activeObject);
 				activeObject.set({
 					fill: this.textDesign.textColor,
 					backgroundColor: this.textDesign.bgColor,
@@ -417,6 +445,7 @@ export default {
 					fontWeight: this.textDesign.fontWeight,
 					fontStyle: this.textDesign.fontStyle,
 					textAlign: this.textDesign.textAlign,
+					fontFamily: this.textDesign.fontFamily,
 				});
 				this.canvas.requestRenderAll();
 			}
