@@ -11,12 +11,67 @@
 		>
 			Home
 		</router-link>
-		<button
+		<!-- <button
 			class="font-bold p-2 px-4 rounded-full"
 			@click="onCreateDesign"
 		>
 			Create
-		</button>
+		</button> -->
+		<Menu as="div" class="relative inline-block text-left">
+			<div>
+				<MenuButton
+					class="inline-flex  w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+				>
+				Create
+					<ChevronDownIcon
+						class="-mr-1 h-5 w-5 text-gray-400"
+						aria-hidden="true"
+					/>
+				</MenuButton>
+			</div>
+
+			<transition
+				enter-active-class="transition ease-out duration-100"
+				enter-from-class="transform opacity-0 scale-95"
+				enter-to-class="transform opacity-100 scale-100"
+				leave-active-class="transition ease-in duration-75"
+				leave-from-class="transform opacity-100 scale-100"
+				leave-to-class="transform opacity-0 scale-95"
+			>
+				<MenuItems
+					class="absolute left-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+				>
+					<div class="py-1">
+						<MenuItem v-slot="{ active }">
+							<div class="cursor-pointer"
+							@click="onCreateDesign"
+								
+								:class="[
+									active
+										? 'bg-gray-100 text-gray-900'
+										: 'text-gray-700',
+									'block px-4 py-2 text-sm',
+								]"
+								>Design</div
+							>
+						</MenuItem>
+						<MenuItem v-slot="{ active }">
+							<a
+								href="#"
+								:class="[
+									active
+										? 'bg-gray-100 text-gray-900'
+										: 'text-gray-700',
+									'block px-4 py-2 text-sm',
+								]"
+								>Template</a
+							>
+						</MenuItem>
+					</div>
+				</MenuItems>
+			</transition>
+		</Menu>
+
 		<div
 			class="bg-[#e9e9e9] p-3 gap-3 items-center rounded-full w-full hidden md:flex"
 		>
@@ -28,9 +83,7 @@
 			/>
 		</div>
 		<!-- {/* <HiSearch class='text-[25px] text-gray-500 md:hidden' /> */} -->
-		<HiBell
-			class="text-[25px] md:text-[50px] text-gray-500 cursor-pointer"
-		/>
+
 
 		<icon icon="fa-solid fa-bell" size="lg" />
 		<!-- <FlyoutMenu /> -->
@@ -38,6 +91,7 @@
 		<logoUser></logoUser>
 	</div>
 	<router-view></router-view>
+	<baseModal :showModal="showModal" @oncloseModal="oncloseModal"></baseModal>
 </template>
 
 <script>
@@ -45,9 +99,18 @@ import { createNamespacedHelpers } from 'vuex';
 const authMappper = createNamespacedHelpers('auth');
 import UserService from '@/sevices/user.service.js';
 import logoUser from '@/components/logoUser/logoUser.vue';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
+import { ChevronDownIcon } from '@heroicons/vue/20/solid';
+import baseModal from '@/components/BaseModal/baseModal.vue';
 export default {
 	components: {
 		logoUser,
+		Menu,
+		MenuButton,
+		MenuItem,
+		MenuItems,
+		ChevronDownIcon,
+		baseModal
 	},
 	data() {
 		return {
@@ -61,6 +124,8 @@ export default {
 				{ name: 'Change Profile', href: '/123/change-profile' },
 				{ name: 'Logout', href: '#' },
 			],
+
+			showModal:false,
 		};
 	},
 	computed: {
@@ -81,7 +146,12 @@ export default {
 			this.isPopoverOpen = !this.isPopoverOpen;
 		},
 		onCreateDesign() {
-			this.$router.push('/design');
+			this.showModal=true
+
+			// this.$router.push('/design');
+		},
+		oncloseModal() { 
+			this.showModal=false
 		},
 		onMoveUserInfo() {
 			this.$router.push('/userInfo');
