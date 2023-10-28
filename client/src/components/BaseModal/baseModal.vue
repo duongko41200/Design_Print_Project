@@ -29,7 +29,7 @@
 						leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
 					>
 						<DialogPanel
-							class="relative transform overflow-hidden bg-sky-700 text-left transition-all sm:my-8 sm:max-w-xlg"
+							class="relative transform overflow-hidden bg-sky-700 text-left rounded shadow-lg transition-all sm:my-8 sm:max-w-xlg"
 						>
 							<div class="z-10 mt-8 flex">
 								<div
@@ -37,29 +37,31 @@
 								>
 									<div class="p-4">
 										<div
-											v-for="item in solutions"
-											:key="item.name"
-											class="group relative flex gap-x-6 p-4 hover:bg-gray-50"
+											v-for="(product, idx) in products"
+											:key="idx"
+											class="group relative cursor-pointer flex gap-x-6 p-4 hover:bg-gray-50"
+											@click="onDesignProduct(product)"
 										>
 											<div
 												class="mt-1 flex h-11 w-11 flex-none items-center justify-center bg-gray-50 group-hover:bg-white"
 											>
-												<component
-													:is="item.icon"
-													class="h-6 w-6 text-gray-600 group-hover:text-indigo-600"
-													aria-hidden="true"
+												<img
+													:src="
+														require(`@/uploadImage/${
+															product.thumbnail
+																? product.thumbnail
+																: 'man.png'
+														}`)
+													"
 												/>
 											</div>
 											<div>
-												<a
-													:href="item.href"
-													class="font-semibold text-gray-900"
-												>
-													{{ item.name }}
+												<div class="font-semibold text-gray-900">
+													{{ product.name }}
 													<span class="absolute inset-0" />
-												</a>
+												</div>
 												<p class="mt-1 text-gray-600">
-													{{ item.description }}
+													{{ product.description }}
 												</p>
 											</div>
 										</div>
@@ -90,93 +92,64 @@
 import {
 	Dialog,
 	DialogPanel,
-	DialogTitle,
+	// DialogTitle,
 	TransitionChild,
 	TransitionRoot,
-	Popover,
-	PopoverButton,
-	PopoverPanel,
+	// Popover,
+	// PopoverButton,
+	// PopoverPanel,
 } from '@headlessui/vue';
-import {
-	ExclamationTriangleIcon,
-	ArrowPathIcon,
-	ChartPieIcon,
-	CursorArrowRaysIcon,
-	FingerPrintIcon,
-	SquaresPlusIcon,
-} from '@heroicons/vue/24/outline';
-import {
-	ChevronDownIcon,
-	PhoneIcon,
-	PlayCircleIcon,
-} from '@heroicons/vue/20/solid';
+import // ExclamationTriangleIcon,
+// ArrowPathIcon,
+// ChartPieIcon,
+// CursorArrowRaysIcon,
+// FingerPrintIcon,
+// SquaresPlusIcon,
+'@heroicons/vue/24/outline';
 
 export default {
 	components: {
 		Dialog,
 		DialogPanel,
-		DialogTitle,
+		// DialogTitle,
 		TransitionChild,
 		TransitionRoot,
-		Popover,
-		PopoverButton,
-		PopoverPanel,
-		ExclamationTriangleIcon,
-		ArrowPathIcon,
-		ChartPieIcon,
-		CursorArrowRaysIcon,
-		FingerPrintIcon,
-		SquaresPlusIcon,
-		ChevronDownIcon,
-		PhoneIcon,
-		PlayCircleIcon,
+		// Popover,
+		// PopoverButton,
+		// PopoverPanel,
+		// ExclamationTriangleIcon,
+		// ArrowPathIcon,
+		// ChartPieIcon,
+		// CursorArrowRaysIcon,
+		// FingerPrintIcon,
+		// SquaresPlusIcon,
+		// ChevronDownIcon,
+		// PhoneIcon,
+		// PlayCircleIcon,
 	},
 	props: {
 		showModal: {
 			type: Boolean,
 			default: false,
 		},
+		products: {
+			type: Array,
+		},
 	},
 	data() {
-		return {
-			solutions: [
-				{
-					name: 'Analytics',
-					description: 'Get a better understanding of your traffic',
-					href: '#',
-					icon: ChartPieIcon,
-				},
-				{
-					name: 'Engagement',
-					description: 'Speak directly to your customers',
-					href: '#',
-					icon: CursorArrowRaysIcon,
-				},
-				{
-					name: 'Security',
-					description: "Your customers' data will be safe and secure",
-					href: '#',
-					icon: FingerPrintIcon,
-				},
-				{
-					name: 'Integrations',
-					description: 'Connect with third-party tools',
-					href: '#',
-					icon: SquaresPlusIcon,
-				},
-				{
-					name: 'Automations',
-					description: 'Build strategic funnels that will convert',
-					href: '#',
-					icon: ArrowPathIcon,
-				},
-			],
-		};
+		return {};
+	},
+	mounted() {
+		console.log('product ', this.products);
 	},
 	methods: {
 		oncloseModal() {
 			this.$emit('oncloseModal');
 		},
+
+		onDesignProduct(product) {
+			this.$emit('onDesignProduct',product);
+		}
 	},
 };
 </script>

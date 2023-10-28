@@ -4,6 +4,7 @@ var cors = require('cors')
 const userApi = require("./routes/user.api")
 const imageAssetApi = require("./routes/imageassets.api")
 const uploadImageByS3 = require("./routes/image.api")
+const productApi = require("./routes/product.api")
 require('dotenv').config()
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -37,9 +38,12 @@ app.use(function (req, res, next) {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
+// call api
 userApi(app)
 uploadImageByS3(app)
 imageAssetApi(app)
+productApi(app)
 
 
 

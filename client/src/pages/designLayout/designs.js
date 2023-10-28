@@ -4,14 +4,12 @@ import ApiService from '@/sevices/api.service';
 import { fabric } from 'fabric';
 import { createNamespacedHelpers } from 'vuex';
 import logoUser from '@/components/logoUser/logoUser.vue';
-import {
-	AvailableFontFamilies,
-
-} from '@/Contant/WebFontConfig';
-import WebFontConfig from "@/Contant/WebFontConfig";
+import { AvailableFontFamilies } from '@/Contant/WebFontConfig';
+import WebFontConfig from '@/Contant/WebFontConfig';
 import WebFont from 'webfontloader';
 const authMappper = createNamespacedHelpers('auth');
 const globalMappper = createNamespacedHelpers('global');
+const productMappper = createNamespacedHelpers('product');
 export default {
 	components: {
 		baseSidebar,
@@ -49,7 +47,7 @@ export default {
 			textDesign: {
 				textColor: 'black',
 				bgColor: '',
-				fontFamily: "Roboto",
+				fontFamily: 'Roboto',
 				fontSize: '40',
 				textDecoration: '',
 				textAlign: '',
@@ -73,16 +71,18 @@ export default {
 	},
 	computed: {
 		...authMappper.mapState(['email', 'userInfo']),
+		...productMappper.mapState(['product']),
 	},
+
 	async mounted() {
 		// this.contentOption = this.images;
+		console.log('psjfiopjsdf', this.product.imageBack);
 		this.canvas = await this.initCanvas(this.$refs.canvas);
 		this.canvas.selection = true;
-		// this.setBackground(this.url, this.canvas);
+		this.setBackground();
 		this.handleEvents();
 		this.fontFamilyOptions = AvailableFontFamilies;
 		WebFont.load(WebFontConfig);
-
 	},
 
 	methods: {
@@ -99,6 +99,51 @@ export default {
 				height: 600,
 				backgroundColor: 'white',
 			});
+		},
+
+		setBackground() {
+			
+			fabric.Image.fromURL(
+				require(`@/uploadImage/${this.product.imageBack}`),
+				(img) => {
+
+					const imageWidth = img.width;
+					const imageHeight = img.height;
+					const left = (900 - imageWidth) / 2; 
+					const top = (600 - imageHeight) / 2;
+					img.set({
+						selectable: false,
+						scaleX: 1,
+						scaleY: 1,
+						top: top,
+						left: left,
+						mode: 'back',
+					});
+					this.canvas.add(img);
+					this.canvas.renderAll();
+				}
+			);
+			fabric.Image.fromURL(
+				require(`@/uploadImage/${this.product.imageFront}`),
+				(img) => {
+					const imageWidth = img.width;
+					const imageHeight = img.height;
+					const left = (900 - imageWidth) / 2; 
+					const top = (600 - imageHeight) / 2;
+					img.set({
+						selectable: false,
+						scaleX: 1,
+						scaleY: 1,
+						top: top,
+						left: left,
+						mode: 'front',
+					});
+					this.canvas.add(img);
+					this.canvas.renderAll();
+				}
+			);
+
+			// console.log('canvas.getObjects()', canvas.getObjects());
 		},
 
 		onMoveHome() {
@@ -194,7 +239,7 @@ export default {
 				type: 'text',
 
 				mode: this.mode,
-				fontFamily: "Roboto",
+				fontFamily: 'Roboto',
 				opacity: 1,
 				shadow: undefined,
 				visible: true,
@@ -331,7 +376,7 @@ export default {
 					this.textDesign.fontWeight = activeObject.fontWeight;
 					this.textDesign.fontStyle = activeObject.fontStyle;
 					this.textDesign.textAlign = activeObject.textAlign;
-					this.textDesign.fontFamily = activeObject.fontFamily
+					this.textDesign.fontFamily = activeObject.fontFamily;
 				}
 
 				console.log('cavas value:', activeObject);
@@ -347,7 +392,7 @@ export default {
 					this.textDesign.fontWeight = activeObject.fontWeight;
 					this.textDesign.fontStyle = activeObject.fontStyle;
 					this.textDesign.textAlign = activeObject.textAlign;
-					this.textDesign.fontFamily = activeObject.fontFamily
+					this.textDesign.fontFamily = activeObject.fontFamily;
 				} else {
 					this.isBoxEditText = false;
 				}

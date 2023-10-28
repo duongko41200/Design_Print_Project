@@ -20,9 +20,9 @@
 		<Menu as="div" class="relative inline-block text-left">
 			<div>
 				<MenuButton
-					class="inline-flex  w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+					class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
 				>
-				Create
+					Create
 					<ChevronDownIcon
 						class="-mr-1 h-5 w-5 text-gray-400"
 						aria-hidden="true"
@@ -43,17 +43,18 @@
 				>
 					<div class="py-1">
 						<MenuItem v-slot="{ active }">
-							<div class="cursor-pointer"
-							@click="onCreateDesign"
-								
+							<div
+								class="cursor-pointer"
+								@click="onCreateDesign"
 								:class="[
 									active
 										? 'bg-gray-100 text-gray-900'
 										: 'text-gray-700',
 									'block px-4 py-2 text-sm',
 								]"
-								>Design</div
 							>
+								Design
+							</div>
 						</MenuItem>
 						<MenuItem v-slot="{ active }">
 							<a
@@ -84,20 +85,26 @@
 		</div>
 		<!-- {/* <HiSearch class='text-[25px] text-gray-500 md:hidden' /> */} -->
 
-
 		<icon icon="fa-solid fa-bell" size="lg" />
 		<!-- <FlyoutMenu /> -->
 
 		<logoUser></logoUser>
 	</div>
 	<router-view></router-view>
-	<baseModal :showModal="showModal" @oncloseModal="oncloseModal"></baseModal>
+	<baseModal
+		:showModal="showModal"
+		:products="products"
+		@oncloseModal="oncloseModal"
+		@onDesignProduct="onDesignProduct"
+	></baseModal>
 </template>
 
 <script>
 import { createNamespacedHelpers } from 'vuex';
 const authMappper = createNamespacedHelpers('auth');
+const productMappper = createNamespacedHelpers('product');
 import UserService from '@/sevices/user.service.js';
+import ProductService from '@/sevices/product.service.js';
 import logoUser from '@/components/logoUser/logoUser.vue';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
 import { ChevronDownIcon } from '@heroicons/vue/20/solid';
@@ -110,7 +117,7 @@ export default {
 		MenuItem,
 		MenuItems,
 		ChevronDownIcon,
-		baseModal
+		baseModal,
 	},
 	data() {
 		return {
@@ -125,20 +132,26 @@ export default {
 				{ name: 'Logout', href: '#' },
 			],
 
-			showModal:false,
+			showModal: false,
+
+			products: [],
 		};
 	},
 	computed: {
 		...authMappper.mapState(['email', 'userInfo']),
 	},
-	mounted() {
-		// console.log("userInfo:",this.userInfo);
+	async mounted() {
+		const getAllProducts = await ProductService.getAllProduct();
+		this.products = getAllProducts.data.data;
+
+		console.log('getAllProducts', this.products);
 	},
 	methods: {
+		...productMappper.mapMutations(['SET_PRODUCT_MODEL']),
 		togglePopover() {
 			this.isPopoverOpen = !this.isPopoverOpen;
 		},
-		openPopover() {
+		openPopover() {			
 			this.isPopoverOpen = true;
 		},
 		onChangeProfie() {
@@ -146,12 +159,14 @@ export default {
 			this.isPopoverOpen = !this.isPopoverOpen;
 		},
 		onCreateDesign() {
-			this.showModal=true
-
-			// this.$router.push('/design');
+			this.showModal = true;
 		},
-		oncloseModal() { 
-			this.showModal=false
+		onDesignProduct(product) {
+			this.SET_PRODUCT_MODEL(product)
+			this.$router.push('/design');
+		},
+		oncloseModal() {
+			this.showModal = false;
 		},
 		onMoveUserInfo() {
 			this.$router.push('/userInfo');
