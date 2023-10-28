@@ -3,7 +3,7 @@ import ImageAssetService from '@/sevices/imageAssets.service';
 import ApiService from '@/sevices/api.service';
 import { fabric } from 'fabric';
 import { createNamespacedHelpers } from 'vuex';
-import logoUser from '@/components/logoUser/logoUser.vue';
+import navbarDesign from '@/components/NavbarDesign/navbarDesign.vue';
 import { AvailableFontFamilies } from '@/Contant/WebFontConfig';
 import WebFontConfig from '@/Contant/WebFontConfig';
 import WebFont from 'webfontloader';
@@ -13,7 +13,7 @@ const productMappper = createNamespacedHelpers('product');
 export default {
 	components: {
 		baseSidebar,
-		logoUser,
+		navbarDesign,
 	},
 	data() {
 		return {
@@ -76,10 +76,14 @@ export default {
 
 	async mounted() {
 		// this.contentOption = this.images;
-		console.log('psjfiopjsdf', this.product.imageBack);
+
+
 		this.canvas = await this.initCanvas(this.$refs.canvas);
 		this.canvas.selection = true;
-		this.setBackground();
+		if (this.product) {
+			this.setBackground();
+		}
+
 		this.handleEvents();
 		this.fontFamilyOptions = AvailableFontFamilies;
 		WebFont.load(WebFontConfig);
@@ -90,26 +94,44 @@ export default {
 			'uploadImageByS3',
 			'uploadImageByDesign',
 		]),
+		...productMappper.mapMutations(['SET_PRODUCT_MODEL']),
 
 		///canvas
 		initCanvas(id) {
-			return new fabric.Canvas(id, {
+			const initCanvas = new fabric.Canvas(id, {
 				preserveObjectStacking: true,
 				width: 900,
 				height: 600,
 				backgroundColor: 'white',
 			});
+
+
+
+			// khi chọn vào sản phẩm để edit thì chạy cái này
+			if (!this.product) {
+				
+				const oldSavedCanvasLocally =
+				localStorage.getItem('canvas') !== 'undefined'
+					? JSON.parse(localStorage.getItem('canvas'))
+					: localStorage.removeItem('canvas');
+
+				initCanvas?.loadFromJSON(oldSavedCanvasLocally);
+
+			}
+
+
+			return initCanvas;
 		},
 
 		setBackground() {
-			
 			fabric.Image.fromURL(
 				require(`@/uploadImage/${this.product.imageBack}`),
 				(img) => {
+					console.log('bACK');
 
 					const imageWidth = img.width;
 					const imageHeight = img.height;
-					const left = (900 - imageWidth) / 2; 
+					const left = (900 - imageWidth) / 2;
 					const top = (600 - imageHeight) / 2;
 					img.set({
 						selectable: false,
@@ -120,15 +142,16 @@ export default {
 						mode: 'back',
 					});
 					this.canvas.add(img);
-					this.canvas.renderAll();
 				}
 			);
+
 			fabric.Image.fromURL(
 				require(`@/uploadImage/${this.product.imageFront}`),
 				(img) => {
+					console.log('front');
 					const imageWidth = img.width;
 					const imageHeight = img.height;
-					const left = (900 - imageWidth) / 2; 
+					const left = (900 - imageWidth) / 2;
 					const top = (600 - imageHeight) / 2;
 					img.set({
 						selectable: false,
@@ -144,10 +167,6 @@ export default {
 			);
 
 			// console.log('canvas.getObjects()', canvas.getObjects());
-		},
-
-		onMoveHome() {
-			this.$router.push('/');
 		},
 
 		/// choose option design
@@ -285,6 +304,9 @@ export default {
 			// Kích hoạt chế độ vẽ bằng bút
 			this.canvas.isDrawingMode = !this.canvas.isDrawingMode;
 			this.canvas.freeDrawingBrush = pencilBrush;
+
+			//handle logic add mode vao cavans
+
 			this.canvas.on('mouse:up', () => {
 				if (this.isDrawing === true) {
 					// add mode for canvas to handle font and back
@@ -467,21 +489,45 @@ export default {
 			console.log('get object mode', this.canvas.getObjects());
 
 			this.canvas.getObjects().forEach((object) => {
-				console.log('object:', object);
 				object.visible = object.mode != mode ? false : true;
 			});
 
 			this.canvas.discardActiveObject();
 			this.canvas.renderAll();
 		},
+
+		///// handlle logic design
+		async onSaveDesignByProduct() {
+			const object = this.canvas.getObjects();
+			const json = this.canvas?.toJSON();
+			const objectCanvas = JSON.parse(JSON.stringify(json));
+
+			// lưu giá trị objectCavas vào DB
+			
+			console.log("objectCanvas", objectCanvas);
+			console.log("type:",typeof objectCanvas)
+
+			object.map((value, idx) => {
+				objectCanvas.objects[idx].mode = value.mode;
+			});
+
+			localStorage.setItem('canvas', JSON.stringify(objectCanvas));
+			this.$toast.success('saved success', {
+				position: 'top-right',
+				duration: 2000,
+			});
+
+
+			this.SET_PRODUCT_MODEL(null)
+			this.$router.push('/')
+		},
 	},
 
 	watch: {
 		textDesign() {
 			let activeObject = this.canvas.getActiveObject();
-			console.log('activeObject', activeObject);
+
 			if (activeObject) {
-				console.log('activeObject ádfsdfdsf', activeObject);
 				activeObject.set({
 					fill: this.textDesign.textColor,
 					backgroundColor: this.textDesign.bgColor,

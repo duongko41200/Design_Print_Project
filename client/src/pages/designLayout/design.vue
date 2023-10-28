@@ -1,41 +1,7 @@
 <template>
 	<div class="design">
 		<!-- ////HEADER//////////// -->
-		<div class="header">
-			<header class="bg-current p-1">
-				<nav class="flex justify-between items-center w-[92%] mx-auto">
-					<div
-						class="text-white cursor-pointer min-h-[5vh] flex justify-between items-center gap-3"
-						@click="onMoveHome"
-					>
-						<icon icon="fa-solid fa-chevron-left" />
-						<div>Home</div>
-					</div>
-					<div
-						class="nav-links duration-500 md:static absolute bg-current md:min-h-fit min-h-[60vh] left-0 top-[-100%] md:w-auto w-full flex items-center px-5"
-					>
-						<label class="relative block">
-							<span class="sr-only">Search</span>
-							<span
-								class="absolute inset-y-0 left-0 flex items-center pl-2"
-							>
-								<svg class="h-5 w-5 fill-slate-300" viewBox="0 0 20 20">
-									<!-- ... -->
-								</svg>
-							</span>
-							<input
-								class="placeholder:italic placeholder:text-slate-400 block bg-current w-full border border-slate-300 rounded-md py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
-								placeholder="Name design"
-								type="text"
-								name="search"
-							/>
-						</label>
-					</div>
-					<!-- /// logo -->
-					<logoUser></logoUser>
-				</nav>
-			</header>
-		</div>
+		<navbarDesign @onSaveDesignByProduct="onSaveDesignByProduct"></navbarDesign>
 
 		<!-- sidebar -->
 		<div class="swap flex w-[100%] h-[90vh]">
@@ -122,8 +88,13 @@
 										<option value="" selected hidden disabled>
 											Font size
 										</option>
-										<option v-for="(fontFamily, idx) in fontFamilyOptions" :key="idx" :style="{ 'font-family': fontFamily }">{{fontFamily}}</option>
-			
+										<option
+											v-for="(fontFamily, idx) in fontFamilyOptions"
+											:key="idx"
+											:style="{ 'font-family': fontFamily }"
+										>
+											{{ fontFamily }}
+										</option>
 									</select>
 									<div
 										class="mr-3 h-10 color bg-white border border-gray-400 rounded outline-none cursor-pointer flex items-center gap-2 px-2"
@@ -251,7 +222,7 @@
 						</div>
 
 						<div
-							class="w-[60px] h-[100%]  rounded p-2 flex justify-center flex-col"
+							class="w-[60px] h-[100%] rounded p-2 flex justify-center flex-col"
 						>
 							<div
 								@click="copySelectedObject"
@@ -268,7 +239,6 @@
 									class="w-[2vh] h-[3vh]"
 								/>
 							</div>
-							
 						</div>
 					</div>
 				</div>

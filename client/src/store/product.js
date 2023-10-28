@@ -5,7 +5,7 @@ export default {
 
 	state() {
 		return {
-			product:''
+			product:null
 
 		};
 	},
