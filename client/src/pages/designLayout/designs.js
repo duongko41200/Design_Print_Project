@@ -1,6 +1,7 @@
 import baseSidebar from '@/components/BaseSidebar/baseSidebar.vue';
 import ImageAssetService from '@/sevices/imageAssets.service';
 import ApiService from '@/sevices/api.service';
+import ImageService from '@/sevices/image.service';
 import DesignService from '@/sevices/design.service';
 import { fabric } from 'fabric';
 import { createNamespacedHelpers } from 'vuex';
@@ -459,7 +460,6 @@ export default {
 				require(`@/uploadImage/${image.image}`),
 				(img) => {
 					img.set({
-						// selectable: false,
 						scaleX: 0.3,
 						scaleY: 0.3,
 						mode: this.mode,
@@ -469,18 +469,25 @@ export default {
 				}
 			);
 		},
-		onClickImageFixabay(image) {
-			console.log('fixabay image', image);
-			this.loadAndDrawImage(image.previewURL)
+		async onClickImageFixabay(image) {
 
-			fabric.Image.fromURL(this.imageUrlPixabay, (img) => {
-				img.set({
-					// selectable: false,
-					mode: this.mode,
+			try {
+				const imageRemote = await ImageService.getRemoteImage({
+					url: image.previewURL,
 				});
-				this.canvas.add(img);
-				// this.canvas.renderAll()
-			});
+				console.log('imageRemote', imageRemote);
+				fabric.Image.fromURL(imageRemote.data, (img) => {
+					img.set({
+						mode: this.mode,
+					});
+					this.canvas.add(img);
+					// this.canvas.renderAll()
+				});
+			} catch (error) {
+				console.log('error;', error);
+			}
+
+
 		},
 
 		changeMode(mode) {
@@ -553,14 +560,12 @@ export default {
 		},
 		onPreviewDesign(mode) {
 			const img = new Image();
-			// this.changeMode('front')
-			img.crossOrigin = 'Anonymous'
+			img.crossOrigin = 'Anonymous';
 			this.canvas.getObjects().forEach((object) => {
 				object.visible = object.mode == mode ? true : false;
 			});
 
 			img.src = this.canvas.toDataURL({ format: 'png', quality: 1 });
-		
 
 			img.onload = () => {
 				if (mode === 'front') {
@@ -569,29 +574,6 @@ export default {
 					this.imgPreviewBack = img.src;
 				}
 			};
-		},
-
-		loadAndDrawImage(imgUrl) {
-			// Sử dụng máy chủ proxy để tải hình ảnh từ nguồn trực tuyến (URL hình ảnh)
-			const imageURL =imgUrl;
-
-			// Tạo hình ảnh từ URL sử dụng máy chủ proxy
-			const img = new Image();
-			img.crossOrigin = 'Anonymous'; // Cài đặt chế độ CORS
-			img.onload = () => {
-	
-				const ctx = this.canvas.getContext('2d');
-
-				// Vẽ hình ảnh lên canvas
-				ctx.drawImage(img, 0, 0,);
-
-				// Ảnh đã được vẽ, bạn có thể thực hiện các thao tác khác với canvas tại đây
-			};
-			img.src = imageURL;
-			this.imageUrlPixabay = img.src
-			img.crossOrigin = 'Anonymous'
-
-			console.log("imageURL", imageURL);
 		},
 	},
 
