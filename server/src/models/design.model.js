@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Product = require('./product.model');
 // const DesignPermission = require('./design.permission.model');
-const AppError = require('../utils/app.error');
+// const AppError = require('../utils/app.error');
 
 const designSchema = new mongoose.Schema(
 	{
@@ -25,14 +25,19 @@ const designSchema = new mongoose.Schema(
 			ref: 'Product',
 			required: [true, 'A design should belong to a product'],
 		},
-		product_export: Object,
+		// product_export: Object,
 
 		objects: {
 			type: [Object],
 			default: [],
 		},
 
-		thumbnail: String,
+		thumbnailFront: String,
+		thumbnailBack: String,
+		isPublic: {
+			type: String,
+			default: 'public',
+		}
 	},
 	{
 		timestamps: true,

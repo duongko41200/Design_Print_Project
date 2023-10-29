@@ -1,12 +1,14 @@
 import baseSidebar from '@/components/BaseSidebar/baseSidebar.vue';
 import ImageAssetService from '@/sevices/imageAssets.service';
 import ApiService from '@/sevices/api.service';
+import DesignService from '@/sevices/design.service';
 import { fabric } from 'fabric';
 import { createNamespacedHelpers } from 'vuex';
 import navbarDesign from '@/components/NavbarDesign/navbarDesign.vue';
 import { AvailableFontFamilies } from '@/Contant/WebFontConfig';
 import WebFontConfig from '@/Contant/WebFontConfig';
 import WebFont from 'webfontloader';
+import modalSave from '@/components/ModalFormSave/modalSave.vue';
 const authMappper = createNamespacedHelpers('auth');
 const globalMappper = createNamespacedHelpers('global');
 const productMappper = createNamespacedHelpers('product');
@@ -14,6 +16,7 @@ export default {
 	components: {
 		baseSidebar,
 		navbarDesign,
+		modalSave,
 	},
 	data() {
 		return {
@@ -28,6 +31,10 @@ export default {
 				{ icon: 'fa-solid fa-pencil', name: 'Draw', active: false },
 			],
 			isImage: true,
+			showModalSave: false,
+			imgPreviewFront: '',
+			imgPreviewBack: '',
+			imageUrlPixabay: '',
 
 			//DEMO IMAGE LIST
 
@@ -77,7 +84,6 @@ export default {
 	async mounted() {
 		// this.contentOption = this.images;
 
-
 		this.canvas = await this.initCanvas(this.$refs.canvas);
 		this.canvas.selection = true;
 		if (this.product) {
@@ -105,20 +111,15 @@ export default {
 				backgroundColor: 'white',
 			});
 
-
-
 			// khi chọn vào sản phẩm để edit thì chạy cái này
 			if (!this.product) {
-				
 				const oldSavedCanvasLocally =
-				localStorage.getItem('canvas') !== 'undefined'
-					? JSON.parse(localStorage.getItem('canvas'))
-					: localStorage.removeItem('canvas');
+					localStorage.getItem('canvas') !== 'undefined'
+						? JSON.parse(localStorage.getItem('canvas'))
+						: localStorage.removeItem('canvas');
 
 				initCanvas?.loadFromJSON(oldSavedCanvasLocally);
-
 			}
-
 
 			return initCanvas;
 		},
@@ -165,8 +166,6 @@ export default {
 					this.canvas.renderAll();
 				}
 			);
-
-			// console.log('canvas.getObjects()', canvas.getObjects());
 		},
 
 		/// choose option design
@@ -472,8 +471,9 @@ export default {
 		},
 		onClickImageFixabay(image) {
 			console.log('fixabay image', image);
+			this.loadAndDrawImage(image.previewURL)
 
-			fabric.Image.fromURL(image.previewURL, (img) => {
+			fabric.Image.fromURL(this.imageUrlPixabay, (img) => {
 				img.set({
 					// selectable: false,
 					mode: this.mode,
@@ -497,29 +497,101 @@ export default {
 		},
 
 		///// handlle logic design
-		async onSaveDesignByProduct() {
+		openModeSave() {
+			this.onPreviewDesign('front');
+			this.onPreviewDesign('back');
+
+			this.showModalSave = true;
+		},
+		oncloseModalSave() {
+			this.showModalSave = false;
+		},
+
+		async clickSaveDesign(payload) {
+			/**
+			 * @param {name,description,userId,productId,object:"thong so design",thumbnailFront,thumbnailBack, isPublic}
+			 */
+
 			const object = this.canvas.getObjects();
 			const json = this.canvas?.toJSON();
 			const objectCanvas = JSON.parse(JSON.stringify(json));
-
-			// lưu giá trị objectCavas vào DB
-			
-			console.log("objectCanvas", objectCanvas);
-			console.log("type:",typeof objectCanvas)
 
 			object.map((value, idx) => {
 				objectCanvas.objects[idx].mode = value.mode;
 			});
 
 			localStorage.setItem('canvas', JSON.stringify(objectCanvas));
-			this.$toast.success('saved success', {
-				position: 'top-right',
-				duration: 2000,
+
+			const params = {
+				name: payload.name,
+				description: payload.description,
+				user: this.userInfo.id,
+				product: this.product.id,
+				objects: objectCanvas.objects,
+				thumbnailFront: this.imgPreviewFront,
+				thumbnailBack: this.imgPreviewBack,
+				isPublic: payload.status.type,
+			};
+
+			try {
+				await DesignService.createDesignByProduct(params);
+				this.oncloseModalSave();
+
+				console.log('params:', params);
+
+				this.$toast.success('saved success', {
+					position: 'top-right',
+					duration: 2000,
+				});
+
+				// goi api them design
+
+				this.SET_PRODUCT_MODEL(null);
+			} catch (error) {
+				console.log(error);
+			}
+		},
+		onPreviewDesign(mode) {
+			const img = new Image();
+			// this.changeMode('front')
+			img.crossOrigin = 'Anonymous'
+			this.canvas.getObjects().forEach((object) => {
+				object.visible = object.mode == mode ? true : false;
 			});
 
+			img.src = this.canvas.toDataURL({ format: 'png', quality: 1 });
+		
 
-			this.SET_PRODUCT_MODEL(null)
-			this.$router.push('/')
+			img.onload = () => {
+				if (mode === 'front') {
+					this.imgPreviewFront = img.src;
+				} else if (mode === 'back') {
+					this.imgPreviewBack = img.src;
+				}
+			};
+		},
+
+		loadAndDrawImage(imgUrl) {
+			// Sử dụng máy chủ proxy để tải hình ảnh từ nguồn trực tuyến (URL hình ảnh)
+			const imageURL =imgUrl;
+
+			// Tạo hình ảnh từ URL sử dụng máy chủ proxy
+			const img = new Image();
+			img.crossOrigin = 'Anonymous'; // Cài đặt chế độ CORS
+			img.onload = () => {
+	
+				const ctx = this.canvas.getContext('2d');
+
+				// Vẽ hình ảnh lên canvas
+				ctx.drawImage(img, 0, 0,);
+
+				// Ảnh đã được vẽ, bạn có thể thực hiện các thao tác khác với canvas tại đây
+			};
+			img.src = imageURL;
+			this.imageUrlPixabay = img.src
+			img.crossOrigin = 'Anonymous'
+
+			console.log("imageURL", imageURL);
 		},
 	},
 

@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const ProductControl = require('../controller/product.controller');
+const DesignControl = require('../controller/design.controller');
 
 
-const productApi = (app) => {
+const DesignApi = (app) => {
 
-	router.get('/product', ProductControl.getAllProduct);
+	router.post('/create', DesignControl.createDesign);
 
-	return app.use('/api/model', router);
+	return app.use('/api/design', router);
 };
 
-module.exports = productApi;
+module.exports = DesignApi;

@@ -92,40 +92,20 @@
 import {
 	Dialog,
 	DialogPanel,
-	// DialogTitle,
 	TransitionChild,
 	TransitionRoot,
-	// Popover,
-	// PopoverButton,
-	// PopoverPanel,
+
 } from '@headlessui/vue';
-import // ExclamationTriangleIcon,
-// ArrowPathIcon,
-// ChartPieIcon,
-// CursorArrowRaysIcon,
-// FingerPrintIcon,
-// SquaresPlusIcon,
-'@heroicons/vue/24/outline';
+
 
 export default {
 	components: {
 		Dialog,
 		DialogPanel,
-		// DialogTitle,
+
 		TransitionChild,
 		TransitionRoot,
-		// Popover,
-		// PopoverButton,
-		// PopoverPanel,
-		// ExclamationTriangleIcon,
-		// ArrowPathIcon,
-		// ChartPieIcon,
-		// CursorArrowRaysIcon,
-		// FingerPrintIcon,
-		// SquaresPlusIcon,
-		// ChevronDownIcon,
-		// PhoneIcon,
-		// PlayCircleIcon,
+
 	},
 	props: {
 		showModal: {

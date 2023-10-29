@@ -36,6 +36,12 @@
 					>
 						<div class="text-center">Save</div>
 					</div>
+					<div
+						class="bg-green-700 h-[4vh] cursor-pointer text-white p-2 px-4 rounded-lg hidden md:block flex "
+						@click="onPreviewDesign"
+					>
+						<div class="text-center">Preview</div>
+					</div>
 					<!-- /// logo -->
 					<logoUser></logoUser>
 				</div>
@@ -60,7 +66,11 @@ export default {
 			this.$router.push('/');
 		},
 		onSaveDesignByProduct() {
+			console.log(' kdjksdjfdskfjklsdj')
 			this.$emit('onSaveDesignByProduct')
+		},
+		onPreviewDesign() {
+			this.$emit('onPreviewDesign')
 		}
 	},
 };

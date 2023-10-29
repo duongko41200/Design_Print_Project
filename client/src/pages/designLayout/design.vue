@@ -1,10 +1,14 @@
 <template>
 	<div class="design">
 		<!-- ////HEADER//////////// -->
-		<navbarDesign @onSaveDesignByProduct="onSaveDesignByProduct"></navbarDesign>
+		<navbarDesign
+			@onSaveDesignByProduct="openModeSave"
+			@onPreviewDesign="onPreviewDesign"
+		></navbarDesign>
 
-		<!-- sidebar -->
+		<!-- body -->
 		<div class="swap flex w-[100%] h-[90vh]">
+			<!-- sideBar -->
 			<div
 				class="swap-sidebar w-fit min-w-[6%] border-slate-200 border"
 			>
@@ -63,12 +67,10 @@
 				</template>
 			</baseSidebar>
 
-			<!-- //// <canvas></canvas>  -->
+			<!--  <canvas></canvas>  -->
 
 			<div class="swap-design relative bg-slate-100 w-[78%] h-[93vh]">
 				<div class="design-nav bg-white w-[100%] h-[6vh]">
-					<!-- <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor> -->
-
 					<!-- tool text -->
 
 					<div
@@ -178,7 +180,6 @@
 											<icon icon=" fa-solid fa-align-justify" />
 										</button>
 									</div>
-
 								</div>
 							</div>
 						</div>
@@ -245,6 +246,16 @@
 			</div>
 		</div>
 	</div>
+
+	<modalSave
+		:showModalSave="showModalSave"
+		@onclickSaveDesign="clickSaveDesign"
+		@oncloseModalSave="oncloseModalSave"
+	></modalSave>
+
+	<!-- <div v-if="imgCanvasPreview">
+		<img  :src="imgCanvasPreview" alt="Hình ảnh từ canvas" />
+	</div> -->
 </template>
 <script src="./designs"></script>
 <style>
