@@ -6,6 +6,7 @@ import signup from '@/pages/signUps/signup.vue';
 import design from '@/pages/designLayout/design';
 import profileDetail from '@/pages/profileDetail/profileDetail';
 import userInfo from '@/pages/userInfoDesign/userInfo';
+import searchLayout from '@/pages/searchLayout/searchLayout.vue';
 
 // import home from '../pages/home';
 import homeLayout from '@/pages/home/homeLayout.vue';
@@ -26,6 +27,11 @@ const routes = [
 				name: 'userInfo',
 				path: '/userInfo',
 				component: userInfo,
+			},
+			{
+				name: 'searchLayout',
+				path: '/',
+				component: searchLayout,
 			},
 		],
 	},

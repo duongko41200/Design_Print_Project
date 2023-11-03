@@ -1,6 +1,6 @@
 <template>
-	<div class="flex flex-col items-center px-3 my-6">
-		<!-- {/* <div class="flex items-center justify-center w-1/2 h-auto mb-[-60px]">
+	<!-- <div class="flex flex-col items-center px-3 my-6">
+		{/* <div class="flex items-center justify-center w-1/2 h-auto mb-[-60px]">
                 <label class="flex flex-col items-center justify-center w-full h-80 rounded-3xl cursor-pointer bg-gray-100 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                     <div class="flex flex-col items-center justify-center pt-5 pb-6">
                         <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
@@ -10,7 +10,7 @@
                     </div>
                     <input id="dropzone-file" type="file" class="hidden" />
                 </label>
-            </div> */} -->
+            </div> */} 
 		<img
 			src="@/assets/coverImage2.png"
 			alt="userImage"
@@ -41,18 +41,78 @@
 				Đã thích
 			</button>
 		</div>
+	</div> -->
+
+	<div class="container profileContainer">
+		<div class="row profileHeight">
+			<div class="col-md-4 center">
+				<img
+					src="../../assets/logo.png"
+					class="profilePhoto rounded-circle"
+					alt=""
+				/>
+			</div>
+			<div class="col-md-8 pt-2 profile__des">
+				<div class="d-flex justufy-content-center align-items-center">
+					<span class="font6 prUsername">duong</span>
+					<div class="myEditButton f-bold1 crs-pointer">
+						Create Design
+
+					</div>
+				</div>
+				<br />
+				<div class="font3 d-flex gap-4">
+					<div>
+						<span class="f-bold1">100</span>
+						<span> Design</span>
+					</div>
+					<div>
+						<span class="f-bold1">100</span>
+						<span> Likes</span>
+					</div>
+					<div>
+						<span class="f-bold1">20</span>
+						<span> follows</span>
+					</div>
+				</div>
+				<br />
+				<div class="f-bold1" style="text-align: left;">Avant-Garde Tech Products</div>
+				<div style="text-align: left;">
+					Retail company 🔌 Your Source For All Trendy Products 💰
+					Affiliate marketing available. 💵 Earn commission by selling
+					our products.
+				</div>
+			</div>
+		</div>
+		<br /><br />
+		<hr class="p-0 m-0" />
+		<div style="height: 53px; gap: 60px" class="center">
+			<div class="myButtonProfile center f-bold1 font1">Design</div>
+			<div class="myButtonProfile center f-bold1 font1">
+				Assets
+			</div>
+			<div class="myButtonProfile center f-bold1 font1">
+				Likes
+			</div>
+		</div>
+		<div>
+			<div :style="this.$store.state.screenWidth > 730 ? 'gap:28px':'gap:2px'" class="exploreContainer mt-4 container center">
+                    <one-post :boxWidth="rowList" :data="item" v-for="item in 8" :key="item"></one-post>
+                </div> 
+		</div>
 	</div>
 </template>
 <script>
-
-
 import { createNamespacedHelpers } from 'vuex';
+import onePost from '@/pages/userInfoDesign/PostBase/one-post.vue';
 const authMappper = createNamespacedHelpers('auth');
 export default {
+	components: {
+		onePost
+	},
 	data() {
 		return {
 			isPopoverOpen: false,
-		
 		};
 	},
 	computed: {
@@ -61,7 +121,49 @@ export default {
 	mounted() {
 		// console.log("userInfo:",this.userInfo);
 	},
-	methods: {
+	methods: {},
+};
+</script>
+<style>
+/* @media screen and (min-width: 1200px) {
+	.container {
+		width: 935px;
+	}
+} */
+.myButtonProfile {
+	border-top: 1px solid black;
+	height: 100%;
+	padding: 0px 10px;
+}
+.profilePhoto {
+	height: 150px;
+}
+.exploreContainer {
+	padding: 0px;
+	display: flex;
+	flex-wrap: wrap;
+}
+.prUsername {
+	font-weight: 300;
+}
+.myEditButton {
+	font-size: 14px;
+	width: 110px;
+	height: 30px;
+	display: inline-block;
+	margin-left: 30px;
+	margin-top: 0px;
+	border: 1px solid #dbdbdb;
+	border-radius: 4px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
 
-	},
-};</script>
+.profileContainer {
+	margin-top: 30px;
+}
+.profile__des{
+	padding-right: 100px;
+}
+</style>

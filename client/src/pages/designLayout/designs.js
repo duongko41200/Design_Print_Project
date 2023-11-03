@@ -84,6 +84,7 @@ export default {
 
 	async mounted() {
 		// this.contentOption = this.images;
+		window.document.body.style.paddingLeft = '0px'
 
 		this.canvas = await this.initCanvas(this.$refs.canvas);
 		this.canvas.selection = true;
@@ -107,8 +108,8 @@ export default {
 		initCanvas(id) {
 			const initCanvas = new fabric.Canvas(id, {
 				preserveObjectStacking: true,
-				width: 900,
-				height: 600,
+				width: 600,
+				height: 400,
 				backgroundColor: 'white',
 			});
 
@@ -133,12 +134,12 @@ export default {
 
 					const imageWidth = img.width;
 					const imageHeight = img.height;
-					const left = (900 - imageWidth) / 2;
-					const top = (600 - imageHeight) / 2;
+					const left = (1000 - imageWidth) / 2;
+					const top = (750 - imageHeight) / 2;
 					img.set({
 						selectable: false,
-						scaleX: 1,
-						scaleY: 1,
+						scaleX: 0.5,
+						scaleY: 0.5,
 						top: top,
 						left: left,
 						mode: 'back',
@@ -153,12 +154,12 @@ export default {
 					console.log('front');
 					const imageWidth = img.width;
 					const imageHeight = img.height;
-					const left = (900 - imageWidth) / 2;
-					const top = (600 - imageHeight) / 2;
+					const left = (1000 - imageWidth) / 2;
+					const top = (750 - imageHeight) / 2;
 					img.set({
 						selectable: false,
-						scaleX: 1,
-						scaleY: 1,
+						scaleX: 0.5,
+						scaleY: 0.5,
 						top: top,
 						left: left,
 						mode: 'front',

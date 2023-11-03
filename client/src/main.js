@@ -7,6 +7,9 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 
 /* import font awesome icon component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+import globalStyle from '@/assets/globalStyle.css';
 
 /* import specific icons */
 import {
@@ -36,7 +39,10 @@ import {
 	faUnderline,
 	faItalic,
 	faCopy,
-	faTrash
+	faTrash,
+	faMagnifyingGlass,
+	faHeart,
+	faDownload
 } from '@fortawesome/free-solid-svg-icons';
 
 // import {faCopy} from '@fortawesome/free-regular-svg-icons'
@@ -68,7 +74,10 @@ library.add(
 	faUnderline,
 	faItalic,
 	faCopy,
-	faTrash
+	faTrash,
+	faMagnifyingGlass,
+	faHeart,
+	faDownload
 );
 
 // import css
@@ -82,5 +91,6 @@ const app = createApp(App);
 app.use(router);
 app.use(VueToast);
 app.use(store);
+app.use(globalStyle);
 app.component('icon', FontAwesomeIcon);
 app.mount('#app');
