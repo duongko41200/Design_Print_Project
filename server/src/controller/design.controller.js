@@ -24,8 +24,19 @@ const createDesign = async (req, res) => {
 	});
 
 };
+const getAllDesignByUser = async (req, res) => {
+
+	const listDesign = await Design.find({ user: req.query.userId }).populate('user');
+
+	res.status(200).json({
+		status: 'success',
+		data: listDesign,
+	});
+
+};
+
 
 module.exports = {
-	createDesign,
+	createDesign,getAllDesignByUser
 
 };

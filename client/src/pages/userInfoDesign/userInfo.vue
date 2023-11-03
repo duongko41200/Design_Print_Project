@@ -57,7 +57,6 @@
 					<span class="font6 prUsername">duong</span>
 					<div class="myEditButton f-bold1 crs-pointer">
 						Create Design
-
 					</div>
 				</div>
 				<br />
@@ -76,8 +75,10 @@
 					</div>
 				</div>
 				<br />
-				<div class="f-bold1" style="text-align: left;">Avant-Garde Tech Products</div>
-				<div style="text-align: left;">
+				<div class="f-bold1" style="text-align: left">
+					Avant-Garde Tech Products
+				</div>
+				<div style="text-align: left">
 					Retail company 🔌 Your Source For All Trendy Products 💰
 					Affiliate marketing available. 💵 Earn commission by selling
 					our products.
@@ -87,41 +88,95 @@
 		<br /><br />
 		<hr class="p-0 m-0" />
 		<div style="height: 53px; gap: 60px" class="center">
-			<div class="myButtonProfile center f-bold1 font1">Design</div>
-			<div class="myButtonProfile center f-bold1 font1">
+			<div
+				class="myButtonProfile center f-bold1 font1 cursor-pointer" :class="activeOption==='design'?'text-sky-400':''"
+				@click="onChooseOption('design')"
+			>
+				Design
+			</div>
+			<div
+				class="myButtonProfile center f-bold1 font1 cursor-pointer"
+				@click="onChooseOption('assets')" :class="activeOption==='assets'?'text-sky-400':''"
+			>
 				Assets
 			</div>
-			<div class="myButtonProfile center f-bold1 font1">
-				Likes
-			</div>
+			<div class="myButtonProfile center f-bold1 font1 cursor-pointer">Likes</div>
 		</div>
 		<div>
-			<div :style="this.$store.state.screenWidth > 730 ? 'gap:28px':'gap:2px'" class="exploreContainer mt-4 container center">
-                    <one-post :boxWidth="rowList" :data="item" v-for="item in 8" :key="item"></one-post>
-                </div> 
+			<div
+				:style="
+					this.$store.state.screenWidth > 730 ? 'gap:28px' : 'gap:2px'
+				"
+				class="exploreContainer mt-4 container center"
+			>
+				<one-post
+					:boxWidth="rowList"
+					:data="item"
+					v-for="(item, idx) in listData"
+					:key="idx"
+				></one-post>
+			</div>
 		</div>
 	</div>
 </template>
 <script>
 import { createNamespacedHelpers } from 'vuex';
 import onePost from '@/pages/userInfoDesign/PostBase/one-post.vue';
+import ImageAssetService from '@/sevices/imageAssets.service';
 const authMappper = createNamespacedHelpers('auth');
+const designMappper = createNamespacedHelpers('design');
 export default {
 	components: {
-		onePost
+		onePost,
 	},
 	data() {
 		return {
 			isPopoverOpen: false,
+			activeOption:'design',
+
+			listData: [],
 		};
 	},
 	computed: {
 		...authMappper.mapState(['email', 'userInfo']),
+		...designMappper.mapState(['listDesign']),
 	},
-	mounted() {
+	async mounted() {
 		// console.log("userInfo:",this.userInfo);
+
+		console.log('userInfo:', this.userInfo.id);
+		await this.getListDesignByUser({
+			userId: this.userInfo.id,
+		});
+		this.listData = this.listDesign;
 	},
-	methods: {},
+	methods: {
+		...designMappper.mapActions(['getListDesignByUser']),
+		async onChooseOption(value) {
+			switch (value) {
+				case 'design': {
+					this.listData = []
+					this.activeOption = value
+					await this.getListDesignByUser({ userId: this.userInfo.id });
+					this.listData = this.listDesign;
+					break;
+				}
+				case 'assets': {
+					this.listData = []
+					this.activeOption = value
+					let imageAsset = await ImageAssetService.getAllImagAsset({
+						email: this.email,
+					});
+
+					this.listData = imageAsset.data.data;
+					break;
+				}
+
+				default:
+					break;
+			}
+		},
+	},
 };
 </script>
 <style>
@@ -163,7 +218,7 @@ export default {
 .profileContainer {
 	margin-top: 30px;
 }
-.profile__des{
+.profile__des {
 	padding-right: 100px;
 }
 </style>

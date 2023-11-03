@@ -6,6 +6,7 @@ const DesignControl = require('../controller/design.controller');
 const DesignApi = (app) => {
 
 	router.post('/create', DesignControl.createDesign);
+	router.get('/all',DesignControl.getAllDesignByUser);
 
 	return app.use('/api/design', router);
 };
