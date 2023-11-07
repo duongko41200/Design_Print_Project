@@ -51,15 +51,16 @@
 					>
 						<div class="py-1">
 							<MenuItem v-slot="{ active }">
-								<a
-									href="#"
+								<div
+								
 									:class="[
 										active
 											? 'bg-gray-100 text-gray-900'
 											: 'text-gray-700',
 										'block px-4 py-2 text-sm',
 									]"
-									>Edit</a
+									@click="editDesign(data.id)"
+									>Edit</div
 								>
 							</MenuItem>
 							<MenuItem v-slot="{ active }">
@@ -117,7 +118,7 @@ export default {
 		...authMappper.mapState(['email', 'userInfo']),
 	},
 	methods: {
-		...designMappper.mapActions(['deleteDesignByUser']),
+		...designMappper.mapActions(['deleteDesignByUser','findDesign']),
 		test() {
 			console.log('height:' + this.$refs.square.clientWidth + 'px');
 		},
@@ -132,6 +133,15 @@ export default {
 					duration: 2000,
 				});
 		},
+		async editDesign(id) {
+			const payload = {
+				idDesign: id,
+			};
+			await this.findDesign(payload);
+			this.$router.push('/design')
+			
+			
+		}
 	},
 	created() {
 		console.log(this.data);

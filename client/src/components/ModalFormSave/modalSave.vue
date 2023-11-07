@@ -51,7 +51,7 @@
 												<label
 													for="first-name"
 													class="block text-sm font-medium leading-6 text-gray-900"
-													>First name</label
+													>Name Desigm</label
 												>
 												<div class="mt-2">
 													<input
@@ -216,6 +216,8 @@ import {
 	ListboxOptions,
 } from '@headlessui/vue';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid';
+import { createNamespacedHelpers } from 'vuex';
+const designMappper = createNamespacedHelpers('design');
 
 export default {
 	components: {
@@ -261,7 +263,21 @@ export default {
 		};
 	},
 	mounted() {
-		this.selected = this.options[0];
+
+		
+		if (this.infoDesign) {
+			this.nameDesign = this.infoDesign.name
+			this.description = this.infoDesign.description
+			this.selected = this.options.filter(value=>value.type === this.infoDesign.isPublic)[0]
+
+
+		} else {
+			this.selected = this.options[0];
+		}
+
+	},
+	computed: {
+		...designMappper.mapState(['infoDesign'])
 	},
 
 	methods: {

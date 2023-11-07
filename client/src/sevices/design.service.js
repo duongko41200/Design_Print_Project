@@ -15,6 +15,9 @@ const DesignService = {
 	async deleteDesignByUser(params) {
 		return ApiService.delete(baseUrl + 'delete', params);
 	},
+	async findDesignById(params) {
+		return ApiService.get(baseUrl + 'findDesign', params);
+	},
 
 
 

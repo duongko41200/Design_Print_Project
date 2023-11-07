@@ -13,6 +13,7 @@ import modalSave from '@/components/ModalFormSave/modalSave.vue';
 const authMappper = createNamespacedHelpers('auth');
 const globalMappper = createNamespacedHelpers('global');
 const productMappper = createNamespacedHelpers('product');
+const designMappper = createNamespacedHelpers('design');
 export default {
 	components: {
 		baseSidebar,
@@ -80,9 +81,12 @@ export default {
 	computed: {
 		...authMappper.mapState(['email', 'userInfo']),
 		...productMappper.mapState(['product']),
+		...designMappper.mapState(['designEdit','infoDesign'])
 	},
 
 	async mounted() {
+
+		console.log('info design:',this.infoDesign._id)
 		// this.contentOption = this.images;
 		window.document.body.style.paddingLeft = '0px'
 
@@ -114,13 +118,9 @@ export default {
 			});
 
 			// khi chọn vào sản phẩm để edit thì chạy cái này
-			if (!this.product) {
-				const oldSavedCanvasLocally =
-					localStorage.getItem('canvas') !== 'undefined'
-						? JSON.parse(localStorage.getItem('canvas'))
-						: localStorage.removeItem('canvas');
+			if (this.designEdit) {
 
-				initCanvas?.loadFromJSON(oldSavedCanvasLocally);
+				initCanvas?.loadFromJSON(this.designEdit);
 			}
 
 			return initCanvas;
@@ -528,13 +528,21 @@ export default {
 				objectCanvas.objects[idx].mode = value.mode;
 			});
 
-			localStorage.setItem('canvas', JSON.stringify(objectCanvas));
+			
+
+			// localStorage.setItem('canvas', JSON.stringify(objectCanvas));
+			console.log("product:",this.product)
+
+
+			const idDesign = this.infoDesign?._id
+			const idProduct = this.product? this.product.id:this.infoDesign.product
+			console.log("idDesign", idDesign);
 
 			const params = {
 				name: payload.name,
 				description: payload.description,
 				user: this.userInfo.id,
-				product: this.product.id,
+				product: idProduct,
 				objects: objectCanvas.objects,
 				thumbnailFront: this.imgPreviewFront,
 				thumbnailBack: this.imgPreviewBack,
@@ -542,7 +550,7 @@ export default {
 			};
 
 			try {
-				await DesignService.createDesignByProduct(params);
+				await DesignService.createDesignByProduct({ params ,idDesign});
 				this.oncloseModalSave();
 
 				console.log('params:', params);
