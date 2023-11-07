@@ -12,6 +12,9 @@ const DesignService = {
 	async getAllDesignByUser(params) {
 		return ApiService.get(baseUrl + 'all', params);
 	},
+	async deleteDesignByUser(params) {
+		return ApiService.delete(baseUrl + 'delete', params);
+	},
 
 
 

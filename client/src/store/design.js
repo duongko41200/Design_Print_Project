@@ -18,6 +18,18 @@ export default {
 
 
 		},
+		async deleteDesignByUser({ commit }, payload) {
+			const allDesigns = await DesignService.deleteDesignByUser({
+			
+				idDesign: payload.idDesign,
+				userId: payload.userId,
+			})
+
+			console.log("deleted", allDesigns)
+			commit('SET_LIST_DESIGN', allDesigns.data.data)
+
+
+		},
 	},
 
 	mutations: {

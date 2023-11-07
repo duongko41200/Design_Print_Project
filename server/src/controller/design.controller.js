@@ -34,9 +34,22 @@ const getAllDesignByUser = async (req, res) => {
 	});
 
 };
+const deleteDesign = async (req, res) => {
+	const id = req.query.idDesign
+	const user = req.query.userId
+
+	console.log("req.body", req.query);
+	const deleteDesign = await Design.deleteMany({ _id: id })
+	const listDesign = await Design.find({ user: user}).populate('user');
+	console.log("deleteDesign", deleteDesign)
+	res.status(200).json({
+		status: 'success',
+		data: listDesign,
+	});
+}
 
 
 module.exports = {
-	createDesign,getAllDesignByUser
+	createDesign,getAllDesignByUser, deleteDesign
 
 };

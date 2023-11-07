@@ -112,7 +112,7 @@
 				<one-post
 					:boxWidth="rowList"
 					:data="item"
-					v-for="(item, idx) in listData"
+					v-for="(item, idx) in listDesign"
 					:key="idx"
 				></one-post>
 			</div>
@@ -148,7 +148,7 @@ export default {
 		await this.getListDesignByUser({
 			userId: this.userInfo.id,
 		});
-		this.listData = this.listDesign;
+
 	},
 	methods: {
 		...designMappper.mapActions(['getListDesignByUser']),

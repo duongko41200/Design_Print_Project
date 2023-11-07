@@ -42,7 +42,8 @@ import {
 	faTrash,
 	faMagnifyingGlass,
 	faHeart,
-	faDownload
+	faDownload,
+	faEllipsisVertical
 } from '@fortawesome/free-solid-svg-icons';
 
 // import {faCopy} from '@fortawesome/free-regular-svg-icons'
@@ -77,7 +78,8 @@ library.add(
 	faTrash,
 	faMagnifyingGlass,
 	faHeart,
-	faDownload
+	faDownload,
+	faEllipsisVertical
 );
 
 // import css
