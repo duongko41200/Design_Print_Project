@@ -112,7 +112,7 @@ export default {
 		initCanvas(id) {
 			const initCanvas = new fabric.Canvas(id, {
 				preserveObjectStacking: true,
-				width: 600,
+				width: 500,
 				height: 400,
 				backgroundColor: 'white',
 			});
@@ -134,7 +134,7 @@ export default {
 
 					const imageWidth = img.width;
 					const imageHeight = img.height;
-					const left = (1000 - imageWidth) / 2;
+					const left = (800 - imageWidth) / 2;
 					const top = (750 - imageHeight) / 2;
 					img.set({
 						selectable: false,
@@ -154,7 +154,7 @@ export default {
 					console.log('front');
 					const imageWidth = img.width;
 					const imageHeight = img.height;
-					const left = (1000 - imageWidth) / 2;
+					const left = (800 - imageWidth) / 2;
 					const top = (750 - imageHeight) / 2;
 					img.set({
 						selectable: false,

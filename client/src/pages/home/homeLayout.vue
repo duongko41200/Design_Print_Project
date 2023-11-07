@@ -5,7 +5,7 @@
 		</div>
 
 
-		<div class="swap w-full navbar-homePage">
+		<div class="swap w-full navbar-homePage max-h-full overflow-auto">
 			<router-view @onCreateDesign="onCreateDesign"></router-view>
 			<baseModal
 				:showModal="showModal"

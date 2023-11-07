@@ -7,7 +7,7 @@
 		></navbarDesign>
 
 		<!-- body -->
-		<div class="swap flex w-[100%] h-[90vh]">
+		<div class="swap flex w-[100%] h-[88vh]">
 			<!-- sideBar -->
 			<div
 				class="swap-sidebar w-fit min-w-[6%] border-slate-200 border"
@@ -15,7 +15,7 @@
 				<div
 					v-for="(option, idx) in optionDesign"
 					:key="idx"
-					class="swap-sidebar__option p-4 cursor-pointer grid place-items-center"
+					class="swap-sidebar__option md:p-2 2xl:p-4 cursor-pointer grid place-items-center"
 					:class="option.active ? 'border-r-2 border-sky-500' : ''"
 					@click="onMoveOption(idx, option.name)"
 				>
@@ -49,7 +49,7 @@
 				<template v-slot:upload>
 					<div class="swap-sidebar w-fit">
 						<label
-							class="swap-sidebar__option p-4 cursor-pointer grid place-items-center w-fit border-dashed border-2 border-indigo-600"
+							class="swap-sidebar__option 2xl:p-4 md:p-2 cursor-pointer grid place-items-center w-fit border-dashed border-2 border-indigo-600"
 						>
 							<icon icon="fa-solid fa-upload" size="lg"></icon>
 							<!-- <img v-else src="../../assets/pixabay.svg" /> -->
@@ -69,8 +69,8 @@
 
 			<!--  <canvas></canvas>  -->
 
-			<div class="swap-design relative bg-slate-100 w-[78%] h-[93vh]">
-				<div class="design-nav bg-white w-[100%] h-[6vh]">
+			<div class="swap-design relative bg-slate-100 w-[78%] h-[88vh]">
+				<div class="design-nav bg-white w-[100%] h-[6vh] md:h-[50px]">
 					<!-- tool text -->
 
 					<div
@@ -83,7 +83,7 @@
 							<div class="toolbar p-1">
 								<div class="btn-toolbar flex flex-wrap items-center">
 									<select
-										class="mr-3 w-[200px] h-10 bg-white border border-gray-400 rounded outline-none cursor-pointer"
+										class="mr-3 w-[150px] h-10 bg-white border border-gray-400 rounded outline-none cursor-pointer"
 										v-model="textDesign.fontFamily"
 										@change="changeTextDesign"
 									>
@@ -192,12 +192,12 @@
 
 				<div class="fit-h w-[80%] absolute left-[6%] pt-6 pl-0">
 					<div
-						class="canvas w-[100%] fit-w absolute flex justify-start bg-white p-1 shadow-xl border p-6 rounded-2xl"
+						class="canvas w-[100%] fit-w absolute flex justify-between bg-white p-1 shadow-xl border p-6 rounded-2xl"
 					>
-						<div class="w-[11vh] h-[100%] rounded p-2">
+						<div class="md:w-[80px] 2xl:w-[90px] h-[100%] rounded p-2 md:px-0">
 							<div
 								@click="changeMode('front')"
-								class="w-[100%] h-[13vh] cursor-pointer rounded border-2 shadow-lg bg-white"
+								class="w-[100%] md:h-[100px] cursor-pointer rounded border-2 shadow-lg bg-white"
 								:class="
 									mode === 'front'
 										? 'border-sky-300'
@@ -208,7 +208,7 @@
 							</div>
 							<div
 								@click="changeMode('back')"
-								class="w-[100%] h-[13vh] cursor-pointer mt-3 rounded border-2 shadow-lg bg-white"
+								class="w-[100%] md:h-[100px] cursor-pointer mt-3 rounded border-2 shadow-lg bg-white"
 								:class="
 									mode === 'back' ? 'border-sky-300' : 'border-gray-200'
 								"
@@ -216,7 +216,7 @@
 								back
 							</div>
 						</div>
-						<div class="w-[1000px] flex justify-center">
+						<div class="fit-w flex justify-center">
 							<canvas ref="canvas" class="">
 								<!-- <img src="../../assets/anh_test.png" ref="image" /> -->
 							</canvas>
@@ -227,13 +227,13 @@
 						>
 							<div
 								@click="copySelectedObject"
-								class="w-[100%] h-[4vh] cursor-pointer rounded border-2 p-1 shadow-lg bg-white"
+								class="w-[100%]  cursor-pointer rounded border-2 p-1 shadow-lg bg-white"
 							>
 								<icon icon="fa-solid fa-copy" class="w-[2vh] h-[3vh]" />
 							</div>
 							<div
 								@click="deleteSelectedObject"
-								class="w-[100%] h-[4vh] cursor-pointer mt-3 rounded border-2 p-1 shadow-lg bg-white"
+								class="w-[100%] 2xl:h-[4vh] cursor-pointer 2xl:mt-3 md:mt-2 rounded border-2 p-1 shadow-lg bg-white"
 							>
 								<icon
 									icon="fa-solid fa-trash"

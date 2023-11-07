@@ -112,7 +112,7 @@
 				<one-post
 					:boxWidth="rowList"
 					:data="item"
-					v-for="(item, idx) in listDesign"
+					v-for="(item, idx) in listData"
 					:key="idx"
 				></one-post>
 			</div>
@@ -148,6 +148,7 @@ export default {
 		await this.getListDesignByUser({
 			userId: this.userInfo.id,
 		});
+		this.listData = this.listDesign;
 
 	},
 	methods: {
@@ -162,13 +163,16 @@ export default {
 					break;
 				}
 				case 'assets': {
+					console.log('ksjfksdjf')
 					this.listData = []
 					this.activeOption = value
 					let imageAsset = await ImageAssetService.getAllImagAsset({
 						email: this.email,
 					});
-
+					console.log('imageAsset:', imageAsset)
 					this.listData = imageAsset.data.data;
+
+					console.log("this.listData:",this.listData)
 					break;
 				}
 
