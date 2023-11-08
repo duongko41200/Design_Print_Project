@@ -67,14 +67,14 @@ export default {
 				// },
 				{
 					link: '/danhmuc',
-					name: 'Danh Mục',
+					name: 'My Profile',
 					tooltip: 'Danh Mục',
 					icon: 'bx-folder-plus',
 					allowPermissions: ['danhMuc', 'kho', 'baoCao'],
 				},
 				{
 					link: '/danhmuckho',
-					name: 'Kho',
+					name: 'Design',
 					tooltip: 'Kho',
 					icon: 'bx-data',
 					allowPermissions: ['danhMuc', 'kho', 'baoCao'],

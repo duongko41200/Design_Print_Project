@@ -12,10 +12,11 @@
 					? data.thumbnailFront
 					: require(`@/uploadImage/${data.image}`)
 			"
-			class="w-100 h-100 post-img"
+			class="w-100 h-100 post-img z-10"
 			alt=""
+		
 		/>
-		<div class="post-hover w-100 h-100 center gap-3 text-white">
+		<div class="post-hover w-100 h-100 z-10 center gap-3 text-white">
 			<!-- <div class="center">
 				<icon-vue name="like" vuestyle="fill:white;"></icon-vue
 				>{{ data.likeCount }}
@@ -25,13 +26,17 @@
 				>{{ data.commentCount }}
 			</div> -->
 
+			<div
+					class="absolute bg-red w-full h-full inset-0" 	@click="onClickImage"
+				/>
+
 			<Menu
 				as="div"
 				class="absolute bottom-5 right-5 inline-block text-left"
 			>
 				<div>
 					<MenuButton
-						class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 transition-opacity  inset-0 bg-zinc-600 bg-opacity-20"
+						class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 transition-opacity z-20 inset-0 bg-zinc-600 bg-opacity-20"
 						
 					>
 						<icon icon="fa-solid fa-ellipsis-vertical" />
@@ -141,6 +146,9 @@ export default {
 			this.$router.push('/design')
 			
 			
+		},
+		onClickImage() {
+			this.$emit("onClickImage")
 		}
 	},
 	created() {

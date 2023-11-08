@@ -43,7 +43,7 @@
 		</div>
 	</div> -->
 
-	<div class="container profileContainer ">
+	<div class="container profileContainer">
 		<div class="row profileHeight">
 			<div class="col-md-4 center">
 				<img
@@ -89,18 +89,22 @@
 		<hr class="p-0 m-0" />
 		<div style="height: 53px; gap: 60px" class="center">
 			<div
-				class="myButtonProfile center f-bold1 font1 cursor-pointer" :class="activeOption==='design'?'text-sky-400':''"
+				class="myButtonProfile center f-bold1 font1 cursor-pointer"
+				:class="activeOption === 'design' ? 'text-sky-400' : ''"
 				@click="onChooseOption('design')"
 			>
 				Design
 			</div>
 			<div
 				class="myButtonProfile center f-bold1 font1 cursor-pointer"
-				@click="onChooseOption('assets')" :class="activeOption==='assets'?'text-sky-400':''"
+				@click="onChooseOption('assets')"
+				:class="activeOption === 'assets' ? 'text-sky-400' : ''"
 			>
 				Assets
 			</div>
-			<div class="myButtonProfile center f-bold1 font1 cursor-pointer">Likes</div>
+			<div class="myButtonProfile center f-bold1 font1 cursor-pointer">
+				Likes
+			</div>
 		</div>
 		<div>
 			<div
@@ -115,11 +119,16 @@
 					v-for="(item, idx) in listDesign"
 					:key="idx"
 					class="border"
+					@onClickImage="onPreviweDesign(item)"
 				></one-post>
 			</div>
 		</div>
 	</div>
-	<modalPreview></modalPreview>
+	<modalPreview
+		:showModal="isShowPreview"
+		:infoDesign = 'infoDesign'
+		@oncloseModal="oncloseModal"
+	></modalPreview>
 </template>
 <script>
 import { createNamespacedHelpers } from 'vuex';
@@ -131,14 +140,15 @@ const designMappper = createNamespacedHelpers('design');
 export default {
 	components: {
 		onePost,
-		modalPreview
+		modalPreview,
 	},
 	data() {
 		return {
 			isPopoverOpen: false,
-			activeOption:'design',
+			activeOption: 'design',
+			isShowPreview: false,
 
-			listData: [],
+			infoDesign:''
 		};
 	},
 	computed: {
@@ -153,7 +163,6 @@ export default {
 			userId: this.userInfo.id,
 		});
 		this.listData = this.listDesign;
-
 	},
 	methods: {
 		...designMappper.mapActions(['getListDesignByUser']),
@@ -162,27 +171,35 @@ export default {
 			switch (value) {
 				case 'design': {
 					this.SET_LIST_DESIGN([]);
-					this.activeOption = value
+					this.activeOption = value;
 					await this.getListDesignByUser({ userId: this.userInfo.id });
-					
+
 					break;
 				}
 				case 'assets': {
 					this.SET_LIST_DESIGN([]);
-					this.activeOption = value
+					this.activeOption = value;
 					let imageAsset = await ImageAssetService.getAllImagAsset({
 						email: this.email,
 					});
-					console.log('imageAsset:', imageAsset)
+					console.log('imageAsset:', imageAsset);
 					this.SET_LIST_DESIGN(imageAsset.data.data);
 
-					console.log("this.listData:",this.listData)
+					console.log('this.listData:', this.listData);
 					break;
 				}
 
 				default:
 					break;
 			}
+		},
+		onPreviweDesign(infoDesign) {
+			console.log('infoDesign:',  infoDesign);
+			this.infoDesign = infoDesign;
+			this.isShowPreview = true;
+		},
+		oncloseModal() {
+			this.isShowPreview = false;
 		},
 	},
 };
@@ -227,9 +244,8 @@ export default {
 .profileContainer {
 	min-height: 100vh;
 	max-height: 100vh;
-	overflow:auto;
+	overflow: auto;
 	height: 100%;
-	
 }
 .profile__des {
 	padding-right: 100px;

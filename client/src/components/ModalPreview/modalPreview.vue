@@ -35,7 +35,7 @@
 								<div
 									class="flex-auto w-[780px] overflow-hidden bg-white text-sm leading-6"
 								>
-									<div class="p-4 bg-zinc-700 h-[370px]">
+									<div class="p-4 pt-0 bg-zinc-700 h-[370px]">
 										<div
 											class="flex w-full h-full self-stretch flex-col md:flex-row pb-16 md:pb-0 md:pt-0 flex-1"
 										>
@@ -47,9 +47,9 @@
 													class="mt-6 px-4 py-3 bg-zinc-600 rounded-xl shadow bg-opacity-50 font-light flex flex-col space-y-5 text-slate-50"
 												>
 													<p
-														class="bg-red-500 bg-opacity-0 rounded hover:bg-opacity-40 cursor-pointer"
+														class=" bg-opacity-0 rounded"
 													>
-														West world man in black
+														{{ infoDesign.name }}
 													</p>
 													<div class="flex text-xs font-light">
 														<div
@@ -124,7 +124,7 @@
 																d="M224 96l16-32 32-16-32-16-16-32-16 32-32 16 32 16 16 32zM80 160l26.66-53.33L160 80l-53.34-26.67L80 0 53.34 53.33 0 80l53.34 26.67L80 160zm352 128l-26.66 53.33L352 368l53.34 26.67L432 448l26.66-53.33L512 368l-53.34-26.67L432 288zm70.62-193.77L417.77 9.38C411.53 3.12 403.34 0 395.15 0c-8.19 0-16.38 3.12-22.63 9.38L9.38 372.52c-12.5 12.5-12.5 32.76 0 45.25l84.85 84.85c6.25 6.25 14.44 9.37 22.62 9.37 8.19 0 16.38-3.12 22.63-9.37l363.14-363.15c12.5-12.48 12.5-32.75 0-45.24zM359.45 203.46l-50.91-50.91 86.6-86.6 50.91 50.91-86.6 86.6z"
 															></path>
 														</svg>
-														name Auth Design
+														{{ infoDesign.user.username }}
 													</div>
 
 													<div
@@ -138,36 +138,25 @@
 												>
 													<div>
 														<div
-															class="text-xs opacity-50 text-gray-400"
+															class="text-xs opacity-50 text-gray-100"
 														>
-															Model
+															Description
 														</div>
 														<div class="text-sm text-slate-50">
-															Lexica Aperture v3.5
-														</div>
-													</div>
-													<div>
-														<div
-															class="text-xs opacity-50 text-gray-400"
-														>
-															Model
-														</div>
-														<div class="text-sm text-slate-50">
-															Lexica Aperture v3.5
+															{{ infoDesign.description }}
 														</div>
 													</div>
 												</div>
 											</div>
 
 											<div class="w-full md:h-full flex flex-col">
-												<div
-													class="flex mt-[20px] h-full text-slate-50"
-												>
-													<button
-														disabled=""
-														class="h-full w-14 text-5xl flex items-center justify-center opacity-10"
+												<div class="flex mt-[20px] h-full">
+													<div
+													
+														class="h-full w-14 text-5xl flex items-center justify-center  text-slate-50"
+														@click="()=>thumbnail='front'"
 													>
-														<svg
+													<svg
 															stroke="currentColor"
 															fill="none"
 															stroke-width="2"
@@ -177,19 +166,32 @@
 															height="1em"
 															width="1em"
 															xmlns="http://www.w3.org/2000/svg"
+															class="text-slate-50 opacity-80 hover:opacity-100 disabled"
 														>
 															<polyline
 																points="15 18 9 12 15 6"
 															></polyline>
 														</svg>
-													</button>
+													</div>
 
 													<div class="relative w-100">
 														<!-- Preview imge -->
 														<img
+															v-if="thumbnail === 'front'"
 															alt=""
-															class="absolute top-0 left-0 z-10"
-															src="https://image.lexica.art/md2_webp/72d05b06-5dd8-4834-b283-28bda7835416"
+															class="absolute top-0 left-0 z-10 object-cover"
+															:src="infoDesign.thumbnailFront"
+															style="
+																width: 100%;
+																height: 100%;
+																max-width: none;
+															"
+														/>
+														<img
+															v-if="thumbnail === 'back'"
+															alt=""
+															class="absolute top-0 left-0 z-10 object-cover"
+															:src="infoDesign.thumbnailBack"
 															style="
 																width: 100%;
 																height: 100%;
@@ -198,9 +200,10 @@
 														/>
 													</div>
 
-													<button
-														class="h-full w-14 text-5xl flex items-center justify-center opacity-80 hover:opacity-100 cursor-pointer"
-														fdprocessedid="vh6y2"
+													<div
+														
+														class="h-full w-14 text-5xl flex items-center justify-center cursor-pointer"
+														@click="()=>thumbnail='back'"
 													>
 														<svg
 															stroke="currentColor"
@@ -212,12 +215,13 @@
 															height="1em"
 															width="1em"
 															xmlns="http://www.w3.org/2000/svg"
+															class="text-slate-50 opacity-80 hover:opacity-100"
 														>
 															<polyline
 																points="9 18 15 12 9 6"
 															></polyline>
 														</svg>
-													</button>
+													</div>
 												</div>
 											</div>
 										</div>
@@ -227,13 +231,13 @@
 							<div
 								class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 bg-zinc-700"
 							>
-								<button
+								<div
 									type="button"
 									class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
 									@click="oncloseModal"
 								>
 									Cancel
-								</button>
+								</div>
 							</div>
 						</DialogPanel>
 					</TransitionChild>
@@ -264,19 +268,25 @@ export default {
 			type: Boolean,
 			default: true,
 		},
-		products: {
-			type: Array,
+		infoDesign: {
+			type: Object,
 		},
 	},
 	data() {
-		return {};
+		return {
+			thumbnail: 'front',
+		};
 	},
 	mounted() {
-		console.log('product ', this.products);
+		console.log('product ádasd ', this.infoDesign);
 	},
 	methods: {
 		oncloseModal() {
 			this.$emit('oncloseModal');
+			setTimeout(() => {
+				this.thumbnail = 'front';
+			}, 1000);
+		
 		},
 
 		onDesignProduct(product) {
