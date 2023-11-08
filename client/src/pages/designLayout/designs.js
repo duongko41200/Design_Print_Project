@@ -24,6 +24,8 @@ export default {
 		return {
 			titleOption: 'Templates',
 			contentOption: [],
+			width: '',
+			height:'',
 			optionDesign: [
 				{ icon: 'fa-solid fa-list', name: 'Templates', active: true },
 				{ icon: 'fa-solid fa-shapes', name: 'Shapes', active: false },
@@ -81,14 +83,18 @@ export default {
 	computed: {
 		...authMappper.mapState(['email', 'userInfo']),
 		...productMappper.mapState(['product']),
-		...designMappper.mapState(['designEdit','infoDesign'])
+		...designMappper.mapState(['designEdit', 'infoDesign']),
 	},
 
 	async mounted() {
+		const screenWidth = window.innerWidth;
+		const screenHeight = window.innerHeight;
+		this.width = screenWidth
+		this.height = screenHeight;
 
-		console.log('info design:',this.infoDesign._id)
+		// console.log('info design:', this.infoDesign._id);
 		// this.contentOption = this.images;
-		window.document.body.style.paddingLeft = '0px'
+		window.document.body.style.paddingLeft = '0px';
 
 		this.canvas = await this.initCanvas(this.$refs.canvas);
 		this.canvas.selection = true;
@@ -112,14 +118,13 @@ export default {
 		initCanvas(id) {
 			const initCanvas = new fabric.Canvas(id, {
 				preserveObjectStacking: true,
-				width: 500,
-				height: 400,
+				width: (this.width/2),
+				height: (this.height - 200),
 				backgroundColor: 'white',
 			});
 
 			// khi chọn vào sản phẩm để edit thì chạy cái này
 			if (this.designEdit) {
-
 				initCanvas?.loadFromJSON(this.designEdit);
 			}
 
@@ -134,12 +139,12 @@ export default {
 
 					const imageWidth = img.width;
 					const imageHeight = img.height;
-					const left = (800 - imageWidth) / 2;
-					const top = (750 - imageHeight) / 2;
+					const left = (this.width -imageWidth)/5 ;
+					const top = (this.height -imageHeight)/10;
 					img.set({
 						selectable: false,
-						scaleX: 0.5,
-						scaleY: 0.5,
+						scaleX: 0.6,
+						scaleY: 0.6,
 						top: top,
 						left: left,
 						mode: 'back',
@@ -152,14 +157,18 @@ export default {
 				require(`@/uploadImage/${this.product.imageFront}`),
 				(img) => {
 					console.log('front');
+					// const imageWidth = img.width;
+					// const imageHeight = img.height;
+					// const left = (800 - imageWidth) / 2;
+					// const top = (750 - imageHeight) / 2;
 					const imageWidth = img.width;
 					const imageHeight = img.height;
-					const left = (800 - imageWidth) / 2;
-					const top = (750 - imageHeight) / 2;
+					const left = (this.width -imageWidth)/5 ;
+					const top = (this.height -imageHeight)/10;
 					img.set({
 						selectable: false,
-						scaleX: 0.5,
-						scaleY: 0.5,
+						scaleX: 0.6,
+						scaleY: 0.6,
 						top: top,
 						left: left,
 						mode: 'front',
@@ -471,7 +480,6 @@ export default {
 			);
 		},
 		async onClickImageFixabay(image) {
-
 			try {
 				const imageRemote = await ImageService.getRemoteImage({
 					url: image.previewURL,
@@ -487,8 +495,6 @@ export default {
 			} catch (error) {
 				console.log('error;', error);
 			}
-
-
 		},
 
 		changeMode(mode) {
@@ -528,15 +534,14 @@ export default {
 				objectCanvas.objects[idx].mode = value.mode;
 			});
 
-			
-
 			// localStorage.setItem('canvas', JSON.stringify(objectCanvas));
-			console.log("product:",this.product)
+			console.log('product:', this.product);
 
-
-			const idDesign = this.infoDesign?._id
-			const idProduct = this.product? this.product.id:this.infoDesign.product
-			console.log("idDesign", idDesign);
+			const idDesign = this.infoDesign?._id;
+			const idProduct = this.product
+				? this.product.id
+				: this.infoDesign.product;
+			console.log('idDesign', idDesign);
 
 			const params = {
 				name: payload.name,
@@ -550,7 +555,7 @@ export default {
 			};
 
 			try {
-				await DesignService.createDesignByProduct({ params ,idDesign});
+				await DesignService.createDesignByProduct({ params, idDesign });
 				this.oncloseModalSave();
 
 				console.log('params:', params);

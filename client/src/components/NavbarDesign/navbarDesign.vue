@@ -1,7 +1,7 @@
 <template>
 	<div class="header">
 		<header class="bg-current p-1">
-			<nav class="flex justify-between items-center w-[92%] mx-auto">
+			<nav class="flex justify-between items-center w-[92%] mx-auto md:h-[50px]">
 				<div
 					class="text-white cursor-pointer min-h-[5vh] flex justify-between items-center gap-3"
 					@click="onMoveHome"
@@ -13,7 +13,7 @@
 					class="nav-links duration-500 md:static absolute bg-current md:min-h-fit min-h-[60vh] left-0 top-[-100%] md:w-auto w-full flex items-center px-5"
 				>
 					<label class="relative block">
-						<span class="sr-only">Search</span>
+						
 						<span
 							class="absolute inset-y-0 left-0 flex items-center pl-2"
 						>

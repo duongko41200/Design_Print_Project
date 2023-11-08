@@ -6,9 +6,8 @@
 			<img v-if="menuLogo" :src="menuLogo" alt="menu-logo" class="menu-logo icon" />
 			<!-- <img v-else :src="menuIcon" class="bx icon" /> -->
 			<div class="logo_name">
-				<div>Print</div>
-				<div></div>
-				Design
+				<div>Print Design</div>
+		
 			</div>
 			<i
 				class="bx"

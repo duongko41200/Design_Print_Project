@@ -3,7 +3,7 @@
 		ref="square"
 		@click="test"
 		:style="square"
-		class=" crs-pointer post center transition-opacity  inset-0 bg-zinc-600 bg-opacity-20"
+		class=" cursor-pointer post center transition-opacity  inset-0 bg-zinc-600 bg-opacity-20"
 		style="background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0) 100%);"
 	>
 		<img
@@ -159,8 +159,9 @@ export default {
 <style scoped>
 .post {
 	position: relative;
-	flex: 0 0 20%;
+	flex: 0 0 24%;
 	margin: 0px;
+
 }
 .post-hover {
 	background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0) 70%);

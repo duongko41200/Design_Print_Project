@@ -43,7 +43,7 @@
 		</div>
 	</div> -->
 
-	<div class="container profileContainer">
+	<div class="container profileContainer ">
 		<div class="row profileHeight">
 			<div class="col-md-4 center">
 				<img
@@ -107,27 +107,31 @@
 				:style="
 					this.$store.state.screenWidth > 730 ? 'gap:28px' : 'gap:2px'
 				"
-				class="exploreContainer mt-4 container center"
+				class="exploreContainer p-1 container"
 			>
 				<one-post
 					:boxWidth="rowList"
 					:data="item"
-					v-for="(item, idx) in listData"
+					v-for="(item, idx) in listDesign"
 					:key="idx"
+					class="border"
 				></one-post>
 			</div>
 		</div>
 	</div>
+	<modalPreview></modalPreview>
 </template>
 <script>
 import { createNamespacedHelpers } from 'vuex';
 import onePost from '@/pages/userInfoDesign/PostBase/one-post.vue';
 import ImageAssetService from '@/sevices/imageAssets.service';
+import modalPreview from '@/components/ModalPreview/modalPreview.vue';
 const authMappper = createNamespacedHelpers('auth');
 const designMappper = createNamespacedHelpers('design');
 export default {
 	components: {
 		onePost,
+		modalPreview
 	},
 	data() {
 		return {
@@ -153,24 +157,24 @@ export default {
 	},
 	methods: {
 		...designMappper.mapActions(['getListDesignByUser']),
+		...designMappper.mapMutations(['SET_LIST_DESIGN']),
 		async onChooseOption(value) {
 			switch (value) {
 				case 'design': {
-					this.listData = []
+					this.SET_LIST_DESIGN([]);
 					this.activeOption = value
 					await this.getListDesignByUser({ userId: this.userInfo.id });
-					this.listData = this.listDesign;
+					
 					break;
 				}
 				case 'assets': {
-					console.log('ksjfksdjf')
-					this.listData = []
+					this.SET_LIST_DESIGN([]);
 					this.activeOption = value
 					let imageAsset = await ImageAssetService.getAllImagAsset({
 						email: this.email,
 					});
 					console.log('imageAsset:', imageAsset)
-					this.listData = imageAsset.data.data;
+					this.SET_LIST_DESIGN(imageAsset.data.data);
 
 					console.log("this.listData:",this.listData)
 					break;
@@ -201,6 +205,7 @@ export default {
 	padding: 0px;
 	display: flex;
 	flex-wrap: wrap;
+	justify-content: space-between;
 }
 .prUsername {
 	font-weight: 300;
@@ -220,7 +225,11 @@ export default {
 }
 
 .profileContainer {
-	margin-top: 30px;
+	min-height: 100vh;
+	max-height: 100vh;
+	overflow:auto;
+	height: 100%;
+	
 }
 .profile__des {
 	padding-right: 100px;
