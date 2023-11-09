@@ -35,20 +35,20 @@
 								<div
 									class="flex-auto w-[780px] overflow-hidden bg-white text-sm leading-6"
 								>
-									<div class="p-4 pt-0 bg-zinc-700 h-[370px]">
+									<div class="p-4 pt-0 bg-zinc-700 h-[400px]">
 										<div
 											class="flex w-full h-full self-stretch flex-col md:flex-row pb-16 md:pb-0 md:pt-0 flex-1"
 										>
+											<!-- // show detail design -->
 											<div
 												class="w-full flex-shrink-0 overflow-hidden text-base px-2 flex flex-col h-auto"
-												style="height: fit-content; width: 400px"
+												style="height: fit-content; width: 370px"
+												v-if="type === 'detail'"
 											>
 												<div
 													class="mt-6 px-4 py-3 bg-zinc-600 rounded-xl shadow bg-opacity-50 font-light flex flex-col space-y-5 text-slate-50"
 												>
-													<p
-														class=" bg-opacity-0 rounded"
-													>
+													<p class="bg-opacity-0 rounded">
 														{{ infoDesign.name }}
 													</p>
 													<div class="flex text-xs font-light">
@@ -149,14 +149,192 @@
 												</div>
 											</div>
 
+											<!-- // form save design-->
+											<div
+												class="w-full flex-shrink-0 overflow-hidden text-base px-2 flex flex-col h-auto"
+												style="height: fit-content; width: 370px"
+												v-if="type === 'save'"
+											>
+												<TransitionChild
+													as="template"
+													enter="ease-out duration-300"
+													enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+													enter-to="opacity-100 translate-y-0 sm:scale-100"
+													leave="ease-in duration-200"
+													leave-from="opacity-100 translate-y-0 sm:scale-100"
+													leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+												>
+													<DialogPanel
+														class="relative transform h-full overflow-hidden bg-zinc-700 p-2 text-left rounded shadow-sm transition-all"
+													>
+														<form>
+															<div class="space-y-12">
+																<div
+																	class="border-b border-gray-900/10 pb-12"
+																>
+																	<div
+																		class="grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-6"
+																	>
+																		<div class="col-span-full">
+																			<label
+																				for="first-name"
+																				class="block text-sm font-medium leading-6 text-gray-700 text-slate-100"
+																				>Name Desigm</label
+																			>
+																			<div class="mt-2">
+																				<input
+																					type="text"
+																					name="first-name"
+																					id="first-name"
+																					autocomplete="given-name"
+																					class="block w-full rounded-md p-2 bg-zinc-700 border py-1.5 text-slate-100 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+																					v-model="nameDesign"
+																				/>
+																			</div>
+																		</div>
+
+																		<div class="col-span-full">
+																			<label
+																				for="about"
+																				class="block text-sm font-medium leading-6 text-slate-100"
+																				>Description</label
+																			>
+																			<div class="mt-2">
+																				<textarea
+																					id="about"
+																					name="about"
+																					rows="3"
+																					class="block w-full rounded-md p-2 bg-zinc-700 border py-1.5 text-slate-100 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+																					v-model="description"
+																				/>
+																			</div>
+																		</div>
+
+																		<div
+																			class="col-span-full text-slate-100"
+																		>
+																			<p>
+																				Do you want public your design?
+																			</p>
+
+																			<Listbox
+																				as="div"
+																				v-model="selected"
+																			>
+																				<div class="relative mt-2">
+																					<ListboxButton
+																						class="relative bg-zinc-700 text-slate-100 border w-full cursor-default rounded-md py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6"
+																					>
+																						<span
+																							class="flex items-center"
+																						>
+																							<img
+																								:src="selected.avatar"
+																								alt=""
+																								class="h-5 w-5 flex-shrink-0 rounded-full"
+																							/>
+																							<span
+																								class="ml-3 block truncate"
+																								>{{
+																									selected.type
+																								}}</span
+																							>
+																						</span>
+																						<span
+																							class="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2"
+																						>
+																							<ChevronUpDownIcon
+																								class="h-5 w-5 text-gray-400"
+																								aria-hidden="true"
+																							/>
+																						</span>
+																					</ListboxButton>
+
+																					<transition
+																						leave-active-class="transition ease-in duration-100"
+																						leave-from-class="opacity-100"
+																						leave-to-class="opacity-0"
+																					>
+																						<ListboxOptions
+																							class="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+																						>
+																							<ListboxOption
+																								as="template"
+																								v-for="option in options"
+																								:key="option.id"
+																								:value="option"
+																								v-slot="{
+																									active,
+																									selected,
+																								}"
+																							>
+																								<li
+																									:class="[
+																										active
+																											? 'bg-indigo-600 text-white'
+																											: 'text-gray-900',
+																										'relative cursor-default select-none py-2 pl-3 pr-9',
+																									]"
+																								>
+																									<div
+																										class="flex items-center"
+																									>
+																										<img
+																											:src="
+																												option.avatar
+																											"
+																											alt=""
+																											class="h-5 w-5 flex-shrink-0 rounded-full"
+																										/>
+																										<span
+																											:class="[
+																												selected
+																													? 'font-semibold'
+																													: 'font-normal',
+																												'ml-3 block truncate',
+																											]"
+																											>{{
+																												option.type
+																											}}</span
+																										>
+																									</div>
+
+																									<span
+																										v-if="selected"
+																										:class="[
+																											active
+																												? 'text-white'
+																												: 'text-indigo-600',
+																											'absolute inset-y-0 right-0 flex items-center pr-4',
+																										]"
+																									>
+																										<CheckIcon
+																											class="h-5 w-5"
+																											aria-hidden="true"
+																										/>
+																									</span>
+																								</li>
+																							</ListboxOption>
+																						</ListboxOptions>
+																					</transition>
+																				</div>
+																			</Listbox>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</form>
+													</DialogPanel>
+												</TransitionChild>
+											</div>
+
 											<div class="w-full md:h-full flex flex-col">
 												<div class="flex mt-[20px] h-full">
 													<div
-													
-														class="h-full w-14 text-5xl flex items-center justify-center  text-slate-50"
-														@click="()=>thumbnail='front'"
+														class="h-full w-14 text-5xl flex items-center justify-center text-slate-50"
+														@click="() => (thumbnail = 'front')"
 													>
-													<svg
+														<svg
 															stroke="currentColor"
 															fill="none"
 															stroke-width="2"
@@ -180,7 +358,11 @@
 															v-if="thumbnail === 'front'"
 															alt=""
 															class="absolute top-0 left-0 z-10 object-cover"
-															:src="infoDesign.thumbnailFront"
+															:src="
+																infoDesign.thumbnailFront
+																	? infoDesign.thumbnailFront
+																	: previewFront
+															"
 															style="
 																width: 100%;
 																height: 100%;
@@ -191,7 +373,11 @@
 															v-if="thumbnail === 'back'"
 															alt=""
 															class="absolute top-0 left-0 z-10 object-cover"
-															:src="infoDesign.thumbnailBack"
+															:src="
+																infoDesign.thumbnailBack
+																	? infoDesign.thumbnailBack
+																	: previewBack
+															"
 															style="
 																width: 100%;
 																height: 100%;
@@ -201,9 +387,8 @@
 													</div>
 
 													<div
-														
 														class="h-full w-14 text-5xl flex items-center justify-center cursor-pointer"
-														@click="()=>thumbnail='back'"
+														@click="() => (thumbnail = 'back')"
 													>
 														<svg
 															stroke="currentColor"
@@ -229,14 +414,22 @@
 								</div>
 							</div>
 							<div
-								class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 bg-zinc-700"
+								class="bg-gray-50 px-4 py-2 sm:flex sm:flex-row-reverse gap-2 sm:px-6 bg-zinc-700"
 							>
 								<div
 									type="button"
-									class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+									class="inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
 									@click="oncloseModal"
 								>
 									Cancel
+								</div>
+								<div
+									v-if="type === 'save'"
+									type="button"
+									class="inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+									@click="clickSaveDesign"
+								>
+									Save
 								</div>
 							</div>
 						</DialogPanel>
@@ -253,15 +446,27 @@ import {
 	DialogPanel,
 	TransitionChild,
 	TransitionRoot,
+	transition,
+	Listbox,
+	ListboxButton,
+	ListboxOption,
+	ListboxOptions,
 } from '@headlessui/vue';
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid';
 
 export default {
 	components: {
 		Dialog,
 		DialogPanel,
-
+		transition,
 		TransitionChild,
 		TransitionRoot,
+		Listbox,
+		ListboxButton,
+		ListboxOption,
+		ListboxOptions,
+		CheckIcon,
+		ChevronUpDownIcon,
 	},
 	props: {
 		showModal: {
@@ -271,14 +476,45 @@ export default {
 		infoDesign: {
 			type: Object,
 		},
+		type: String,
+		previewFront: String,
+		previewBack: String,
 	},
 	data() {
 		return {
 			thumbnail: 'front',
+
+			nameDesign: '',
+			description: '',
+			selected: '',
+
+			options: [
+				{
+					id: 1,
+					type: 'public',
+					avatar:
+						'https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+				},
+				{
+					id: 2,
+					type: 'private',
+					avatar:
+						'https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+				},
+			],
 		};
 	},
 	mounted() {
 		console.log('product ádasd ', this.infoDesign);
+		if (this.infoDesign) {
+			this.nameDesign = this.infoDesign.name;
+			this.description = this.infoDesign.description;
+			this.selected = this.options.filter(
+				(value) => value.type === this.infoDesign.isPublic
+			)[0];
+		} else {
+			this.selected = this.options[0];
+		}
 	},
 	methods: {
 		oncloseModal() {
@@ -286,7 +522,13 @@ export default {
 			setTimeout(() => {
 				this.thumbnail = 'front';
 			}, 1000);
-		
+		},
+		clickSaveDesign() {
+			this.$emit('onclickSaveDesign', {
+				name: this.nameDesign,
+				description: this.description,
+				status: this.selected,
+			});
 		},
 
 		onDesignProduct(product) {

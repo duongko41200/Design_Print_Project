@@ -127,6 +127,7 @@
 	<modalPreview
 		:showModal="isShowPreview"
 		:infoDesign = 'infoDesign'
+		:type="'detail'"
 		@oncloseModal="oncloseModal"
 	></modalPreview>
 </template>

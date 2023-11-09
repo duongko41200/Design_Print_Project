@@ -4,7 +4,7 @@ export default {
 		//! Menu settings
 		isMenuOpen: {
 			type: Boolean,
-			default: true,
+			default: false,
 		},
 		isUsedVueRouter: {
 			type: Boolean,
@@ -123,7 +123,7 @@ export default {
 		},
 		profileName: {
 			type: String,
-			default: 'Kho Hoàng Gia',
+			default: 'Print Design',
 		},
 		profileRole: {
 			type: String,

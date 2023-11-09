@@ -21,6 +21,7 @@
 import { createNamespacedHelpers } from 'vuex';
 const authMappper = createNamespacedHelpers('auth');
 const productMappper = createNamespacedHelpers('product');
+const designMappper = createNamespacedHelpers('design');
 import ProductService from '@/sevices/product.service.js';
 
 import baseModal from '@/components/BaseModal/baseModal.vue';
@@ -63,6 +64,7 @@ export default {
 	},
 	methods: {
 		...productMappper.mapMutations(['SET_PRODUCT_MODEL']),
+		...designMappper.mapMutations(['SET_EDIT_DESIGN']),
 		togglePopover() {
 			this.isPopoverOpen = !this.isPopoverOpen;
 		},
@@ -79,6 +81,7 @@ export default {
 		onDesignProduct(product) {
 			this.SET_PRODUCT_MODEL(product);
 			this.$router.push('/design');
+			this.SET_EDIT_DESIGN('')
 		},
 		oncloseModal() {
 			this.showModal = false;

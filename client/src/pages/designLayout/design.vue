@@ -4,6 +4,7 @@
 		<navbarDesign
 			@onSaveDesignByProduct="openModeSave"
 			@onPreviewDesign="onPreviewDesign"
+			@onMoveHome = "handleBack"
 		></navbarDesign>
 
 		<!-- body -->
@@ -247,11 +248,15 @@
 		</div>
 	</div>
 
-	<modalSave
-		:showModalSave="showModalSave"
+	<modalPreview
+		:showModal="isShowPreview"
+		:infoDesign = 'infoDesign'
+		:type="'save'"
+		:previewFront="imgPreviewFront"
+		:previewBack="imgPreviewBack"
+		@oncloseModal="oncloseModal"
 		@onclickSaveDesign="clickSaveDesign"
-		@oncloseModalSave="oncloseModalSave"
-	></modalSave>
+	></modalPreview>
 
 	<!-- <div v-if="imgCanvasPreview">
 		<img  :src="imgCanvasPreview" alt="Hình ảnh từ canvas" />

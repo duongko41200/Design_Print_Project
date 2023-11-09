@@ -43,17 +43,29 @@
 											@click="onDesignProduct(product)"
 										>
 											<div
-												class="mt-1 flex h-11 w-11 flex-none items-center justify-center bg-gray-50 group-hover:bg-white"
+												class="mt-1 relative  flex h-11 w-11 flex-none items-center justify-center bg-gray-50 group-hover:bg-white"
 											>
-												<img
+												<img v-if = "imageType === 'front'"
 													:src="
 														require(`@/uploadImage/${
 															product.thumbnail
-																? product.thumbnail
+																? product.imageFront
 																: 'man.png'
 														}`)
 													"
+													class="absolute z-10"
 												/>
+												<img 
+													:src="
+														require(`@/uploadImage/${
+															product.thumbnail
+																? product.imageBack
+																: 'man.png'
+														}`)
+													"
+													class="absolute"
+												/>
+												
 											</div>
 											<div>
 												<div class="font-semibold text-gray-900">
@@ -115,6 +127,10 @@ export default {
 		products: {
 			type: Array,
 		},
+		imageType: {
+			type: String,
+			default: "front"
+		},
 	},
 	data() {
 		return {};
@@ -125,6 +141,7 @@ export default {
 	methods: {
 		oncloseModal() {
 			this.$emit('oncloseModal');
+
 		},
 
 		onDesignProduct(product) {

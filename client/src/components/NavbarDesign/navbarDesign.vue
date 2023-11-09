@@ -63,6 +63,7 @@ export default {
 
 	methods: {
 		onMoveHome() {
+			this.$emit('onMoveHome')
 			this.$router.push('/');
 		},
 		onSaveDesignByProduct() {

@@ -10,6 +10,7 @@ import { AvailableFontFamilies } from '@/Contant/WebFontConfig';
 import WebFontConfig from '@/Contant/WebFontConfig';
 import WebFont from 'webfontloader';
 import modalSave from '@/components/ModalFormSave/modalSave.vue';
+import modalPreview from '@/components/ModalPreview/modalPreview.vue';
 const authMappper = createNamespacedHelpers('auth');
 const globalMappper = createNamespacedHelpers('global');
 const productMappper = createNamespacedHelpers('product');
@@ -19,13 +20,15 @@ export default {
 		baseSidebar,
 		navbarDesign,
 		modalSave,
+		modalPreview,
 	},
 	data() {
 		return {
 			titleOption: 'Templates',
 			contentOption: [],
+			isShowPreview: false,
 			width: '',
-			height:'',
+			height: '',
 			optionDesign: [
 				{ icon: 'fa-solid fa-list', name: 'Templates', active: true },
 				{ icon: 'fa-solid fa-shapes', name: 'Shapes', active: false },
@@ -85,11 +88,15 @@ export default {
 		...productMappper.mapState(['product']),
 		...designMappper.mapState(['designEdit', 'infoDesign']),
 	},
+	beforeDestroy() {
+		// Gỡ bỏ sự kiện lắng nghe khi component bị hủy
+		window.removeEventListener('popstate', this.handleBack);
+	},
 
 	async mounted() {
 		const screenWidth = window.innerWidth;
 		const screenHeight = window.innerHeight;
-		this.width = screenWidth
+		this.width = screenWidth;
 		this.height = screenHeight;
 
 		// console.log('info design:', this.infoDesign._id);
@@ -98,8 +105,10 @@ export default {
 
 		this.canvas = await this.initCanvas(this.$refs.canvas);
 		this.canvas.selection = true;
+		window.addEventListener('popstate', this.handleBack);
 		if (this.product) {
-			this.setBackground();
+			this.setBackgroundBack();
+			this.setBackgroundFront();
 		}
 
 		this.handleEvents();
@@ -113,46 +122,27 @@ export default {
 			'uploadImageByDesign',
 		]),
 		...productMappper.mapMutations(['SET_PRODUCT_MODEL']),
+		...designMappper.mapMutations(['SET_INFO_DESIGN']),
 
 		///canvas
 		initCanvas(id) {
 			const initCanvas = new fabric.Canvas(id, {
 				preserveObjectStacking: true,
-				width: (this.width/2),
-				height: (this.height - 200),
+				width: this.width / 2,
+				height: this.height - 200,
 				backgroundColor: 'white',
 			});
 
 			// khi chọn vào sản phẩm để edit thì chạy cái này
 			if (this.designEdit) {
 				initCanvas?.loadFromJSON(this.designEdit);
+
 			}
 
 			return initCanvas;
 		},
 
-		setBackground() {
-			fabric.Image.fromURL(
-				require(`@/uploadImage/${this.product.imageBack}`),
-				(img) => {
-					console.log('bACK');
-
-					const imageWidth = img.width;
-					const imageHeight = img.height;
-					const left = (this.width -imageWidth)/5 ;
-					const top = (this.height -imageHeight)/10;
-					img.set({
-						selectable: false,
-						scaleX: 0.6,
-						scaleY: 0.6,
-						top: top,
-						left: left,
-						mode: 'back',
-					});
-					this.canvas.add(img);
-				}
-			);
-
+		setBackgroundFront() {
 			fabric.Image.fromURL(
 				require(`@/uploadImage/${this.product.imageFront}`),
 				(img) => {
@@ -163,8 +153,8 @@ export default {
 					// const top = (750 - imageHeight) / 2;
 					const imageWidth = img.width;
 					const imageHeight = img.height;
-					const left = (this.width -imageWidth)/5 ;
-					const top = (this.height -imageHeight)/10;
+					const left = (this.width - imageWidth) / 5;
+					const top = (this.height - imageHeight) / 10;
 					img.set({
 						selectable: false,
 						scaleX: 0.6,
@@ -174,9 +164,32 @@ export default {
 						mode: 'front',
 					});
 					this.canvas.add(img);
+				}
+			);
+		},
+		setBackgroundBack() {
+			fabric.Image.fromURL(
+				require(`@/uploadImage/${this.product.imageBack}`),
+				(img) => {
+					console.log('bACK');
+
+					const imageWidth = img.width;
+					const imageHeight = img.height;
+					const left = (this.width - imageWidth) / 5;
+					const top = (this.height - imageHeight) / 10;
+					img.set({
+						selectable: false,
+						scaleX: 0.6,
+						scaleY: 0.6,
+						top: top,
+						left: left,
+						mode: 'back',
+					});
+					this.canvas.add(img);
 					this.canvas.renderAll();
 				}
 			);
+			``;
 		},
 
 		/// choose option design
@@ -411,7 +424,7 @@ export default {
 					this.textDesign.fontFamily = activeObject.fontFamily;
 				}
 
-				console.log('cavas value:', activeObject);
+				console.log('click value:', activeObject);
 			});
 			this.canvas.on('selection:updated', () => {
 				let activeObject = this.canvas.getActiveObject();
@@ -511,14 +524,26 @@ export default {
 		},
 
 		///// handlle logic design
+
+		handleBack() {
+			// Thực hiện tác vụ khi nút "Back" được nhấn
+			console.log("Back")
+			this.SET_PRODUCT_MODEL('')
+			this.SET_INFO_DESIGN('')
+			
+
+			// Xóa tất cả các thành phần trên canvas
+			this.canvas.clear();
+		},
 		openModeSave() {
 			this.onPreviewDesign('front');
 			this.onPreviewDesign('back');
 
-			this.showModalSave = true;
+			this.isShowPreview = true;
 		},
-		oncloseModalSave() {
-			this.showModalSave = false;
+		oncloseModal() {
+			this.isShowPreview = false;
+			this.changeMode('front');
 		},
 
 		async clickSaveDesign(payload) {
@@ -556,7 +581,7 @@ export default {
 
 			try {
 				await DesignService.createDesignByProduct({ params, idDesign });
-				this.oncloseModalSave();
+				this.oncloseModal();
 
 				console.log('params:', params);
 
@@ -572,9 +597,13 @@ export default {
 				console.log(error);
 			}
 		},
+
+		// handle image Preview
 		onPreviewDesign(mode) {
 			const img = new Image();
 			img.crossOrigin = 'Anonymous';
+
+			//dung de loc anh mat truoc va mat sau
 			this.canvas.getObjects().forEach((object) => {
 				object.visible = object.mode == mode ? true : false;
 			});

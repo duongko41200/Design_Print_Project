@@ -4,6 +4,7 @@
 	<div class="sidebar border " :class="isOpened ? 'open' : ''" :style="cssVars">
 		<div class="logo-details border ">
 			<img v-if="menuLogo" :src="menuLogo" alt="menu-logo" class="menu-logo icon" />
+			<div v-if="!isOpened" class="h-10"></div>
 			<!-- <img v-else :src="menuIcon" class="bx icon" /> -->
 			<div class="logo_name">
 				<div>Print Design</div>
@@ -11,7 +12,7 @@
 			</div>
 			<i
 				class="bx"
-				:class="isOpened ? 'bx-menu-alt-right' : 'bx-menu'"
+				:class="isOpened ? 'bx-menu-alt-right' : 'bx-menu w-[100%]'"
 				id="btn"
 				@click="isOpened = !isOpened"
 			/>
@@ -78,9 +79,10 @@
 				</div>
 				<i
 					v-if="isExitButton"
-					class="bx bx-log-out"
+					class="bx bx-log-out text-slate-50"
 					id="log_out"
 					@click.stop="$emit('button-exit-clicked')"
+					style="color: #fff;"
 				/>
 			</div>
 		</div>

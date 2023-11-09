@@ -106,6 +106,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
 import { createNamespacedHelpers } from 'vuex';
 const authMappper = createNamespacedHelpers('auth');
 const designMappper = createNamespacedHelpers('design');
+const productMappper = createNamespacedHelpers('product');
 export default {
 	components: {
 		Menu,
@@ -123,7 +124,8 @@ export default {
 		...authMappper.mapState(['email', 'userInfo']),
 	},
 	methods: {
-		...designMappper.mapActions(['deleteDesignByUser','findDesign']),
+		...designMappper.mapActions(['deleteDesignByUser', 'findDesign']),
+		...productMappper.mapMutations(['SET_PRODUCT_MODEL']),
 		test() {
 			console.log('height:' + this.$refs.square.clientWidth + 'px');
 		},
@@ -144,6 +146,7 @@ export default {
 			};
 			await this.findDesign(payload);
 			this.$router.push('/design')
+			this.SET_PRODUCT_MODEL(null)
 			
 			
 		},
