@@ -77,6 +77,14 @@ const handleLogin = async (req, res) => {
 
 	const checkLogin = await User.find({ email });
 
+	/**
+	 * đếm số design
+	 * b1 lay id user
+	 * b2 tim id user trong bang design 
+	 * b3 dem so design cua nguoi dung
+	 */
+
+
 	if (checkLogin.length === 0) {
 		return res.status(200).json({
 			status: 'fail',
@@ -161,6 +169,7 @@ const handleValidateToken = async (req, res) => {
 
 	try {
 		const validateToken = veryfiToken(token);
+		console.log(validateToken);
 
 		return res.status(200).json({
 			status: 'success',

@@ -47,14 +47,14 @@
 		<div class="row profileHeight">
 			<div class="col-md-4 center">
 				<img
-					src="../../assets/logo.png"
+				:src="require(`@/uploadImage/${userInfo.image?userInfo.image:'man.png'}`)"
 					class="profilePhoto rounded-circle"
 					alt=""
 				/>
 			</div>
 			<div class="col-md-8 pt-2 profile__des">
 				<div class="d-flex justufy-content-center align-items-center">
-					<span class="font6 prUsername">duong</span>
+					<span class="font6 prUsername">{{ userInfo.username }}</span>
 					<div class="myEditButton f-bold1 crs-pointer">
 						Create Design
 					</div>
@@ -79,9 +79,7 @@
 					Avant-Garde Tech Products
 				</div>
 				<div style="text-align: left">
-					Retail company 🔌 Your Source For All Trendy Products 💰
-					Affiliate marketing available. 💵 Earn commission by selling
-					our products.
+				{{ userInfo.description }}
 				</div>
 			</div>
 		</div>
@@ -157,7 +155,7 @@ export default {
 		...designMappper.mapState(['listDesign']),
 	},
 	async mounted() {
-		// console.log("userInfo:",this.userInfo);
+		console.log("userInfo:",this.userInfo);
 
 		console.log('userInfo:', this.userInfo.id);
 		await this.getListDesignByUser({
@@ -173,7 +171,10 @@ export default {
 				case 'design': {
 					this.SET_LIST_DESIGN([]);
 					this.activeOption = value;
-					await this.getListDesignByUser({ userId: this.userInfo.id });
+					console.log("id :",this.userInfo.id)
+					const data = await this.getListDesignByUser({ userId: this.userInfo.id });
+
+					console.log("data skjdk:",data)
 
 					break;
 				}
