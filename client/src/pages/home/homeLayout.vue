@@ -54,7 +54,7 @@
 					<logoUser></logoUser>
 				</div>
 			</div>
-			<router-view @onCreateDesign="onCreateDesign"></router-view>
+			<router-view ></router-view>
 			<baseModal
 				:showModal="showModal"
 				:products="products"
@@ -70,7 +70,7 @@ import { createNamespacedHelpers } from 'vuex';
 const authMappper = createNamespacedHelpers('auth');
 const productMappper = createNamespacedHelpers('product');
 const designMappper = createNamespacedHelpers('design');
-import ProductService from '@/sevices/product.service.js';
+
 import logoUser from '@/components/logoUser/logoUser.vue';
 import baseModal from '@/components/BaseModal/baseModal.vue';
 import SideBar from '@/components/Sidebar/SideBar.vue';
@@ -95,7 +95,7 @@ export default {
 
 			showModal: false,
 
-			products: [],
+			// products: [],
 
 			//giải quyết tạm
 			// menuClosedPaddingLeftBody:'78px'
@@ -103,16 +103,15 @@ export default {
 	},
 	computed: {
 		...authMappper.mapState(['email', 'userInfo']),
+		...productMappper.mapState(['products','cataloge'])
 	},
 	async mounted() {
-		const getAllProducts = await ProductService.getAllProduct();
-		this.products = getAllProducts.data.data;
-
-		console.log('getAllProducts', this.products);
+		await this.getAllProducts()
 	},
 	methods: {
 		...productMappper.mapMutations(['SET_PRODUCT_MODEL']),
 		...designMappper.mapMutations(['SET_EDIT_DESIGN']),
+		...productMappper.mapActions(['getAllProducts']),
 		togglePopover() {
 			this.isPopoverOpen = !this.isPopoverOpen;
 		},
@@ -125,6 +124,7 @@ export default {
 		},
 		onCreateDesign() {
 			this.showModal = true;
+			console.log('Create design',this.cataloge)
 		},
 		onDesignProduct(product) {
 			this.SET_PRODUCT_MODEL(product);

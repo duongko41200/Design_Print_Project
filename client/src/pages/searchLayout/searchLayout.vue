@@ -51,7 +51,8 @@
 								autocomplete="off"
 								class="bg-zinc-700 flex-1 pl-10 pr-12 rounded-full text-sm px-10 py-2.5 focus:outline-none focus:ring-1 focus:ring-indigo-700"
 								placeholder="Search for an image"
-								value=""
+							
+								v-model="valueSearch"
 								fdprocessedid="d00fvp"
 							/>
 						</div>
@@ -59,9 +60,11 @@
 				</div>
 				<div class="mb-8 flex flex-col items-center">
 					<div class="flex space-x-2">
+						
 						<button
 							class="w-32 sm:w-36 flex items-center text-xs justify-center text-center h-9 rounded-full hover:brightness-110 bg-opacity-0 shadow-sm mt-4 bg-gradient-to-t from-indigo-900 via-indigo-900 to-indigo-800"
 							fdprocessedid="dilofl"
+							@click="onSearchDesign"
 						>
 							Search
 						</button>
@@ -82,19 +85,15 @@
 					</h3>
 					<div class="mb-8 flex flex-col content-start">
 						<div class="flex space-x-2">
-							<button
-								class="w-20 sm:fit-w flex items-center text-xs justify-center text-center h-9 rounded-full hover:brightness-110 bg-opacity-0 shadow-sm mt-2 border border-gray-700 hover:bg-zinc-700"
+							<button v-for="(cataloge,idx) in cataloge" :key="idx"
+								class="w-32 sm:fit-w flex items-center text-xs justify-center text-center h-9 rounded-full hover:brightness-110 bg-opacity-0 shadow-sm mt-2 border border-gray-700 hover:bg-zinc-700"
+								:class="cataloge.isClick === true ? 'bg-white text-slate-800 font-bold':''"
 								fdprocessedid="dilofl"
+								@click="onClickCataloge(cataloge.id,cataloge.name)"
 							>
-								Search
+								{{ cataloge.name }}
 							</button>
 
-							<button
-								class="w-32 sm:w-36 flex items-center text-xs justify-center text-center h-9 rounded-full hover:brightness-110 bg-opacity-0 shadow-sm mt-2 border border-gray-700 hover:bg-zinc-700"
-								fdprocessedid="oovm8i"
-							>
-								Account
-							</button>
 						</div>
 					</div>
 				</div>

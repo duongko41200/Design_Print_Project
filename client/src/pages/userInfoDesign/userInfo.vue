@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="container profileContainer pt-[127px] bg-zinc-800 text-slate-50"
+		class=" profileContainer pt-[127px] bg-zinc-800 text-slate-50"
 	>
 		<div
 			class="flex gap-10 justify-center items-center rounded-full profileHeight md:h-[200px]"
@@ -75,7 +75,7 @@
 				:style="
 					this.$store.state.screenWidth > 730 ? 'gap:28px' : 'gap:2px'
 				"
-				class="exploreContainer p-1 container"
+				class="exploreContainer p-1"
 			>
 				<one-post
 					:boxWidth="rowList"
