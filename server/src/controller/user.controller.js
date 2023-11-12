@@ -125,6 +125,7 @@ const handleUpdate = async (req, res) => {
 
 
 	const tokenUser = CreatJWT({
+		id:body.id,
 		username: body.username,
 		email: body.email,
 		password: body.password,

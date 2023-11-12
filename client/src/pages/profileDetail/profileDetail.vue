@@ -133,6 +133,7 @@ export default {
 		//updateProfile
 		async updateProfile() {
 			const param = {
+				id: this.userInfo.id,
 				username: this.username,
 				image: this.imageProfile,
 				email: this.email,

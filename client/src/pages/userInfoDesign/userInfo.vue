@@ -138,11 +138,17 @@ export default {
 					this.SET_LIST_DESIGN([]);
 					this.activeOption = value;
 					console.log('id :', this.userInfo.id);
-					const data = await this.getListDesignByUser({
+					try {
+						const data = await this.getListDesignByUser({
 						userId: this.userInfo.id,
 					});
 
 					console.log('data skjdk:', data);
+					} catch (error) {
+						console.log('error :', error);
+						
+					}
+
 
 					break;
 				}

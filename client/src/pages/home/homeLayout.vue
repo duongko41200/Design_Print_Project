@@ -18,6 +18,7 @@
 				>
 					<div
 						class="flex flex-row items-center cursor-pointer h-full py-1.5 pb-0 px-2 justify-center transition-all flex-1"
+						@click="onMoveHome"	
 					>
 						<div class="relative sm:flex justify-center hidden w-full">
 							<div
@@ -136,6 +137,9 @@ export default {
 		onMoveUserInfo() {
 			this.$router.push('/userInfo');
 			this.isPopoverOpen = !this.isPopoverOpen;
+		},
+		onMoveHome() {
+			this.$router.push('/');	
 		},
 	},
 };
