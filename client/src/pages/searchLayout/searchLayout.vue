@@ -123,9 +123,10 @@
 					class="body__content--listImage fit-h flex grid grid-cols-4 gap-2"
 				>
 					<div
-						class="border cursor-pointer"
-						v-for="idx in 9"
+						class="border z-10  cursor-pointer"
+						v-for="(design,idx) in allDesign"
 						:key="idx"
+						@click="onPreviweDesign(design)"
 					>
 						<div class="imageList relative">
 							<div
@@ -178,17 +179,17 @@
 									<div
 										class="text-start font-bold text-base text-white"
 									>
-										Ao T-shirt sunny
+										{{ design.name }}
 									</div>
 									<div class="text-start font-bold text-gray">
-										by D.Duong
+										by {{ design.user.username }}
 									</div>
 								</div>
 							</div>
 							<div class="w-[100%] h-[100%]">
 								<img
 									alt="T-shirts"
-									src="https://images.printify.com/api/catalog/64394d8c2a4d01d9960aa971.png?s=152"
+									:src="design.thumbnailFront"
 								/>
 							</div>
 						</div>
@@ -197,6 +198,12 @@
 			</div>
 		</div>
 	</div>
+	<modalPreview
+		:showModal="isShowPreview"
+		:infoDesign = 'infoDesign'
+		:type="'detail'"
+		@oncloseModal="oncloseModal"
+	></modalPreview>
 </template>
 <script src="./searchLayout.js"></script>
 <style scope>

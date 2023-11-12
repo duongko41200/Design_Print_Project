@@ -59,9 +59,24 @@ const findDesign = async (req, res) => {
 	});
 };
 
+const getAllDesign = async (req, res) => { 
+	const listDesign = await Design.find({
+		isPublic: 'public',
+	}).populate('user');
+
+	console.log('lise All Design :',listDesign)
+
+	res.status(200).json({
+		status: 'success',
+		data: listDesign,
+	});
+
+}
+
 module.exports = {
 	createDesign,
 	getAllDesignByUser,
 	deleteDesign,
 	findDesign,
+	getAllDesign
 };

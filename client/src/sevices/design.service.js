@@ -18,6 +18,9 @@ const DesignService = {
 	async findDesignById(params) {
 		return ApiService.get(baseUrl + 'findDesign', params);
 	},
+	async getAllDesign(params) {
+		return ApiService.get(baseUrl + 'allDesign', params);
+	},
 
 
 
