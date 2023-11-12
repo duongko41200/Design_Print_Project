@@ -1,22 +1,32 @@
 <template>
-	<div class="container profileContainer">
-		<div class="row profileHeight">
-			<div class="col-md-4 center">
+	<div
+		class="container profileContainer pt-[127px] bg-zinc-800 text-slate-50"
+	>
+		<div
+			class="flex gap-10 justify-center items-center rounded-full profileHeight md:h-[200px]"
+		>
+			<div class="center">
 				<img
-				:src="require(`@/uploadImage/${userInfo.image?userInfo.image:'man.png'}`)"
+					:src="
+						require(`@/uploadImage/${
+							userInfo.image ? userInfo.image : 'man.png'
+						}`)
+					"
 					class="profilePhoto rounded-circle"
 					alt=""
 				/>
 			</div>
-			<div class="col-md-8 pt-2 profile__des">
-				<div class="d-flex justufy-content-center align-items-center">
+			<div
+				class="pt-2 profile__des bg-zinc-700 md:h-[200px] md:w-[500px] rounded-2xl flex flex-col justify-center items-center"
+			>
+				<div class="w-[100%] d-flex justufy-content-start align-items-center">
 					<span class="font6 prUsername">{{ userInfo.username }}</span>
 					<div class="myEditButton f-bold1 crs-pointer">
 						Create Design
 					</div>
 				</div>
 				<br />
-				<div class="font3 d-flex gap-4">
+				<div class=" justufy-content-start w-[100%] align-items-center d-flex gap-4">
 					<div>
 						<span class="f-bold1">100</span>
 						<span> Design</span>
@@ -31,11 +41,11 @@
 					</div>
 				</div>
 				<br />
-				<div class="f-bold1" style="text-align: left">
+				<div class="f-bold1 w-[100%]" style="text-align: left">
 					Avant-Garde Tech Products
 				</div>
-				<div style="text-align: left">
-				{{ userInfo.description }}
+				<div style="text-align: left" class="w-[100%] text-slate-100 mt-1">
+					{{ userInfo.description }}
 				</div>
 			</div>
 		</div>
@@ -80,7 +90,7 @@
 	</div>
 	<modalPreview
 		:showModal="isShowPreview"
-		:infoDesign = 'infoDesign'
+		:infoDesign="infoDesign"
 		:type="'detail'"
 		@oncloseModal="oncloseModal"
 	></modalPreview>
@@ -103,7 +113,7 @@ export default {
 			activeOption: 'design',
 			isShowPreview: false,
 
-			infoDesign:''
+			infoDesign: '',
 		};
 	},
 	computed: {
@@ -111,7 +121,7 @@ export default {
 		...designMappper.mapState(['listDesign']),
 	},
 	async mounted() {
-		console.log("userInfo:",this.userInfo);
+		console.log('userInfo:', this.userInfo);
 
 		console.log('userInfo:', this.userInfo.id);
 		await this.getListDesignByUser({
@@ -127,10 +137,12 @@ export default {
 				case 'design': {
 					this.SET_LIST_DESIGN([]);
 					this.activeOption = value;
-					console.log("id :",this.userInfo.id)
-					const data = await this.getListDesignByUser({ userId: this.userInfo.id });
+					console.log('id :', this.userInfo.id);
+					const data = await this.getListDesignByUser({
+						userId: this.userInfo.id,
+					});
 
-					console.log("data skjdk:",data)
+					console.log('data skjdk:', data);
 
 					break;
 				}
@@ -152,7 +164,7 @@ export default {
 			}
 		},
 		onPreviweDesign(infoDesign) {
-			console.log('infoDesign:',  infoDesign);
+			console.log('infoDesign:', infoDesign);
 			this.infoDesign = infoDesign;
 			this.isShowPreview = true;
 		},
@@ -206,6 +218,10 @@ export default {
 	height: 100%;
 }
 .profile__des {
-	padding-right: 100px;
+	padding: 10px;
+	padding-left:100px ;
+	min-height: 200px;
+	height: fit-content;
+	/* width: 500px; */
 }
 </style>
