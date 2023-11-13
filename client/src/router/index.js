@@ -7,7 +7,8 @@ import design from '@/pages/designLayout/design';
 import profileDetail from '@/pages/profileDetail/profileDetail';
 import userInfo from '@/pages/userInfoDesign/userInfo';
 import searchLayout from '@/pages/searchLayout/searchLayout.vue';
-
+import userDesign from '@/components/BaseUserDesign/userDesign.vue'
+ 
 // import home from '../pages/home';
 import homeLayout from '@/pages/home/homeLayout.vue';
 // import profile from '../pages/profile';
@@ -32,6 +33,11 @@ const routes = [
 				name: 'searchLayout',
 				path: '/',
 				component: searchLayout,
+			},
+			{
+				name: 'userDesign',
+				path: '/user/:userId',
+				component: userDesign,
 			},
 		],
 	},

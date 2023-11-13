@@ -48,7 +48,7 @@
 												<div
 													class="mt-6 px-4 py-3 bg-zinc-600 rounded-xl shadow bg-opacity-50 font-light flex flex-col space-y-5 text-slate-50"
 												>
-													<p class="bg-opacity-0 rounded">
+													<p class="bg-opacity-0 rounded font-bold capitalize">
 														{{ infoDesign.name }}
 													</p>
 													<div class="flex text-xs font-light">
@@ -81,6 +81,7 @@
 															</div>
 															<div
 																class="text-xs rounded-md sm:text-xs active:scale-95 transition-all transform-gpu whitespace-nowrap flex-1 flex select-none cursor-pointer hover:bg-zinc-600 border border-zinc-600 bg-zinc-700 items-center justify-center shadow px-2.5 py-2 w-fit-content"
+																@click="downloadDesign"
 															>
 																<svg
 																	xmlns="http://www.w3.org/2000/svg"
@@ -109,6 +110,7 @@
 												<div class="flex space-x-2 px-2 text-slate-50">
 													<div
 														class="text-xs rounded-md sm:text-sm group mt-4 whitespace-nowrap flex-1 flex select-none cursor-pointer hover:brightness-110 bg-gradient-to-t from-indigo-900 via-indigo-900 to-indigo-800 drop-shadow items-center justify-center px-2.5 py-2.5 w-fit-content active:scale-95 transition-all"
+														@click="onMoveUserDesign"
 													>
 														<svg
 															stroke="currentColor"
@@ -502,6 +504,8 @@ import {
 	ListboxOptions,
 } from '@headlessui/vue';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid';
+import { createNamespacedHelpers } from 'vuex';
+const authMappper = createNamespacedHelpers('auth');
 
 export default {
 	components: {
@@ -553,6 +557,9 @@ export default {
 			],
 		};
 	},
+	computed: {
+		...authMappper.mapState(['email', 'userInfo']),
+	},
 	mounted() {
 		console.log('product ádasd ', this.infoDesign);
 		if (this.infoDesign) {
@@ -584,14 +591,31 @@ export default {
 			this.$emit('onDesignProduct', product);
 		},
 		downloadDesign() {
-			this.downloadImage(this.previewFront, this.infoDesign.name?`${this.infoDesign.name}(Front)`:"name_default(Front)")
-			this.downloadImage(this.previewBack,this.infoDesign.name?`${this.infoDesign.name}(Back)`:"name_default(Back)")
+			this.downloadImage(
+				this.previewFront,
+				this.infoDesign.name
+					? `${this.infoDesign.name}(Front)`
+					: 'name_default(Front)'
+			);
+			this.downloadImage(
+				this.previewBack,
+				this.infoDesign.name
+					? `${this.infoDesign.name}(Back)`
+					: 'name_default(Back)'
+			);
 		},
-		downloadImage(imageUrl,name) {
+		downloadImage(imageUrl, name) {
 			const link = document.createElement('a');
 			link.href = imageUrl;
 			link.download = name; // Tên tệp tải về, bạn có thể thay đổi nó nếu cần
 			link.click();
+		},
+		onMoveUserDesign() {
+			if (this.userInfo.id !== this.infoDesign.user.id) {
+				this.$router.push(`/user/${this.infoDesign.user.id}`);
+			} else {
+				this.$router.push(`/userInfo`);
+			}
 		},
 	},
 };

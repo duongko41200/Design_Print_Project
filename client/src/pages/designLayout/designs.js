@@ -216,7 +216,7 @@ export default {
 				this.imagePixaBay = [];
 				this.canvas.isDrawingMode = false;
 				const imageAsset = await ImageAssetService.getAllImagAsset({
-					email: this.email,
+					userId: this.userInfo.id,
 				});
 				console.log('imageAsset', imageAsset.data.data);
 				this.contentOption = imageAsset.data.data;
@@ -262,7 +262,7 @@ export default {
 				});
 
 				const imageAsset = await ImageAssetService.getAllImagAsset({
-					email: this.email,
+					userId: this.userInfo.id,
 				});
 				setTimeout(() => {
 					this.contentOption = imageAsset.data.data;

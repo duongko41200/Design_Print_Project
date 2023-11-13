@@ -21,9 +21,9 @@
 					class="w-[100%] d-flex justufy-content-start align-items-center"
 				>
 					<span class="font6 prUsername">{{ userInfo.username }}</span>
-					<div class="myEditButton f-bold1 crs-pointer">
+					<!-- <div class="myEditButton f-bold1 crs-pointer">
 						Create Design
-					</div>
+					</div> -->
 				</div>
 				<br />
 				<div
@@ -85,6 +85,7 @@
 				<one-post
 					:boxWidth="rowList"
 					:data="item"
+					:role="'view'"
 					v-for="(item, idx) in listDesign"
 					:key="idx"
 					class="border"
@@ -104,8 +105,8 @@
 import { createNamespacedHelpers } from 'vuex';
 import onePost from '@/pages/userInfoDesign/PostBase/one-post.vue';
 import ImageAssetService from '@/sevices/imageAssets.service';
+import UserService from '@/sevices/user.service';
 import modalPreview from '@/components/ModalPreview/modalPreview.vue';
-const authMappper = createNamespacedHelpers('auth');
 const designMappper = createNamespacedHelpers('design');
 export default {
 	components: {
@@ -119,17 +120,24 @@ export default {
 			isShowPreview: false,
 
 			infoDesign: '',
+			userInfo: '',
 		};
 	},
 	computed: {
-		...authMappper.mapState(['email', 'userInfo']),
 		...designMappper.mapState(['listDesign']),
 	},
+
 	async mounted() {
 		await this.getListDesignByUser({
-			userId: this.userInfo.id,
-			isPublic: 'all',
+			userId: this.$route.params.userId,
+			isPublic: 'public',
 		});
+		const user = await UserService.findByUser({
+			userId: this.$route.params.userId,
+		});
+		this.userInfo = user.data.data[0];
+
+		console.log({ user });
 	},
 	methods: {
 		...designMappper.mapActions(['getListDesignByUser']),
@@ -139,11 +147,10 @@ export default {
 				case 'design': {
 					this.SET_LIST_DESIGN([]);
 					this.activeOption = value;
-					console.log('id :', this.userInfo.id);
 					try {
 						await this.getListDesignByUser({
-							userId: this.userInfo.id,
-							isPublic: 'all',
+							userId: this.$route.params.userId,
+							isPublic: 'public',
 						});
 					} catch (error) {
 						console.log('error :', error);
@@ -155,10 +162,12 @@ export default {
 					this.SET_LIST_DESIGN([]);
 					this.activeOption = value;
 					let imageAsset = await ImageAssetService.getAllImagAsset({
-						userId: this.userInfo.id,
+						userId: this.$route.params.userId,
 					});
 					console.log('imageAsset:', imageAsset);
 					this.SET_LIST_DESIGN(imageAsset.data.data);
+
+					console.log('this.listData:', this.listData);
 					break;
 				}
 

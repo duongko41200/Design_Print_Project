@@ -17,6 +17,7 @@ export default {
 		async getListDesignByUser({ commit }, payload) {
 			const allDesigns = await DesignService.getAllDesignByUser({
 				userId: payload.userId,
+				isPublic: payload.isPublic
 			});
 			commit('SET_LIST_DESIGN', allDesigns.data.data);
 		},

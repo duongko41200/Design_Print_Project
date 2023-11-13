@@ -66,6 +66,10 @@ const UserService = {
 	 * @param {Params} params
 	 * @returns {Response} response
 	 */
+
+	findByUser(params) {
+		return ApiService.get(baseUrl + 'findByUser', params);
+	}
 };
 
 export default UserService;

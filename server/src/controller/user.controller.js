@@ -181,10 +181,21 @@ const handleValidateToken = async (req, res) => {
 	}
 };
 
+const handleFindByUser = async (req, res) => { 
+	const _id = req.query.userId
+	const getUser = await User.find({ _id });
+	console.log("user:", getUser);
+	return res.status(200).json({
+		status: 'success',
+		data: getUser,
+	});
+}
+
 module.exports = {
 	handleSignup,
 	handleLogin,
 	handleLogout,
 	handleValidateToken,
 	handleUpdate,
+	handleFindByUser
 };

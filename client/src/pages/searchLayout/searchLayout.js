@@ -5,6 +5,7 @@ import modalPreview from '@/components/ModalPreview/modalPreview.vue';
 import { createNamespacedHelpers } from 'vuex';
 const designMappper = createNamespacedHelpers('design');
 const productMappper = createNamespacedHelpers('product');
+const authMappper = createNamespacedHelpers('auth');
 export default {
 	components: {
 		logoUser,
@@ -32,6 +33,7 @@ export default {
 	computed: {
 		...designMappper.mapState(['allDesign']),
 		...productMappper.mapState(['cataloge']),
+		...authMappper.mapState(['email', 'userInfo']),
 	},
 	methods: {
 		...designMappper.mapActions([
@@ -71,6 +73,14 @@ export default {
 				idCataloge: this.idCataloge,
 			});
 			this.valueSearch = '';
+		},
+		onMoveUserDesign(design) {
+			console.log("dklsjksdjfkdsj",design.user);
+			if (this.userInfo.id !== design.user.id) {
+				this.$router.push(`/user/${design.user.id}`);
+			} else {
+				this.$router.push(`/userInfo`);
+			}
 		},
 	},
 };

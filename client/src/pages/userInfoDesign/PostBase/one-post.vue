@@ -3,8 +3,15 @@
 		ref="square"
 		@click="test"
 		:style="square"
-		class=" cursor-pointer post center transition-opacity  inset-0 bg-zinc-600 bg-opacity-20"
-		style="background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0) 100%);"
+		class="cursor-pointer post center transition-opacity inset-0 bg-zinc-600 bg-opacity-20"
+		style="
+			background: linear-gradient(
+				to top,
+				rgba(0, 0, 0, 0.8) 0%,
+				rgba(0, 0, 0, 0) 60%,
+				rgba(0, 0, 0, 0) 100%
+			);
+		"
 	>
 		<img
 			:src="
@@ -14,7 +21,6 @@
 			"
 			class="w-100 h-100 post-img z-10"
 			alt=""
-		
 		/>
 		<div class="post-hover w-100 h-100 z-10 center gap-3 text-white">
 			<!-- <div class="center">
@@ -27,17 +33,17 @@
 			</div> -->
 
 			<div
-					class="absolute bg-red w-full h-full inset-0" 	@click="onClickImage"
-				/>
+				class="absolute bg-red w-full h-full inset-0"
+				@click="onClickImage"
+			/>
 
 			<Menu
 				as="div"
 				class="absolute bottom-5 right-5 inline-block text-left"
 			>
-				<div>
+				<div v-if="role != 'view'">
 					<MenuButton
 						class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 transition-opacity z-20 inset-0 bg-zinc-600 bg-opacity-20"
-						
 					>
 						<icon icon="fa-solid fa-ellipsis-vertical" />
 					</MenuButton>
@@ -57,7 +63,6 @@
 						<div class="py-1">
 							<MenuItem v-slot="{ active }">
 								<div
-								
 									:class="[
 										active
 											? 'bg-gray-100 text-gray-900'
@@ -65,8 +70,9 @@
 										'block px-4 py-2 text-sm',
 									]"
 									@click="editDesign(data.id)"
-									>Edit</div
 								>
+									Edit
+								</div>
 							</MenuItem>
 							<MenuItem v-slot="{ active }">
 								<div
@@ -114,7 +120,15 @@ export default {
 		MenuItem,
 		MenuItems,
 	},
-	props: ['data'],
+	props: {
+		data: {
+			type: Object,
+		},
+		role: {
+			type: String,
+			default: 'all',
+		},
+	},
 	data() {
 		return {
 			square: null,
@@ -136,26 +150,24 @@ export default {
 			};
 			await this.deleteDesignByUser(payload);
 			this.$toast.success('deleted success', {
-					position: 'top-right',
-					duration: 2000,
-				});
+				position: 'top-right',
+				duration: 2000,
+			});
 		},
 		async editDesign(id) {
 			const payload = {
 				idDesign: id,
 			};
 			await this.findDesign(payload);
-			this.$router.push('/design')
-			this.SET_PRODUCT_MODEL(null)
-			
-			
+			this.$router.push('/design');
+			this.SET_PRODUCT_MODEL(null);
 		},
 		onClickImage() {
-			this.$emit("onClickImage")
-		}
+			this.$emit('onClickImage');
+		},
 	},
 	created() {
-		console.log(this.data);
+		console.log('sdffdsfdsfsdfsdfsd', this.data);
 		setInterval(() => {
 			try {
 				this.square = 'height:' + this.$refs.square.clientWidth + 'px';
@@ -172,10 +184,14 @@ export default {
 	position: relative;
 	flex: 0 0 24%;
 	margin: 0px;
-
 }
 .post-hover {
-	background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0) 70%);
+	background: linear-gradient(
+		to top,
+		rgba(0, 0, 0, 0.8) 0%,
+		rgba(0, 0, 0, 0) 60%,
+		rgba(0, 0, 0, 0) 70%
+	);
 	position: absolute;
 	transition: 0.3s;
 	opacity: 0%;

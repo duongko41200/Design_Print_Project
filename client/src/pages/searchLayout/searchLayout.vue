@@ -160,9 +160,10 @@
 									{{ design.name }}
 								</div>
 								<div
-									class="absolute bottom-2 left-2 mx-0.5 z-0 text-start fit-w z-10 font-bold text-gray"
+									class="absolute bottom-2 left-2 mx-0.5 z-0 text-start fit-w z-10 font-bold text-gray "
+									@click = "onMoveUserDesign(design)"
 								>
-									by {{ design.user.username }}
+									by <span class=" hover:text-blue-500 hover:underline"> {{ design.user.username }}</span>
 								</div>
 							</div>
 
