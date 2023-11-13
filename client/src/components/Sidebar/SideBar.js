@@ -37,20 +37,11 @@ export default {
 			type: Array,
 			default: () => [
 				{
-					link: '#',
+					link: '/',
 					name: 'Trang Chủ',
 					tooltip: 'Trang Chủ',
 					icon: 'bx-grid-alt',
-					allowPermissions: [
-						'khachHang',
-						'kham',
-						'tiem',
-						'thuNgan',
-						'kho',
-						'danhMuc',
-						'baoCao',
-						'quanTri',
-					],
+	
 				},
 
 				// {
@@ -66,32 +57,32 @@ export default {
 				// 	icon: 'bx-pie-chart-alt-2',
 				// },
 				{
-					link: '/danhmuc',
+					link: '/profileDetail',
 					name: 'My Profile',
 					tooltip: 'Danh Mục',
 					icon: 'bx-folder-plus',
-					allowPermissions: ['danhMuc', 'kho', 'baoCao'],
+
 				},
 				{
-					link: '/danhmuckho',
+					link: '/userInfo',
 					name: 'Design',
 					tooltip: 'Kho',
 					icon: 'bx-data',
-					allowPermissions: ['danhMuc', 'kho', 'baoCao'],
+	
 				},
 				{
 					link: '/quantri',
 					name: 'Quản trị',
 					tooltip: 'Quản trị',
 					icon: 'bx-cog',
-					allowPermissions: ['quanTri'],
+			
 				},
 				{
 					link: '/baocao',
 					name: 'Thống Kê',
 					tooltip: 'Thống kê báo cáo',
 					icon: 'bx-bookmark',
-					allowPermissions: ['baoCao'],
+		
 				},
 				// {
 				// 	link: '#',

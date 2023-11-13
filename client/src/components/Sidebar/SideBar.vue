@@ -47,16 +47,16 @@
 					>
 						<router-link v-if="isUsedVueRouter" :to="menuItem.link">
 							<i class="bx fs-4" :class="menuItem.icon || 'bx-square-rounded'" />
-							<span class="links_name">{{ menuItem.name }}</span>
+							<span class="links_name">{{ menuItem.name }} </span>
 						</router-link>
-						<a
+						<router-link 
 							v-else
 							@click.stop.prevent="$emit('menuItemClcked', menuItem.link)"
-							:href="menuItem.link"
+							:to="menuItem.link"
 						>
 							<i class="bx fs-4" :class="menuItem.icon || 'bx-square-rounded'" />
 							<span class="links_name">{{ menuItem.name }}</span>
-						</a>
+						</router-link >
 						<span :data-target="'links_' + index" class="tooltip">{{
 							menuItem.tooltip || menuItem.name
 						}}</span>

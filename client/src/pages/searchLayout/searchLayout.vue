@@ -4,7 +4,7 @@
 	>
 		<div class="body flex flex-col py-4 mt-16">
 			<div class="flex flex-col items-center">
-				<div>
+				<div >
 					<svg
 						viewBox="0 0 112 32"
 						fill="none"
@@ -16,6 +16,7 @@
 							fill="white"
 						></path>
 					</svg>
+			
 				</div>
 				<div>
 					<p
