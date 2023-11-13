@@ -27,6 +27,7 @@ export default {
 			titleOption: 'Templates',
 			contentOption: [],
 			isShowPreview: false,
+			typePreview:'',
 			width: '',
 			height: '',
 			optionDesign: [
@@ -538,6 +539,7 @@ export default {
 		openModeSave() {
 			this.onPreviewDesign('front');
 			this.onPreviewDesign('back');
+			this.typePreview='save'
 
 			this.isShowPreview = true;
 		},
@@ -618,6 +620,13 @@ export default {
 				}
 			};
 		},
+		PreviewDesign() {
+			this.onPreviewDesign('front');
+			this.onPreviewDesign('back');
+			this.typePreview='preview'
+
+			this.isShowPreview = true;
+		}
 	},
 
 	watch: {

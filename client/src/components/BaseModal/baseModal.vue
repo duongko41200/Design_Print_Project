@@ -35,7 +35,7 @@
 								<div
 									class="flex-auto w-[780px] overflow-hidden bg-white text-sm leading-6"
 								>
-									<div class="p-4">
+									<div class="p-4" v-if="modalType === 'product'">
 										<div
 											v-for="(product, idx) in products"
 											:key="idx"
@@ -77,6 +77,10 @@
 												</p>
 											</div>
 										</div>
+									</div>
+									<div class>
+
+
 									</div>
 								</div>
 							</div>
@@ -131,6 +135,10 @@ export default {
 			type: String,
 			default: "front"
 		},
+		modalType: {
+			type: String,
+			default: 'product'
+		}
 	},
 	data() {
 		return {};

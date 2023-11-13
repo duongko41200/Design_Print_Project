@@ -3,7 +3,7 @@
 		<!-- ////HEADER//////////// -->
 		<navbarDesign
 			@onSaveDesignByProduct="openModeSave"
-			@onPreviewDesign="onPreviewDesign"
+			@onPreviewDesign="PreviewDesign"
 			@onMoveHome = "handleBack"
 		></navbarDesign>
 
@@ -251,7 +251,7 @@
 	<modalPreview
 		:showModal="isShowPreview"
 		:infoDesign = 'infoDesign'
-		:type="'save'"
+		:type="typePreview"
 		:previewFront="imgPreviewFront"
 		:previewBack="imgPreviewBack"
 		@oncloseModal="oncloseModal"

@@ -2,8 +2,6 @@
 	<div
 		class="max-h-full overflow-auto h-[100%] w-[100%] overflow-x-hidden flex flex-col bg-zinc-800 text-gray-100 text-sm"
 	>
-
-
 		<div class="body flex flex-col py-4 mt-16">
 			<div class="flex flex-col items-center">
 				<div>
@@ -51,7 +49,6 @@
 								autocomplete="off"
 								class="bg-zinc-700 flex-1 pl-10 pr-12 rounded-full text-sm px-10 py-2.5 focus:outline-none focus:ring-1 focus:ring-indigo-700"
 								placeholder="Search for an image"
-							
 								v-model="valueSearch"
 								fdprocessedid="d00fvp"
 							/>
@@ -60,7 +57,6 @@
 				</div>
 				<div class="mb-8 flex flex-col items-center">
 					<div class="flex space-x-2">
-						
 						<button
 							class="w-32 sm:w-36 flex items-center text-xs justify-center text-center h-9 rounded-full hover:brightness-110 bg-opacity-0 shadow-sm mt-4 bg-gradient-to-t from-indigo-900 via-indigo-900 to-indigo-800"
 							fdprocessedid="dilofl"
@@ -85,15 +81,20 @@
 					</h3>
 					<div class="mb-8 flex flex-col content-start">
 						<div class="flex space-x-2">
-							<button v-for="(cataloge,idx) in cataloge" :key="idx"
+							<button
+								v-for="(cataloge, idx) in cataloge"
+								:key="idx"
 								class="w-32 sm:fit-w flex items-center text-xs justify-center text-center h-9 rounded-full hover:brightness-110 bg-opacity-0 shadow-sm mt-2 border border-gray-700 hover:bg-zinc-700"
-								:class="cataloge.isClick === true ? 'bg-white text-slate-800 font-bold':''"
+								:class="
+									cataloge.isClick === true
+										? 'bg-white text-slate-800 font-bold'
+										: ''
+								"
 								fdprocessedid="dilofl"
-								@click="onClickCataloge(cataloge.id,cataloge.name)"
+								@click="onClickCataloge(cataloge.id, cataloge.name)"
 							>
 								{{ cataloge.name }}
 							</button>
-
 						</div>
 					</div>
 				</div>
@@ -104,7 +105,6 @@
 						class="border z-10 cursor-pointer"
 						v-for="(design, idx) in allDesign"
 						:key="idx"
-						@click="onPreviweDesign(design)"
 					>
 						<div class="imageList relative">
 							<div
@@ -113,57 +113,58 @@
 									background: linear-gradient(
 										to top,
 										rgba(0, 0, 0, 0.8) 0%,
-										rgba(0, 0, 0, 0) 60%,
+										rgba(0, 0, 0, 0) 50%,
 										rgba(0, 0, 0, 0) 100%
 									);
 								"
 							>
 								<div
-									class="absolute w-[100%] h-[100%] bg-gray-100 opacity-25"
+									class="absolute w-[100%] h-[100%]"
+									@click="onPreviweDesign(design)"
 								></div>
+
 								<div
-									class="absolute top-2 left-0 w-[100%] fit-h hover-top flex justify-between px-3"
+									class="absolute z-9 top-2 left-2 bg-zinc-900 bg-opacity-30 hover:bg-opacity-100 transition-opacity flex items-center justify-center cursor-pointer rounded text-lg h-8 w-8"
+								>
+									<icon
+										icon="fa-solid fa-magnifying-glass"
+										style="color: #fff"
+									/>
+								</div>
+								<div
+									class="flex flex-col space-y-2 absolute top-2 z- 10 right-2"
 								>
 									<div
 										class="bg-zinc-900 bg-opacity-30 hover:bg-opacity-100 transition-opacity flex items-center justify-center cursor-pointer rounded text-lg h-8 w-8"
 									>
 										<icon
-											icon="fa-solid fa-magnifying-glass"
+											icon="fa-solid fa-heart"
 											style="color: #fff"
 										/>
 									</div>
-									<div class="flex flex-col space-y-2">
-										<div
-											class="bg-zinc-900 bg-opacity-30 hover:bg-opacity-100 transition-opacity flex items-center justify-center cursor-pointer rounded text-lg h-8 w-8"
-										>
-											<icon
-												icon="fa-solid fa-heart"
-												style="color: #fff"
-											/>
-										</div>
-										<div
-											class="bg-zinc-900 bg-opacity-30 hover:bg-opacity-100 transition-opacity flex items-center justify-center cursor-pointer rounded text-lg h-8 w-8"
-										>
-											<icon
-												icon="fa-solid fa-download"
-												style="color: #fff"
-											/>
-										</div>
+									<div
+										class="bg-zinc-900 z-10 bg-opacity-30 hover:bg-opacity-100 transition-opacity flex items-center justify-center cursor-pointer rounded text-lg h-8 w-8"
+										@click="onDownload(design)"
+									>
+										<icon
+											icon="fa-solid fa-download"
+											style="color: #fff"
+										/>
 									</div>
+								</div>
+
+								<div
+									class="absolute bottom-8 left-2 mx-0.5 overflow-hidden z-0 fit-w text-start z-10 font-bold text-base text-white"
+								>
+									{{ design.name }}
 								</div>
 								<div
-									class="absolute mx-0.5 z-0 select-none overflow-hidden bottom-2 left-0 w-[100%] fit-h hover-button p-3"
+									class="absolute bottom-2 left-2 mx-0.5 z-0 text-start fit-w z-10 font-bold text-gray"
 								>
-									<div
-										class="text-start font-bold text-base text-white"
-									>
-										{{ design.name }}
-									</div>
-									<div class="text-start font-bold text-gray">
-										by {{ design.user.username }}
-									</div>
+									by {{ design.user.username }}
 								</div>
 							</div>
+
 							<div class="w-[100%] h-[100%]">
 								<img alt="T-shirts" :src="design.thumbnailFront" />
 							</div>
@@ -176,7 +177,7 @@
 	<modalPreview
 		:showModal="isShowPreview"
 		:infoDesign="infoDesign"
-		:type="'detail'"
+		:type="typePreview"
 		@oncloseModal="oncloseModal"
 	></modalPreview>
 </template>

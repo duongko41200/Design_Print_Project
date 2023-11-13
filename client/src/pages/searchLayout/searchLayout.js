@@ -13,7 +13,7 @@ export default {
 		MenuItem,
 		MenuItems,
 		ChevronDownIcon,
-		modalPreview
+		modalPreview,
 	},
 	data() {
 		return {
@@ -21,25 +21,36 @@ export default {
 			isShowPreview: false,
 			valueSearch: '',
 			valueCataloge: 'All',
-			idCataloge:''
-		}	
+			idCataloge: '',
+			typePreview:'',
+
+		};
 	},
 	async mounted() {
-		await this.getAllDesign()
-
+		await this.getAllDesign();
 	},
 	computed: {
-		...designMappper.mapState(['allDesign',]),
-		...productMappper.mapState(['cataloge'])
+		...designMappper.mapState(['allDesign']),
+		...productMappper.mapState(['cataloge']),
 	},
 	methods: {
-		...designMappper.mapActions(['getAllDesign','searchDesign','filterCataloge']),
+		...designMappper.mapActions([
+			'getAllDesign',
+			'searchDesign',
+			'filterCataloge',
+		]),
 		...productMappper.mapActions(['handleCataloge']),
 		onCreateDesign() {
 			this.$emit('onCreateDesign');
 		},
 		onPreviweDesign(infoDesign) {
-			console.log('infoDesign:',  infoDesign);
+			console.log('infoDesign:', infoDesign);
+			this.typePreview = 'detail'
+			this.infoDesign = infoDesign;
+			this.isShowPreview = true;
+		},
+		onDownload(infoDesign) {
+			this.typePreview = 'preview'
 			this.infoDesign = infoDesign;
 			this.isShowPreview = true;
 		},
@@ -47,17 +58,19 @@ export default {
 			this.isShowPreview = false;
 		},
 		onClickCataloge(id, name) {
-			this.valueCataloge = name
-			this.idCataloge = id
+			this.valueCataloge = name;
+			this.idCataloge = id;
 			console.log('Cataloge:', id, name);
-			this.handleCataloge({ id, name })
-			this.filterCataloge({ id, name })
-	
+			this.handleCataloge({ id, name });
+			this.filterCataloge({ id, name });
 		},
 		onSearchDesign() {
-			this.searchDesign({ content: this.valueSearch ,valueCataloge:this.valueCataloge, idCataloge:this.idCataloge})
-			this.valueSearch =''
-		}
-		
+			this.searchDesign({
+				content: this.valueSearch,
+				valueCataloge: this.valueCataloge,
+				idCataloge: this.idCataloge,
+			});
+			this.valueSearch = '';
+		},
 	},
 };

@@ -328,7 +328,10 @@
 												</TransitionChild>
 											</div>
 
-											<div class="w-full md:h-full flex flex-col">
+											<div
+												class="w-full md:h-full flex flex-col"
+												v-if="type != 'preview'"
+											>
 												<div class="flex mt-[20px] h-full">
 													<div
 														class="h-full w-14 text-5xl flex items-center justify-center text-slate-50"
@@ -353,7 +356,6 @@
 													</div>
 
 													<div class="relative w-100">
-														<!-- Preview imge -->
 														<img
 															v-if="thumbnail === 'front'"
 															alt=""
@@ -409,6 +411,45 @@
 													</div>
 												</div>
 											</div>
+
+											<div
+												class="w-full md:h-full flex flex-col"
+												v-if="type === 'preview'"
+											>
+												<div class="flex mt-[20px] h-full">
+													<div class="relative w-[353px] flex gap-6">
+														<!-- Preview imge -->
+														<img
+															alt=""
+															class="top-0 left-0 z-10 object-cover"
+															:src="
+																infoDesign.thumbnailFront
+																	? infoDesign.thumbnailFront
+																	: previewFront
+															"
+															style="
+																width: 100%;
+																height: 100%;
+																max-width: none;
+															"
+														/>
+														<img
+															alt=""
+															class="top-0 left-0 z-10 object-cover"
+															:src="
+																infoDesign.thumbnailBack
+																	? infoDesign.thumbnailBack
+																	: previewBack
+															"
+															style="
+																width: 100%;
+																height: 100%;
+																max-width: none;
+															"
+														/>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -430,6 +471,14 @@
 									@click="clickSaveDesign"
 								>
 									Save
+								</div>
+								<div
+									v-if="type === 'preview'"
+									type="button"
+									class="inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+									@click="downloadDesign"
+								>
+									Download
 								</div>
 							</div>
 						</DialogPanel>
@@ -533,6 +582,16 @@ export default {
 
 		onDesignProduct(product) {
 			this.$emit('onDesignProduct', product);
+		},
+		downloadDesign() {
+			this.downloadImage(this.previewFront, this.infoDesign.name?`${this.infoDesign.name}(Front)`:"name_default(Front)")
+			this.downloadImage(this.previewBack,this.infoDesign.name?`${this.infoDesign.name}(Back)`:"name_default(Back)")
+		},
+		downloadImage(imageUrl,name) {
+			const link = document.createElement('a');
+			link.href = imageUrl;
+			link.download = name; // Tên tệp tải về, bạn có thể thay đổi nó nếu cần
+			link.click();
 		},
 	},
 };
