@@ -17,6 +17,9 @@ const ImageService = {
 	async uploadImageProfile(params) {
 		return ApiService.post(baseUrl + 'uploadProfile', params);
 	},
+	async uploadImageDesign(params) {
+		return ApiService.post(baseUrl + 'uploadImageDesign', params);
+	},
 
 	
 

@@ -24,7 +24,22 @@ import {
 	faPencil,
 	faUpload,
 	faBell,
+	faAlignLeft,
+	faAlignCenter,
+	faAlignRight,
+	faAlignJustify,
+	faListOl,
+	faListUl,
+	faUndo,
+	faRedo,
+	faBold,
+	faUnderline,
+	faItalic,
+	faCopy,
+	faTrash
 } from '@fortawesome/free-solid-svg-icons';
+
+// import {faCopy} from '@fortawesome/free-regular-svg-icons'
 
 library.add(
 	faUserSecret,
@@ -40,7 +55,20 @@ library.add(
 	faFont,
 	faPencil,
 	faUpload,
-	faBell
+	faBell,
+	faAlignLeft,
+	faAlignCenter,
+	faAlignRight,
+	faAlignJustify,
+	faListOl,
+	faListUl,
+	faUndo,
+	faRedo,
+	faBold,
+	faUnderline,
+	faItalic,
+	faCopy,
+	faTrash
 );
 
 // import css

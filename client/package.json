@@ -14,6 +14,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@headlessui/vue": "^1.7.16",
+    "@heroicons/vue": "^2.0.18",
     "axios": "^1.5.1",
     "core-js": "^3.8.3",
     "dotenv-cli": "^7.3.0",
@@ -24,7 +25,8 @@
     "vue-router": "^4.1.5",
     "vue-toast-notification": "^3.1.1",
     "vuex": "^4.1.0",
-    "vuex-map-fields": "^1.4.1"
+    "vuex-map-fields": "^1.4.1",
+    "webfontloader": "^1.6.28"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

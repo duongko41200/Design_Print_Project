@@ -31,18 +31,8 @@
 							/>
 						</label>
 					</div>
-					<div class="flex items-center gap-6">
-						<button
-							class="bg-[#a6c1ee] text-white px-5 py-2 rounded-full hover:bg-[#87acec]"
-						>
-							Sign in
-						</button>
-						<ion-icon
-							onclick="onToggleMenu(this)"
-							name="menu"
-							class="text-3xl cursor-pointer md:hidden"
-						></ion-icon>
-					</div>
+					<!-- /// logo -->
+					<logoUser></logoUser>
 				</nav>
 			</header>
 		</div>
@@ -50,7 +40,7 @@
 		<!-- sidebar -->
 		<div class="swap flex w-[100%] h-[90vh]">
 			<div
-				class="swap-sidebar w-fit min-w-[6%]  border-slate-200 border"
+				class="swap-sidebar w-fit min-w-[6%] border-slate-200 border"
 			>
 				<div
 					v-for="(option, idx) in optionDesign"
@@ -76,7 +66,16 @@
 				</div>
 			</div>
 
-			<baseSidebar :title="titleOption" :content="contentOption" :imagePixaBay="imagePixaBay">
+			<baseSidebar
+				:title="titleOption"
+				:content="contentOption"
+				:imagePixaBay="imagePixaBay"
+				:isImage="isImage"
+				:strokeDrawing="strokeDrawing"
+				@onClickImageUpload="onClickImageUpload"
+				@onClickImageFixabay="onClickImageFixabay"
+				@onClickStrokeDraw="onClickStrokeDraw"
+			>
 				<template v-slot:upload>
 					<div class="swap-sidebar w-fit">
 						<label
@@ -100,25 +99,188 @@
 
 			<!-- //// <canvas></canvas>  -->
 
-			<div class="swap-design bg-slate-100 w-[74%] h-[93vh]">
-				<div class="design-nav bg-white w-[100%] h-[5vh]"></div>
-				<div class="canvas h-[88vh] flex justify-center items-center">
-					<canvas ref="canvas">
-						<!-- <img src="../../assets/anh_test.png" ref="image" /> -->
-					</canvas>
+			<div class="swap-design relative bg-slate-100 w-[78%] h-[93vh]">
+				<div class="design-nav bg-white w-[100%] h-[6vh]">
+					<!-- <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor> -->
+
+					<!-- tool text -->
+
+					<div
+						class="flex justify-center items-center"
+						v-show="isBoxEditText"
+					>
+						<div
+							class="container max-w-max mx-auto bg-white rounded-lg overflow-hidden"
+						>
+							<div class="toolbar p-1">
+								<div class="btn-toolbar flex flex-wrap items-center">
+									<select
+										class="mr-3 w-[200px] h-10 bg-white border border-gray-400 rounded outline-none cursor-pointer"
+										v-model="textDesign.fontFamily"
+										@change="changeTextDesign"
+									>
+										<option value="" selected hidden disabled>
+											Font size
+										</option>
+										<option v-for="(fontFamily, idx) in fontFamilyOptions" :key="idx" :style="{ 'font-family': fontFamily }">{{fontFamily}}</option>
+			
+									</select>
+									<div
+										class="mr-3 h-10 color bg-white border border-gray-400 rounded outline-none cursor-pointer flex items-center gap-2 px-2"
+									>
+										<span>Color</span>
+										<input
+											type="color"
+											v-model="textDesign.textColor"
+											@input="changeTextDesign"
+										/>
+									</div>
+									<div
+										class="me-3 h-10 color bg-white border border-gray-400 rounded outline-none cursor-pointer flex items-center gap-2 px-2"
+									>
+										<span>Background</span>
+										<input
+											type="color"
+											v-model="textDesign.bgColor"
+											@input="changeTextDesign"
+										/>
+									</div>
+									<select
+										class="mr-3 h-10 bg-white border border-gray-400 rounded outline-none cursor-pointer"
+										v-model="textDesign.fontSize"
+										@change="changeTextDesign"
+									>
+										<option value="" selected hidden disabled>
+											Font size
+										</option>
+										<option value="20">Extra small</option>
+										<option value="35">Small</option>
+										<option value="40">Regular</option>
+										<option value="44">Medium</option>
+										<option value="48">Large</option>
+										<option value="55">Extra Large</option>
+										<option value="60">Big</option>
+									</select>
+									<div class="flex mr-3">
+										<button
+											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+											@click="changeTextStyle('bold')"
+										>
+											<icon icon=" fa-solid fa-bold" />
+										</button>
+										<div
+											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+											@click="changeTextStyle('underline')"
+										>
+											<icon icon=" fa-solid fa-underline" />
+										</div>
+										<button
+											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+											@click="changeTextStyle('italic')"
+										>
+											<icon icon=" fa-solid fa-italic" />
+										</button>
+									</div>
+									<div class="flex mr-3">
+										<button
+											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+											@click="changeTextStyle('align-left')"
+										>
+											<icon icon=" fa-solid fa-align-left" />
+										</button>
+										<button
+											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+											@click="changeTextStyle('align-right')"
+										>
+											<icon icon=" fa-solid fa-align-right" />
+										</button>
+										<button
+											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+											@click="changeTextStyle('align-center')"
+										>
+											<icon icon=" fa-solid fa-align-center" />
+										</button>
+										<button
+											class="bg-white border border-gray-400 rounded cursor-pointer w-10 h-10 flex items-center justify-center text-xl p-[10px]"
+											@click="changeTextStyle('align-justify')"
+										>
+											<icon icon=" fa-solid fa-align-justify" />
+										</button>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- tool drawing -->
+				</div>
+
+				<!-- canvas content -->
+
+				<div class="fit-h w-[80%] absolute left-[6%] pt-6 pl-0">
+					<div
+						class="canvas w-[100%] fit-w absolute flex justify-start bg-white p-1 shadow-xl border p-6 rounded-2xl"
+					>
+						<div class="w-[11vh] h-[100%] rounded p-2">
+							<div
+								@click="changeMode('front')"
+								class="w-[100%] h-[13vh] cursor-pointer rounded border-2 shadow-lg bg-white"
+								:class="
+									mode === 'front'
+										? 'border-sky-300'
+										: 'border-gray-200'
+								"
+							>
+								front
+							</div>
+							<div
+								@click="changeMode('back')"
+								class="w-[100%] h-[13vh] cursor-pointer mt-3 rounded border-2 shadow-lg bg-white"
+								:class="
+									mode === 'back' ? 'border-sky-300' : 'border-gray-200'
+								"
+							>
+								back
+							</div>
+						</div>
+						<div class="w-[1000px] flex justify-center">
+							<canvas ref="canvas" class="">
+								<!-- <img src="../../assets/anh_test.png" ref="image" /> -->
+							</canvas>
+						</div>
+
+						<div
+							class="w-[60px] h-[100%]  rounded p-2 flex justify-center flex-col"
+						>
+							<div
+								@click="copySelectedObject"
+								class="w-[100%] h-[4vh] cursor-pointer rounded border-2 p-1 shadow-lg bg-white"
+							>
+								<icon icon="fa-solid fa-copy" class="w-[2vh] h-[3vh]" />
+							</div>
+							<div
+								@click="deleteSelectedObject"
+								class="w-[100%] h-[4vh] cursor-pointer mt-3 rounded border-2 p-1 shadow-lg bg-white"
+							>
+								<icon
+									icon="fa-solid fa-trash"
+									class="w-[2vh] h-[3vh]"
+								/>
+							</div>
+							
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </template>
-<script src="./designs">
-
-
-
-</script>
+<script src="./designs"></script>
 <style>
 .detail-body {
 	/* grid-template-columns: repeat(2, 1fr); */
+
 	grid-gap: 6px;
 	columns: 2 5px;
 
@@ -137,5 +299,8 @@
 	max-width: 100%;
 	height: auto;
 	object-fit: cover;
+}
+.swap-sidebar {
+	display: inline-block;
 }
 </style>

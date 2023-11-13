@@ -12,7 +12,8 @@
 				<p class="font-semibold text-start text-start">Ảnh:</p>
 				<div class="flex flex-row items-center">
 					<img
-						:src="require(`@/assets/${imageProfile?imageProfile:'man.png'}`)"
+						:src="require(`@/uploadImage/${imageProfile?imageProfile:'man.png'}`)"
+						
 						alt="AvatarUser"
 						width="60"
 						height="60"

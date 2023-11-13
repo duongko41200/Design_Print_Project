@@ -19,7 +19,7 @@
 			class="rounded-3xl mb-[-60px] bg-current"
 		/>
 		<img
-			:src="require(`@/assets/${userInfo.image?userInfo.image:'man.png'}`)"
+			:src="require(`@/uploadImage/${userInfo.image?userInfo.image:'man.png'}`)"
 			alt="userImage"
 			width="100"
 			height="100"
