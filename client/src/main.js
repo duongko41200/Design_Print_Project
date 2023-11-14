@@ -89,7 +89,13 @@ import './assets/css/app.css';
 import router from './router';
 import store from './store';
 
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+
+
+
 const app = createApp(App);
+app.component('VueDatePicker', VueDatePicker);
 app.use(router);
 app.use(VueToast);
 app.use(store);

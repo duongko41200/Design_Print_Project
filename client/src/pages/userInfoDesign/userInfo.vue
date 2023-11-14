@@ -37,10 +37,10 @@
 						<span class="f-bold1">100</span>
 						<span> Likes</span>
 					</div>
-					<div>
+					<!-- <div>
 						<span class="f-bold1">20</span>
 						<span> follows</span>
-					</div>
+					</div> -->
 				</div>
 				<br />
 				<div class="f-bold1 w-[100%]" style="text-align: left">
@@ -75,10 +75,120 @@
 				Likes
 			</div>
 		</div>
+
+		<div class="w-full h-[100px] relative bg-gray-700 block p-2">
+			<div
+				class="w-[100%] h-[100%] flex justify-start space-x-5 items-center"
+			>
+				<div class="">
+					<label
+						id="listbox-label"
+						class="block text-sm font-medium leading-6 text-slate-200 text-left"
+						>Assigned to</label
+					>
+					<div class="mt-2">
+						<input
+							id="main-search"
+							autocomplete="off"
+							class="bg-zinc-700 border flex-1 pl-10 pr-12 rounded-full text-sm px-10 py-2.5 text-slate-50 focus:outline-none focus:ring-1 focus:ring-indigo-700"
+							placeholder="Search for an image"
+							v-model="valueSearch"
+							fdprocessedid="d00fvp"
+						/>
+					</div>
+				</div>
+
+				<div class="">
+					<label
+						id="listbox-label"
+						class="block text-sm font-medium leading-6 text-slate-200 text-left"
+						>Date</label
+					>
+					<div class="mt-2">
+						<!-- <input
+							id="main-search"
+							autocomplete="off"
+							class="bg-zinc-700 border flex-1 pl-10 pr-12 rounded-xl text-sm px-10 py-2.5 text-slate-50 focus:outline-none focus:ring-1 focus:ring-indigo-700"
+							placeholder="Search for an image"
+							v-model="valueSearch"
+							fdprocessedid="d00fvp"
+						/> -->
+						<VueDatePicker
+							v-model="date"
+							range
+							:dark = "true"
+							class="bg-black"
+							:multi-calendars="{ static: false }"
+						/>
+					</div>
+				</div>
+
+				<div class="">
+					<label
+						id="listbox-label"
+						class="block text-sm font-medium leading-6 text-slate-200 text-left"
+						>product</label
+					>
+					<div class="mt-2">
+						<select
+							id="currency"
+							name="currency"
+							class="bg-zinc-700 border flex-1 pl-4 rounded-xl text-sm px-12 py-2.5 text-slate-50 focus:outline-none focus:ring-1 focus:ring-indigo-700"
+						>
+							<option>USD</option>
+							<option>CAD</option>
+							<option>EUR</option>
+						</select>
+					</div>
+				</div>
+				<div class="">
+					<label
+						id="listbox-label"
+						class="block text-sm font-medium leading-6 text-slate-200 text-left"
+						>Trang thai</label
+					>
+					<div class="mt-2">
+						<div class="mt-2">
+							<select
+								id="currency"
+								name="currency"
+								class="bg-zinc-700 border flex-1 pl-4 rounded-xl text-sm px-12 py-2.5 text-slate-50 focus:outline-none focus:ring-1 focus:ring-indigo-700"
+							>
+								<option>All</option>
+								<option>Public</option>
+								<option>Private</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="">
+					<label
+						id="listbox-label"
+						class="block text-sm font-medium leading-6 text-slate-200 text-left"
+						>Yeu thich</label
+					>
+					<div class="mt-2">
+						<div
+							class="bg-zinc-700 pl-4 border rounded-xl text-sm py-2 px-8 flex items-center text-slate-50"
+						>
+							<input
+								id="main-search"
+								autocomplete="off"
+								type="range"
+								class="w-[100%]"
+								placeholder="Search for an image"
+								v-model="valueSearch"
+								fdprocessedid="d00fvp"
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div>
 			<div
 				:style="
-					this.$store.state.screenWidth > 730 ? 'gap:28px' : 'gap:2px'
+					this.$store.state.screenWidth > 730 ? 'gap:28px' : 'gap:10px'
 				"
 				class="exploreContainer p-1"
 			>
@@ -119,6 +229,7 @@ export default {
 			isShowPreview: false,
 
 			infoDesign: '',
+			date:''
 		};
 	},
 	computed: {
@@ -126,6 +237,11 @@ export default {
 		...designMappper.mapState(['listDesign']),
 	},
 	async mounted() {
+		const startDate = new Date();
+		const endDate = new Date(
+			new Date().setDate(startDate.getDate() + 7)
+		);
+		this.date = [startDate, endDate];
 		await this.getListDesignByUser({
 			userId: this.userInfo.id,
 			isPublic: 'all',
@@ -195,7 +311,6 @@ export default {
 	padding: 0px;
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: space-between;
 }
 .prUsername {
 	font-weight: 300;
@@ -226,5 +341,36 @@ export default {
 	min-height: 200px;
 	height: fit-content;
 	/* width: 500px; */
+}
+
+
+
+.dp__theme_dark {
+    --dp-background-color: rgb(63 63 70) !important;
+    --dp-text-color: #fff;
+    --dp-hover-color: #484848;
+    --dp-hover-text-color: #fff;
+    --dp-hover-icon-color: #959595;
+    --dp-primary-color: #005cb2;
+    --dp-primary-disabled-color: #61a8ea;
+    --dp-primary-text-color: #fff;
+    --dp-secondary-color: #a9a9a9;
+    --dp-border-color: #f4f1f1 !important;
+    --dp-menu-border-color: #2d2d2d;
+    --dp-border-color-hover: #aaaeb7;
+    --dp-disabled-color: #737373;
+    --dp-disabled-color-text: #d0d0d0;
+    --dp-scroll-bar-background: #212121;
+    --dp-scroll-bar-color: #484848;
+    --dp-success-color: #00701a;
+    --dp-success-color-disabled: #428f59;
+    --dp-icon-color: #fff !important;
+    --dp-danger-color: #e53935;
+    --dp-marker-color: #e53935;
+    --dp-tooltip-color: #3e3e3e;
+    --dp-highlight-color: rgb(0 92 178 / 20%);
+    --dp-range-between-dates-background-color: var(--dp-hover-color, #484848);
+    --dp-range-between-dates-text-color: var(--dp-hover-text-color, #fff);
+    --dp-range-between-border-color: var(--dp-hover-color, #fff);
 }
 </style>

@@ -19,11 +19,11 @@
 			
 				</div>
 				<div>
-					<p
+					<!-- <p
 						class="mt-2 text-xs text-indigo-300 active:scale-95 text-center font-medium shadow-sm hover:shadow-md bg-indigo-300 bg-opacity-5 hover:bg-opacity-10 border-0 border-indigo-300 border-opacity-10 hover:border-opacity-20 transition-all rounded-md px-6 py-2"
 					>
 						Try the Next-Gen Aperture v3.5 Model
-					</p>
+					</p> -->
 				</div>
 				<div
 					class="flex items-center w-full max-w-[600px] md:ml-[48px] mt-8 px-4 pl-5 md:px-5"

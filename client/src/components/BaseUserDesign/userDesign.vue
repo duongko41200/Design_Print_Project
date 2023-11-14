@@ -78,7 +78,7 @@
 		<div>
 			<div
 				:style="
-					this.$store.state.screenWidth > 730 ? 'gap:28px' : 'gap:2px'
+					this.$store.state.screenWidth > 730 ? 'gap:28px' : 'gap:10px'
 				"
 				class="exploreContainer p-1"
 			>
@@ -204,7 +204,7 @@ export default {
 	padding: 0px;
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: space-between;
+
 }
 .prUsername {
 	font-weight: 300;
