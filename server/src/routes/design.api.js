@@ -10,7 +10,7 @@ const DesignApi = (app) => {
 	router.delete('/delete', DesignControl.deleteDesign);
 	router.get('/findDesign', DesignControl.findDesign);
 	router.get('/allDesign', DesignControl.getAllDesign);
-	router.post('/SearchDesign', DesignControl.SearchDesign);
+	// router.post('/SearchDesign', DesignControl.SearchDesign);
 
 	return app.use('/api/design', router);
 };

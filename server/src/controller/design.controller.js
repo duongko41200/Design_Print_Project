@@ -38,12 +38,12 @@ const getAllDesignByUser = async (req, res) => {
 		const listDesignByPublic = await Design.find({
 			user: req.query.userId,
 			isPublic: req.query.isPublic
-		}).populate('user');
+		}).populate(['user','product']);
 		listDesign = listDesignByPublic
 	} else {
 		const listDesignByAll = await Design.find({
 			user: req.query.userId
-		}).populate('user');
+		}).populate(['user','product']);
 		listDesign = listDesignByAll
 	}
 
@@ -84,15 +84,15 @@ const getAllDesign = async (req, res) => {
 	});
 
 };
-const SearchDesign = async (req, res) => {
-	const contentSearch = req.body.contentSearch
-	const typeSearch = req.body.typeSearch
-	const idProduct = req.query.idProduct
+// const SearchDesign = async (req, res) => {
+// 	const contentSearch = req.body.contentSearch
+// 	const typeSearch = req.body.typeSearch
+// 	const idProduct = req.query.idProduct
 
-	if (typeSearch === 'design') {
-		const listSearch = await Design.find({})
-	}
-}
+// 	if (typeSearch === 'design') {
+// 		const listSearch = await Design.find({})
+// 	}
+// }
 
 module.exports = {
 	createDesign,
@@ -100,5 +100,5 @@ module.exports = {
 	deleteDesign,
 	findDesign,
 	getAllDesign,
-	SearchDesign
+	// SearchDesign
 };

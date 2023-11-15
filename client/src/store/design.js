@@ -1,11 +1,18 @@
 import { getField, updateField } from 'vuex-map-fields';
 import DesignService from '@/sevices/design.service';
+import {
+	filterKeyWord,
+	filterCatalogeProduct,
+	filterIsPublic,
+	filterDate,
+} from '@/utils/filter.js';
 export default {
 	namespaced: true,
 
 	state() {
 		return {
 			listDesign: [],
+			originListDesign: [],
 			designEdit: '',
 			infoDesign: '',
 			originAllDesign: [],
@@ -17,9 +24,10 @@ export default {
 		async getListDesignByUser({ commit }, payload) {
 			const allDesigns = await DesignService.getAllDesignByUser({
 				userId: payload.userId,
-				isPublic: payload.isPublic
+				isPublic: payload.isPublic,
 			});
 			commit('SET_LIST_DESIGN', allDesigns.data.data);
+			commit('SET_ORIGIN_LIST_DESIGN', allDesigns.data.data);
 		},
 		async deleteDesignByUser({ commit }, payload) {
 			const allDesigns = await DesignService.deleteDesignByUser({
@@ -27,6 +35,7 @@ export default {
 				userId: payload.userId,
 			});
 			commit('SET_LIST_DESIGN', allDesigns.data.data);
+			commit('SET_ORIGIN_LIST_DESIGN', allDesigns.data.data);
 		},
 		async findDesign({ commit }, payload) {
 			console.log(payload);
@@ -49,21 +58,52 @@ export default {
 			commit('SET_ORIGINAL_DESIGN', allDesign.data.data);
 		},
 
-		searchDesign({ commit ,state,dispatch },payload) {
-			console.log('searching', state.allDesign)
-			dispatch('filterCataloge', { id: payload.idCataloge, name: payload.valueCataloge });
-			const dataSearch = state.allDesign.filter(design => design.name === payload.content)
-			commit('SET_ALL_DESIGN',dataSearch);
+		searchDesign({ commit, state, dispatch }, payload) {
 
+			dispatch('filterCataloge', {
+				id: payload.idCataloge,
+				name: payload.valueCataloge,
+			});
+			const dataSearch = state.allDesign.filter(
+				(design) => design.name === payload.content
+			);
+			commit('SET_ALL_DESIGN', dataSearch);
 		},
-		filterCataloge({ commit, state }, payload) { 
+		filterCataloge({ commit, state }, payload) {
 			if (payload.name === 'All') {
 				commit('SET_ALL_DESIGN', state.originAllDesign);
 			} else {
-				const dataFilterCataloge = state.originAllDesign.filter(design => design.product === payload.id)
-				commit('SET_ALL_DESIGN', dataFilterCataloge)
+				const dataFilterCataloge = state.originAllDesign.filter(
+					(design) => design.product === payload.id
+				);
+				commit('SET_ALL_DESIGN', dataFilterCataloge);
 			}
-		}
+		},
+
+		filterListDesign(
+			{ commit, state },
+			{ searchKeyword, cataloge, statusPublics,date }
+		) {
+			if (!state.originListDesign) return;
+			let searchResult = [...state.originListDesign];
+			if (searchKeyword) {
+				searchResult = filterKeyWord(searchResult, searchKeyword);
+			}
+			if (statusPublics != 'All') {
+				searchResult = filterIsPublic(searchResult, statusPublics);
+			}
+			if (cataloge != 'All') {
+
+				searchResult = filterCatalogeProduct(searchResult, cataloge);
+			}
+			if (date.length > 0) {
+			
+				searchResult = filterDate(searchResult, date);
+			}
+
+
+			commit('SET_LIST_DESIGN', searchResult);
+		},
 	},
 
 	mutations: {
@@ -82,6 +122,9 @@ export default {
 		},
 		SET_ORIGINAL_DESIGN(state, payload) {
 			state.originAllDesign = payload;
+		},
+		SET_ORIGIN_LIST_DESIGN(state, payload) {
+			state.originListDesign = payload;
 		},
 	},
 
