@@ -63,7 +63,7 @@
 					</select>
 				</div>
 			</div>
-			<div class="">
+			<div class="" v-if="isStatus">
 				<label
 					id="listbox-label"
 					class="block text-sm font-medium leading-6 text-slate-200 text-left"
@@ -132,6 +132,12 @@ export default {
 			inputSearch: '',
 			numberLike:100,
 		};
+	},
+	props: {
+		isStatus: {
+			type: Boolean,
+			default:true
+		}
 	},
 	computed:{
 		...productMappper.mapState(['products','cataloge'])

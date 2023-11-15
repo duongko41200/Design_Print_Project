@@ -75,6 +75,7 @@
 				Likes
 			</div>
 		</div>
+		<baseFilter :isStatus="false"></baseFilter>
 		<div>
 			<div
 				:style="
@@ -107,11 +108,13 @@ import onePost from '@/pages/userInfoDesign/PostBase/one-post.vue';
 import ImageAssetService from '@/sevices/imageAssets.service';
 import UserService from '@/sevices/user.service';
 import modalPreview from '@/components/ModalPreview/modalPreview.vue';
+import baseFilter from '@/components/BaseFilter/baseFilter.vue';
 const designMappper = createNamespacedHelpers('design');
 export default {
 	components: {
 		onePost,
 		modalPreview,
+		baseFilter
 	},
 	data() {
 		return {

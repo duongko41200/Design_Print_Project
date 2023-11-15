@@ -114,7 +114,7 @@ export default {
 		},
 		profileName: {
 			type: String,
-			default: 'Print Design',
+			default: 'HUGO',
 		},
 		profileRole: {
 			type: String,
