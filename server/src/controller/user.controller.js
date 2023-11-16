@@ -133,7 +133,7 @@ const handleUpdate = async (req, res) => {
 		email: body.email,
 		password: body.password,
 		image: body.image,
-		description: body.description.userInfo,
+		description: body.description,
 		favoriteDesign:body.favoriteDesign,
 	});
 
