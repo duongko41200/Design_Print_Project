@@ -57,7 +57,8 @@
 														>
 															<div
 																class="text-xs rounded-md sm:text-xs active:scale-95 transition-all transform-gpu whitespace-nowrap flex-1 flex select-none cursor-pointer hover:bg-zinc-600 border border-zinc-600 bg-zinc-700 items-center justify-center shadow px-2.5 py-2 w-fit-content"
-															>
+															@click="creatFavoriteDesign(infoDesign)"
+																>
 																<svg
 																	xmlns="http://www.w3.org/2000/svg"
 																	stroke="currentColor"
@@ -617,6 +618,9 @@ export default {
 				this.$router.push(`/userInfo`);
 			}
 		},
+		creatFavoriteDesign(design) {
+			this.$emit('CreateFavoriteDesign',design)
+		}
 	},
 };
 </script>

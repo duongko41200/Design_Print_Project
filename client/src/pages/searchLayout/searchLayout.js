@@ -2,6 +2,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
 import { ChevronDownIcon } from '@heroicons/vue/20/solid';
 import logoUser from '@/components/logoUser/logoUser.vue';
 import modalPreview from '@/components/ModalPreview/modalPreview.vue';
+import UserService from '@/sevices/user.service';
 import { createNamespacedHelpers } from 'vuex';
 const designMappper = createNamespacedHelpers('design');
 const productMappper = createNamespacedHelpers('product');
@@ -23,8 +24,7 @@ export default {
 			valueSearch: '',
 			valueCataloge: 'All',
 			idCataloge: '',
-			typePreview:'',
-
+			typePreview: '',
 		};
 	},
 	async mounted() {
@@ -42,17 +42,18 @@ export default {
 			'filterCataloge',
 		]),
 		...productMappper.mapActions(['handleCataloge']),
+		...authMappper.mapActions(['SET_USER_INFO']),
 		onCreateDesign() {
 			this.$emit('onCreateDesign');
 		},
 		onPreviweDesign(infoDesign) {
 			console.log('infoDesign:', infoDesign);
-			this.typePreview = 'detail'
+			this.typePreview = 'detail';
 			this.infoDesign = infoDesign;
 			this.isShowPreview = true;
 		},
 		onDownload(infoDesign) {
-			this.typePreview = 'preview'
+			this.typePreview = 'preview';
 			this.infoDesign = infoDesign;
 			this.isShowPreview = true;
 		},
@@ -75,12 +76,23 @@ export default {
 			this.valueSearch = '';
 		},
 		onMoveUserDesign(design) {
-			console.log("dklsjksdjfkdsj",design.user);
+			console.log('dklsjksdjfkdsj', design.user);
 			if (this.userInfo.id !== design.user.id) {
 				this.$router.push(`/user/${design.user.id}`);
 			} else {
 				this.$router.push(`/userInfo`);
 			}
+		},
+		async creatFavoriteDesign(design) {
+			console.log('design :', design);
+			const favoriteDesign =await UserService.creatFavoriteDesign({
+				userId: this.userInfo.id,
+				designId: design.id,
+			});
+			this.SET_USER_INFO(favoriteDesign.data.data)
+			localStorage.setItem('tokens', favoriteDesign.data.token);
+			console.log('like :', favoriteDesign)
+		
 		},
 	},
 };

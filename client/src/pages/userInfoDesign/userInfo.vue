@@ -182,6 +182,7 @@ export default {
 					console.log("userinfo:", this.userInfo)
 
 					const favoriteDesign = this.userInfo.favoriteDesign
+					console.log("this.userInfo.favoriteDesign",this.userInfo.favoriteDesign)
 					this.getFavoriteDesign(favoriteDesign)
 					break;
 				}

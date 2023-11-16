@@ -69,7 +69,10 @@ const UserService = {
 
 	findByUser(params) {
 		return ApiService.get(baseUrl + 'findByUser', params);
-	}
+	},
+	creatFavoriteDesign(params) {
+		return ApiService.post(baseUrl + 'creatFavoriteDesign', params);
+	},
 };
 
 export default UserService;
