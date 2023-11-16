@@ -71,8 +71,12 @@
 			>
 				Assets
 			</div>
-			<div class="myButtonProfile center f-bold1 font1 cursor-pointer">
-				Likes
+			<div
+				class="myButtonProfile center f-bold1 font1 cursor-pointer"
+				@click="onChooseOption('favorite')"
+				:class="activeOption === 'favorite' ? 'text-sky-400' : ''"
+			>
+				Favorite
 			</div>
 		</div>
 
@@ -123,7 +127,6 @@ export default {
 			isShowPreview: false,
 
 			infoDesign: '',
-		
 		};
 	},
 	computed: {
@@ -140,10 +143,10 @@ export default {
 			userId: this.userInfo.id,
 			isPublic: 'all',
 		});
-		console.log("fksdjfkds: ",this.listDesign)
+		console.log('fksdjfkds: ', this.listDesign);
 	},
 	methods: {
-		...designMappper.mapActions(['getListDesignByUser']),
+		...designMappper.mapActions(['getListDesignByUser','getFavoriteDesign']),
 		...designMappper.mapMutations(['SET_LIST_DESIGN']),
 		async onChooseOption(value) {
 			switch (value) {
@@ -170,6 +173,16 @@ export default {
 					});
 					console.log('imageAsset:', imageAsset);
 					this.SET_LIST_DESIGN(imageAsset.data.data);
+					break;
+				}
+				case 'favorite': {
+					this.SET_LIST_DESIGN([]);
+					this.activeOption = value;
+
+					console.log("userinfo:", this.userInfo)
+
+					const favoriteDesign = this.userInfo.favoriteDesign
+					this.getFavoriteDesign(favoriteDesign)
 					break;
 				}
 
@@ -237,6 +250,4 @@ export default {
 	height: fit-content;
 	/* width: 500px; */
 }
-
-
 </style>

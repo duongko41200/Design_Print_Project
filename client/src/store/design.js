@@ -104,6 +104,30 @@ export default {
 
 			commit('SET_LIST_DESIGN', searchResult);
 		},
+
+		getFavoriteDesign({commit, state }, listFavorite) {
+			console.log(state.originAllDesign)
+			console.log("favoriteDesign", listFavorite)
+			
+
+			const originAllDesign = state.originAllDesign
+
+			let favoriteDesign =[]
+			for (let i = 0; i < originAllDesign.length; i++) { 
+				for (let j = 0; j < listFavorite.length; j++){
+					if (listFavorite[j] == originAllDesign[i].id) {
+						favoriteDesign = [...favoriteDesign, originAllDesign[i]];
+						continue;
+					}
+					
+				}
+				
+			}
+		
+			commit('SET_LIST_DESIGN', favoriteDesign);
+			commit('SET_ORIGIN_LIST_DESIGN', favoriteDesign);
+		}
+		
 	},
 
 	mutations: {

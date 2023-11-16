@@ -40,6 +40,10 @@ const userSchema = new mongoose.Schema(
 			enum: ['active', 'inactive'],
 			default: 'active',
 		},
+		favoriteDesign: {
+			type: Array,
+			default: [],
+		},
 		password: {
 			type: String,
 			required: [true, 'Please provide your passsword!'],

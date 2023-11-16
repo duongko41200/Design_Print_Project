@@ -5,10 +5,21 @@
 </template>
 
 <script>
+const designMappper = createNamespacedHelpers('design');
+import { createNamespacedHelpers } from 'vuex';
 export default {
   name: 'App',
   components: {
 
+  },
+  mounted(){
+    this.getAllDesign()
+  },
+  methods: {
+    ...designMappper.mapActions([
+			'getAllDesign',
+
+		]),
   }
 }
 </script>

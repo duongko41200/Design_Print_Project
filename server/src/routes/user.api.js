@@ -10,6 +10,7 @@ const userApi = (app) => {
 	router.post('/validate', ApiControl.handleValidateToken)
 	router.get('/findByUser', ApiControl.handleFindByUser)
 	router.put('/update', ApiControl.handleUpdate)
+	router.post('/creatFavoriteDesign', ApiControl.handleCreateFavoriteDesign)
 
 	return app.use('/api/user', router);
 };

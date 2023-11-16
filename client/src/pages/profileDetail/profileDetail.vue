@@ -139,6 +139,7 @@ export default {
 				email: this.email,
 				password: this.password,
 				description: this.description,
+				favoriteDesign: this.userInfo.favoriteDesign
 			};
 			try {
 				const updatedata = await UserService.updateProfile({ param });

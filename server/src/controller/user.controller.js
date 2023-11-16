@@ -100,7 +100,8 @@ const handleLogin = async (req, res) => {
 			password: password,
 			email: email,
 			image: checkLogin[0].image,
-			description: checkLogin[0].description
+			description: checkLogin[0].description,
+			favoriteDesign:checkLogin[0].favoriteDesign
 		});
 
 		return res.status(200).json({
@@ -119,6 +120,8 @@ const handleLogin = async (req, res) => {
 const handleUpdate = async (req, res) => {
 	const body = req.body.param;
 
+	console.log('body;',body)
+
 	////kiểm tra lại chõ này
 	const bodyCopy = req.body.param
 
@@ -130,7 +133,8 @@ const handleUpdate = async (req, res) => {
 		email: body.email,
 		password: body.password,
 		image: body.image,
-		description: body.description
+		description: body.description.userInfo,
+		favoriteDesign:body.favoriteDesign,
 	});
 
 	console.log('body request:', body);
@@ -145,7 +149,8 @@ const handleUpdate = async (req, res) => {
 				email: body.email,
 				password: body.password,
 				image: body.image,
-				description: body.description
+				description: body.description,
+				favoriteDesign:body.favoriteDesign,
 			}
 		);
 
@@ -191,11 +196,38 @@ const handleFindByUser = async (req, res) => {
 	});
 }
 
+const handleCreateFavoriteDesign = async (req, res) => { 
+	const uerId = req.body.userId
+	const designId = req.body.designId
+	const getUser = await User.find({ _id: uerId });
+
+	const listfavorite = getUser.favoriteDesign?getUser.favoriteDesign:[]
+
+	const favoriteDesignArray =[...listfavorite,designId];
+
+	const updateListfavorite  = await User.findOneAndUpdate(
+		{ _id: uerId },
+		{
+			favoriteDesign: favoriteDesignArray
+		}
+	);
+	
+	return res.status(200).json({
+		status: 'success',
+	});
+
+
+}
+
+
+
+
 module.exports = {
 	handleSignup,
 	handleLogin,
 	handleLogout,
 	handleValidateToken,
 	handleUpdate,
-	handleFindByUser
+	handleFindByUser,
+	handleCreateFavoriteDesign
 };

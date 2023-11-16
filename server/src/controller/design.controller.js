@@ -84,6 +84,13 @@ const getAllDesign = async (req, res) => {
 	});
 
 };
+
+const likeDesign = async (req, res) => { 
+	// b1; tim thay design(id)
+	// b2: cap nhap so like vaf nguoi like --lay duoc id nguowif like cho vao mang
+
+	
+}
 // const SearchDesign = async (req, res) => {
 // 	const contentSearch = req.body.contentSearch
 // 	const typeSearch = req.body.typeSearch
@@ -101,4 +108,5 @@ module.exports = {
 	findDesign,
 	getAllDesign,
 	// SearchDesign
+	likeDesign
 };

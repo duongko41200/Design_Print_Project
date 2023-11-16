@@ -11,6 +11,8 @@ const DesignApi = (app) => {
 	router.get('/findDesign', DesignControl.findDesign);
 	router.get('/allDesign', DesignControl.getAllDesign);
 	// router.post('/SearchDesign', DesignControl.SearchDesign);
+	router.put('/likeDesign', DesignControl.likeDesign);
+	
 
 	return app.use('/api/design', router);
 };

@@ -31,6 +31,14 @@ const designSchema = new mongoose.Schema(
 			type: [Object],
 			default: [],
 		},
+		numberlike: {
+			type: Number,
+			default: 0,
+		},
+		userLike: {
+			type: Array,
+			default: [],
+		},
 
 		thumbnailFront: String,
 		thumbnailBack: String,
