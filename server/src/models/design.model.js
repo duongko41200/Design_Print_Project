@@ -31,7 +31,7 @@ const designSchema = new mongoose.Schema(
 			type: [Object],
 			default: [],
 		},
-		numberlike: {
+		numberLike: {
 			type: Number,
 			default: 0,
 		},

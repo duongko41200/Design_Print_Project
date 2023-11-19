@@ -3,6 +3,7 @@ import { ChevronDownIcon } from '@heroicons/vue/20/solid';
 import logoUser from '@/components/logoUser/logoUser.vue';
 import modalPreview from '@/components/ModalPreview/modalPreview.vue';
 import UserService from '@/sevices/user.service';
+import DesignService from '@/sevices/design.service';
 import { createNamespacedHelpers } from 'vuex';
 const designMappper = createNamespacedHelpers('design');
 const productMappper = createNamespacedHelpers('product');
@@ -40,7 +41,7 @@ export default {
 			'getAllDesign',
 			'searchDesign',
 			'filterCataloge',
-			'handleFavoriteList'
+			'handleFavoriteList',
 		]),
 		...productMappper.mapActions(['handleCataloge']),
 		...authMappper.mapActions(['SET_USER_INFO']),
@@ -86,33 +87,42 @@ export default {
 		},
 		async creatFavoriteDesign(design) {
 			console.log('design :', design);
-			let userInfoUpdate = ''
+			let userInfoUpdate = '';
 			if (design.isLike === true) {
 				console.log('design dsfsdf :', design);
 
-				
-				const favoriteDesign =await UserService.deleteFavoriteDesign({
+				const favoriteDesign = await UserService.deleteFavoriteDesign({
 					userId: this.userInfo.id,
 					designId: design.id,
 				});
-				userInfoUpdate = favoriteDesign
-				this.handleFavoriteList({ designId: design.id,type:'delete' })
-
+				await DesignService.unLikeDesign({
+					idDesign: design.id,
+					idUser: this.userInfo.id,
+				});
+				userInfoUpdate = favoriteDesign;
+				this.handleFavoriteList({
+					designId: design.id,
+					type: 'delete',
+				});
 			} else {
-
-
-				const favoriteDesign =await UserService.creatFavoriteDesign({
+				const favoriteDesign = await UserService.creatFavoriteDesign({
 					userId: this.userInfo.id,
 					designId: design.id,
 				});
-				userInfoUpdate = favoriteDesign
-				this.handleFavoriteList({ designId: design.id ,type:'create'})
+				await DesignService.likeDesign({
+					idDesign: design.id,
+					idUser: this.userInfo.id,
+				});
+				userInfoUpdate = favoriteDesign;
+				this.handleFavoriteList({
+					designId: design.id,
+					type: 'create',
+				});
 			}
 
-			this.SET_USER_INFO(userInfoUpdate.data?.data)
+			this.SET_USER_INFO(userInfoUpdate.data?.data);
 			localStorage.setItem('tokens', userInfoUpdate.data.token);
-			console.log('like :', userInfoUpdate)
-		
+			console.log('like :', userInfoUpdate);
 		},
 	},
 };

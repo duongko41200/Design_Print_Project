@@ -22,6 +22,15 @@ const DesignService = {
 		return ApiService.get(baseUrl + 'allDesign', params);
 	},
 
+	async likeDesign(params) {
+		return ApiService.put(baseUrl + 'likeDesign', params);
+	},
+	async unLikeDesign(params) {
+		return ApiService.put(baseUrl + 'unLikeDesign', params);
+	},
+
+
+	
 
 
 	

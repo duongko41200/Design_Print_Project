@@ -14,8 +14,11 @@ const createDesign = async (req, res) => {
 	const getDesign = await Design.find({ _id: req.body.idDesign });
 
 	console.log('getDesign', getDesign);
-	if (getDesign.length >0) {
-		const updateDesign = await Design.updateMany({ _id: req.body.idDesign },req.body.params);
+	if (getDesign.length > 0) {
+		const updateDesign = await Design.updateMany(
+			{ _id: req.body.idDesign },
+			req.body.params
+		);
 		console.log('updateDesign', updateDesign);
 		res.status(200).json({
 			status: 'success',
@@ -23,7 +26,7 @@ const createDesign = async (req, res) => {
 	} else {
 		const newDesign = await Design.create(req.body.params);
 
-		console.log("newDesign", newDesign);
+		console.log('newDesign', newDesign);
 		res.status(200).json({
 			status: 'success',
 			data: newDesign,
@@ -31,20 +34,19 @@ const createDesign = async (req, res) => {
 	}
 };
 const getAllDesignByUser = async (req, res) => {
-
-	console.log("req.query", req.query)
-	let listDesign =''
+	console.log('req.query', req.query);
+	let listDesign = '';
 	if (req.query.isPublic === 'public') {
 		const listDesignByPublic = await Design.find({
 			user: req.query.userId,
-			isPublic: req.query.isPublic
-		}).populate(['user','product']);
-		listDesign = listDesignByPublic
+			isPublic: req.query.isPublic,
+		}).populate(['user', 'product']);
+		listDesign = listDesignByPublic;
 	} else {
 		const listDesignByAll = await Design.find({
-			user: req.query.userId
-		}).populate(['user','product']);
-		listDesign = listDesignByAll
+			user: req.query.userId,
+		}).populate(['user', 'product']);
+		listDesign = listDesignByAll;
 	}
 
 	res.status(200).json({
@@ -76,21 +78,72 @@ const getAllDesign = async (req, res) => {
 		isPublic: 'public',
 	}).populate('user');
 
-	console.log('lise All Design :', listDesign)
+	console.log('lise All Design :', listDesign);
 
 	res.status(200).json({
 		status: 'success',
 		data: listDesign,
 	});
-
 };
 
-const likeDesign = async (req, res) => { 
+const likeDesign = async (req, res) => {
 	// b1; tim thay design(id)
 	// b2: cap nhap so like vaf nguoi like --lay duoc id nguowif like cho vao mang
-
+	console.log('gia tri param: ', req.body);
+	const designId = req.body.idDesign;
+	const userId = req.body.idUser;
+	const design = await Design.find({ _id: designId }).populate('user');
+	let numberLike =
+		parseInt(design[0].numberLike ? design[0].numberLike : 0) + 1;
+	const array = design[0].userLike ? design[0].userLike : [];
+	let userLike = [...array, userId];
+	console.log('like design', numberLike, userLike);
 	
-}
+	const updateDesign = await Design.updateMany(
+		{ _id: designId },
+		{ numberLike: numberLike, userLike: userLike }
+	);
+
+	res.status(200).json({
+		status: 'success',
+		data: {
+			userLike: userLike,
+			numberLike: numberLike,
+		},
+	});
+};
+const unLikeDesign = async (req, res) => {
+	// b1; tim thay design(id)
+	// b2: cap nhap so like vaf nguoi like --lay duoc id nguowif like cho vao mang
+	console.log('gia tri param: ', req.body);
+	const designId = req.body.idDesign;
+	const userId = req.body.idUser;
+	const design = await Design.find({ _id: designId }).populate('user');
+	let numberLike =
+		parseInt(design[0].numberLike ? design[0].numberLike : 0) - 1;
+	const array = design[0].userLike ? design[0].userLike : [];
+
+	let userLike =[]
+	for (let i = 0; i < array.length; i++) {
+		if (array[i] != userId) { 
+			userLike =[...userLike, array[i]]
+		}
+		
+	}
+
+	const updateDesign = await Design.updateMany(
+		{ _id: designId },
+		{ numberLike: numberLike, userLike: userLike }
+	);
+
+	res.status(200).json({
+		status: 'success',
+		data: {
+			userLike: userLike,
+			numberLike: numberLike,
+		},
+	});
+};
 // const SearchDesign = async (req, res) => {
 // 	const contentSearch = req.body.contentSearch
 // 	const typeSearch = req.body.typeSearch
@@ -108,5 +161,6 @@ module.exports = {
 	findDesign,
 	getAllDesign,
 	// SearchDesign
-	likeDesign
+	likeDesign,
+	unLikeDesign
 };
