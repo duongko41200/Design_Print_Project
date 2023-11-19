@@ -189,7 +189,9 @@
 									>
 										<icon
 											icon="fa-solid fa-heart"
-											style="color: #fff"
+							
+										
+											:class="design.isLike === true?'text-rose-600':''"
 										/>
 									</div>
 									<div

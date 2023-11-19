@@ -52,14 +52,36 @@ export default {
 			commit('SET_EDIT_DESIGN', designCanvas);
 			commit('SET_INFO_DESIGN', design.data.data[0]);
 		},
-		async getAllDesign({ commit }) {
+		async getAllDesign({ commit }, payload) {
+			console.log('dksjfksdj:', payload);
+
+			const favoriteDesigns = payload?.favoriteDesign ? payload.favoriteDesign:[];
 			const allDesign = await DesignService.getAllDesign();
-			commit('SET_ALL_DESIGN', allDesign.data.data);
-			commit('SET_ORIGINAL_DESIGN', allDesign.data.data);
+			const statusFavorite = allDesign.data.data;
+
+
+			// add isLike for Design
+			if (favoriteDesigns.length > 0) {
+				for (let i = 0; i < statusFavorite.length; i++) {
+					for (let j = 0; j < favoriteDesigns.length; j++) {
+						if (statusFavorite[i].id === favoriteDesigns[j]) {
+							console.log("ddax vaof day ", i)
+							statusFavorite[i].isLike = true
+						} 
+					}
+				}
+			}
+
+			console.log(
+				'allDesign',
+				favoriteDesigns,
+				statusFavorite
+			);
+			commit('SET_ALL_DESIGN', statusFavorite);
+			commit('SET_ORIGINAL_DESIGN', statusFavorite);
 		},
 
 		searchDesign({ commit, state, dispatch }, payload) {
-
 			dispatch('filterCataloge', {
 				id: payload.idCataloge,
 				name: payload.valueCataloge,
@@ -82,7 +104,7 @@ export default {
 
 		filterListDesign(
 			{ commit, state },
-			{ searchKeyword, cataloge, statusPublics,date }
+			{ searchKeyword, cataloge, statusPublics, date }
 		) {
 			if (!state.originListDesign) return;
 			let searchResult = [...state.originListDesign];
@@ -93,41 +115,34 @@ export default {
 				searchResult = filterIsPublic(searchResult, statusPublics);
 			}
 			if (cataloge != 'All') {
-
 				searchResult = filterCatalogeProduct(searchResult, cataloge);
 			}
 			if (date.length > 0) {
-			
 				searchResult = filterDate(searchResult, date);
 			}
-
 
 			commit('SET_LIST_DESIGN', searchResult);
 		},
 
-		getFavoriteDesign({commit, state }, listFavorite) {
-			console.log(state.originAllDesign)
-			console.log("favoriteDesign", listFavorite)
-			
+		getFavoriteDesign({ commit, state }, listFavorite) {
+			console.log(state.originAllDesign);
+			console.log('favoriteDesign', listFavorite);
 
-			const originAllDesign = state.originAllDesign
+			const originAllDesign = state.originAllDesign;
 
-			let favoriteDesign =[]
-			for (let i = 0; i < originAllDesign.length; i++) { 
-				for (let j = 0; j < listFavorite.length; j++){
+			let favoriteDesign = [];
+			for (let i = 0; i < originAllDesign.length; i++) {
+				for (let j = 0; j < listFavorite.length; j++) {
 					if (listFavorite[j] == originAllDesign[i].id) {
 						favoriteDesign = [...favoriteDesign, originAllDesign[i]];
 						continue;
 					}
-					
 				}
-				
 			}
-		
+
 			commit('SET_LIST_DESIGN', favoriteDesign);
 			commit('SET_ORIGIN_LIST_DESIGN', favoriteDesign);
-		}
-		
+		},
 	},
 
 	mutations: {

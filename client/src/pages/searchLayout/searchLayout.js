@@ -28,7 +28,7 @@ export default {
 		};
 	},
 	async mounted() {
-		await this.getAllDesign();
+		await this.getAllDesign(this.userInfo);
 	},
 	computed: {
 		...designMappper.mapState(['allDesign']),
