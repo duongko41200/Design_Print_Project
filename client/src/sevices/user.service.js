@@ -73,6 +73,11 @@ const UserService = {
 	creatFavoriteDesign(params) {
 		return ApiService.post(baseUrl + 'creatFavoriteDesign', params);
 	},
+	deleteFavoriteDesign(params) {
+		return ApiService.post(baseUrl + 'deleteFavoriteDesign', params);
+	},
+
+	
 };
 
 export default UserService;

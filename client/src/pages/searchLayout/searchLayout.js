@@ -40,6 +40,7 @@ export default {
 			'getAllDesign',
 			'searchDesign',
 			'filterCataloge',
+			'handleFavoriteList'
 		]),
 		...productMappper.mapActions(['handleCataloge']),
 		...authMappper.mapActions(['SET_USER_INFO']),
@@ -85,13 +86,32 @@ export default {
 		},
 		async creatFavoriteDesign(design) {
 			console.log('design :', design);
-			const favoriteDesign =await UserService.creatFavoriteDesign({
-				userId: this.userInfo.id,
-				designId: design.id,
-			});
-			this.SET_USER_INFO(favoriteDesign.data.data)
-			localStorage.setItem('tokens', favoriteDesign.data.token);
-			console.log('like :', favoriteDesign)
+			let userInfoUpdate = ''
+			if (design.isLike === true) {
+				console.log('design dsfsdf :', design);
+
+				
+				const favoriteDesign =await UserService.deleteFavoriteDesign({
+					userId: this.userInfo.id,
+					designId: design.id,
+				});
+				userInfoUpdate = favoriteDesign
+				this.handleFavoriteList({ designId: design.id,type:'delete' })
+
+			} else {
+
+
+				const favoriteDesign =await UserService.creatFavoriteDesign({
+					userId: this.userInfo.id,
+					designId: design.id,
+				});
+				userInfoUpdate = favoriteDesign
+				this.handleFavoriteList({ designId: design.id ,type:'create'})
+			}
+
+			this.SET_USER_INFO(userInfoUpdate.data?.data)
+			localStorage.setItem('tokens', userInfoUpdate.data.token);
+			console.log('like :', userInfoUpdate)
 		
 		},
 	},

@@ -37,6 +37,8 @@ export default {
 			commit('SET_LIST_DESIGN', allDesigns.data.data);
 			commit('SET_ORIGIN_LIST_DESIGN', allDesigns.data.data);
 		},
+
+		//edit design by user
 		async findDesign({ commit }, payload) {
 			console.log(payload);
 			const design = await DesignService.findDesignById({
@@ -55,28 +57,25 @@ export default {
 		async getAllDesign({ commit }, payload) {
 			console.log('dksjfksdj:', payload);
 
-			const favoriteDesigns = payload?.favoriteDesign ? payload.favoriteDesign:[];
+			const favoriteDesigns = payload?.favoriteDesign
+				? payload.favoriteDesign
+				: [];
 			const allDesign = await DesignService.getAllDesign();
 			const statusFavorite = allDesign.data.data;
-
 
 			// add isLike for Design
 			if (favoriteDesigns.length > 0) {
 				for (let i = 0; i < statusFavorite.length; i++) {
 					for (let j = 0; j < favoriteDesigns.length; j++) {
 						if (statusFavorite[i].id === favoriteDesigns[j]) {
-							console.log("ddax vaof day ", i)
-							statusFavorite[i].isLike = true
-						} 
+							console.log('ddax vaof day ', i);
+							statusFavorite[i].isLike = true;
+						}
 					}
 				}
 			}
 
-			console.log(
-				'allDesign',
-				favoriteDesigns,
-				statusFavorite
-			);
+			console.log('allDesign', favoriteDesigns, statusFavorite);
 			commit('SET_ALL_DESIGN', statusFavorite);
 			commit('SET_ORIGINAL_DESIGN', statusFavorite);
 		},
@@ -142,6 +141,23 @@ export default {
 
 			commit('SET_LIST_DESIGN', favoriteDesign);
 			commit('SET_ORIGIN_LIST_DESIGN', favoriteDesign);
+		},
+
+		handleFavoriteList({ commit, state }, { designId, type }) {
+			const originAllDesign = state.originAllDesign;
+
+			for (let i = 0; i < originAllDesign.length; i++) {
+				if (originAllDesign[i].id === designId) {
+					if (type === 'create') {
+						originAllDesign[i].isLike = true;
+					} else {
+						originAllDesign[i].isLike = false;
+					}
+				}
+			}
+			console.log('originAllDesign sadasd', originAllDesign);
+			commit('SET_ALL_DESIGN', originAllDesign);
+			commit('SET_ORIGINAL_DESIGN', originAllDesign);
 		},
 	},
 

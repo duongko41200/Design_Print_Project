@@ -242,6 +242,58 @@ const handleCreateFavoriteDesign = async (req, res) => {
 
 
 }
+const handleDeleteFavoriteDesign = async (req, res) => { 
+	const uerId = req.body.userId
+	const designId = req.body.designId
+	console.log("user:", uerId, designId);
+
+	const getUser = await User.find({ _id: uerId });
+	console.log('getUser.favoriteDesign', getUser[0])
+
+	const listfavorite = getUser[0].favoriteDesign ? getUser[0].favoriteDesign : []
+	let favoriteDesignArray = [];
+	for (let i = 0; i < listfavorite.length; i++) {
+		if (listfavorite[i] !== designId) {
+			favoriteDesignArray= [...favoriteDesignArray, listfavorite[i]]
+		}
+		
+	}
+
+	console.log("favoriteDesign delete:", favoriteDesignArray);
+	
+	const tokenUser = CreatJWT({
+		id:getUser[0].id,
+		username: getUser[0].username,
+		email: getUser[0].email,
+		password: getUser[0].password,
+		image: getUser[0].image,
+		description: getUser[0].description,
+		favoriteDesign:favoriteDesignArray,
+	});
+
+	const updateListfavorite  = await User.findOneAndUpdate(
+		{ _id: uerId },
+		{
+			favoriteDesign: favoriteDesignArray
+		}
+	);
+	
+	return res.status(200).json({
+		status: 'success',
+		token: tokenUser,
+		data:{
+			id:getUser[0].id,
+			username: getUser[0].username,
+			email: getUser[0].email,
+			password: getUser[0].password,
+			image: getUser[0].image,
+			description: getUser[0].description,
+			favoriteDesign:favoriteDesignArray,
+		}
+	});
+
+
+}
 
 
 
@@ -253,5 +305,6 @@ module.exports = {
 	handleValidateToken,
 	handleUpdate,
 	handleFindByUser,
-	handleCreateFavoriteDesign
+	handleCreateFavoriteDesign,
+	handleDeleteFavoriteDesign
 };

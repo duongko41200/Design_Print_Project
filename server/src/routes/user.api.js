@@ -11,6 +11,7 @@ const userApi = (app) => {
 	router.get('/findByUser', ApiControl.handleFindByUser)
 	router.put('/update', ApiControl.handleUpdate)
 	router.post('/creatFavoriteDesign', ApiControl.handleCreateFavoriteDesign)
+	router.post('/deleteFavoriteDesign', ApiControl.handleDeleteFavoriteDesign)
 
 	return app.use('/api/user', router);
 };
