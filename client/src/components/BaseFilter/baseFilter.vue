@@ -35,14 +35,14 @@
 						:dark="true"
 						class="bg-black"
 						placeholder="Select by date"
-						@internal-model-change= 'filterDesign'
+						@internal-model-change="filterDesign"
 						:multi-calendars="{ static: false }"
 						:enable-time-picker="false"
 					/>
 				</div>
 			</div>
 
-			<div class="">
+			<div class="" v-if="typeCatolog !='assets'">
 				<label
 					id="listbox-label"
 					class="block text-sm font-medium leading-6 text-slate-200 text-left"
@@ -54,16 +54,15 @@
 						name="currency"
 						class="bg-zinc-700 border flex-1 pl-4 rounded-xl text-sm px-12 py-2.5 text-slate-50 focus:outline-none focus:ring-1 focus:ring-indigo-700"
 						v-model="catalogeProduct"
-						@change = 'filterDesign'
+						@change="filterDesign"
 					>
 						<option v-for="(value, idx) in cataloge" :key="idx">
 							{{ value.name }}
 						</option>
-
 					</select>
 				</div>
 			</div>
-			<div class="" v-if="isStatus">
+			<div class="" v-if="isStatus && typeCatolog ==='design'">
 				<label
 					id="listbox-label"
 					class="block text-sm font-medium leading-6 text-slate-200 text-left"
@@ -85,7 +84,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="">
+			<div class="" v-if="typeCatolog !='assets'">
 				<label
 					id="listbox-label"
 					class="block text-sm font-medium leading-6 text-slate-200 text-left"
@@ -117,69 +116,82 @@ const productMappper = createNamespacedHelpers('product');
 const designMappper = createNamespacedHelpers('design');
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc'); // Import plugin UTC
-const customParseFormat = require('dayjs/plugin/customParseFormat'); 
+const customParseFormat = require('dayjs/plugin/customParseFormat');
 
 dayjs.extend(utc); // Sử dụng plugin UTC
-dayjs.extend(customParseFormat); 
+dayjs.extend(customParseFormat);
 export default {
-
 	data() {
 		return {
-
 			date: '',
 			statusPublic: 'All',
-			catalogeProduct:'All',
+			catalogeProduct: 'All',
 			inputSearch: '',
-			numberLike:100,
+			numberLike: 100,
 		};
 	},
 	props: {
 		isStatus: {
 			type: Boolean,
-			default:true
+			default: true,
+		},
+		typeCatolog: {
+			type: String,
+			default:'design'
 		}
 	},
-	computed:{
-		...productMappper.mapState(['products','cataloge'])
+	computed: {
+		...productMappper.mapState(['products', 'cataloge']),
 	},
 
-	async mounted(){
-		await this.getAllProducts()
-		this.catalogeProduct = this.cataloge[0].name
-
+	async mounted() {
+		await this.getAllProducts();
+		this.catalogeProduct = this.cataloge[0].name;
 	},
 	methods: {
 		...productMappper.mapActions(['getAllProducts']),
 		...designMappper.mapActions(['filterListDesign']),
 
 		filterDesign() {
-			console.log("key ;", this.inputSearch)
-			let dateTime = []
-			const dateStarts = dayjs(this.date[0]).set("hour", 0).set("minute", 0).set("second", 0).format("YYYY/MM/DD HH:mm:ss")
-			const dateEnds = dayjs(this.date[1]).set("hour", 23).set("minute", 59).set("second", 59).format("YYYY/MM/DD HH:mm:ss")
+			let dateTime = [];
 
 			if (this.date) {
-				const dateStart = dayjs(dateStarts).unix()
-				const dateEnd = dayjs(dateEnds).unix()
-				dateTime =[dateStart, dateEnd]
+				const dateStarts = dayjs(this.date[0])
+					.set('hour', 0)
+					.set('minute', 0)
+					.set('second', 0)
+					.format('YYYY/MM/DD HH:mm:ss');
+				const dateEnds = dayjs(this.date[1])
+					.set('hour', 23)
+					.set('minute', 59)
+					.set('second', 59)
+					.format('YYYY/MM/DD HH:mm:ss');
+				const dateStart = dayjs(dateStarts).unix();
+				const dateEnd = dayjs(dateEnds).unix();
+				dateTime = [dateStart, dateEnd];
 			}
 
 			this.filterListDesign({
 				searchKeyword: this.inputSearch,
 				cataloge: this.catalogeProduct,
 				statusPublics: this.statusPublic,
-				date:dateTime
-			})
-
-	
-			
+				date: dateTime,
+				numberLike:this.numberLike
+			});
 		},
 	},
-
+	watch: {
+		typeCatolog() {
+			this.date = null
+			this.inputSearch = '',
+			this.catalogeProduct = this.cataloge[0].name;
+			this.statusPublic = 'All'
+		}
+	}
 };
 </script>
 <style>
-	.dp__theme_dark {
+.dp__theme_dark {
 	--dp-background-color: rgb(63 63 70) !important;
 	--dp-text-color: #fff !important;
 	--dp-hover-color: #b7afaf !important;

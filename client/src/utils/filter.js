@@ -43,11 +43,20 @@ const filterIsPublic = (list, statusPublics) => {
 
 	return result;
 };
-// const filterLike = (list, numberLike) => {
+const filterLike = (list, numberLike) => {
+	
+	console.log("items",list,numberLike)
+	const result = list.filter((item) => {
+	
+		return (
+			item.numberLike <= numberLike
+		);
+	});
 
 
-// 	return result;
-// };
+
+	return result;
+};
 
 
-export {filterKeyWord,filterCatalogeProduct,filterIsPublic,filterDate };
+export {filterKeyWord,filterCatalogeProduct,filterIsPublic,filterDate,filterLike };

@@ -84,7 +84,7 @@
 			</div>
 		</div>
 
-		<baseFilter></baseFilter>
+		<baseFilter :typeCatolog="activeOption"></baseFilter>
 		<div>
 			<div
 				:style="

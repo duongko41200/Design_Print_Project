@@ -152,15 +152,13 @@ const statisticalByDesign = async (req, res) => {
 	// const designId = req.body.idDesign;
 	const userId = req.query.idUser;
 	const design = await Design.find({ user: userId });
-	console.log("design", design)
 
-	
 	let sumLike = 0
 	for (let i = 0; i < design.length; i++) {
+		console.log("design", design[i].numberLike)
 		sumLike = design[i].numberLike + sumLike
 		
 	}
-
 
 
 	res.status(200).json({

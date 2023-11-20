@@ -5,6 +5,7 @@ import {
 	filterCatalogeProduct,
 	filterIsPublic,
 	filterDate,
+	filterLike
 } from '@/utils/filter.js';
 export default {
 	namespaced: true,
@@ -123,7 +124,7 @@ export default {
 
 		filterListDesign(
 			{ commit, state },
-			{ searchKeyword, cataloge, statusPublics, date }
+			{ searchKeyword, cataloge, statusPublics, date,numberLike }
 		) {
 			if (!state.originListDesign) return;
 			let searchResult = [...state.originListDesign];
@@ -138,6 +139,9 @@ export default {
 			}
 			if (date.length > 0) {
 				searchResult = filterDate(searchResult, date);
+			}
+			if (numberLike) {
+				searchResult = filterLike(searchResult, numberLike);
 			}
 
 			commit('SET_LIST_DESIGN', searchResult);
