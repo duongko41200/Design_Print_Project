@@ -30,17 +30,17 @@
 					class="justufy-content-start w-[100%] align-items-center d-flex gap-4"
 				>
 					<div>
-						<span class="f-bold1">100</span>
+						<span class="f-bold1">{{ statisticalByDesign.sumDesign }}</span>
 						<span> Design</span>
 					</div>
 					<div>
-						<span class="f-bold1">100</span>
+						<span class="f-bold1">{{ statisticalByDesign.sumLike }}</span>
 						<span> Likes</span>
 					</div>
-					<div>
+					<!-- <div>
 						<span class="f-bold1">20</span>
 						<span> follows</span>
-					</div>
+					</div> -->
 				</div>
 				<br />
 				<div class="f-bold1 w-[100%]" style="text-align: left">
@@ -108,6 +108,7 @@ import onePost from '@/pages/userInfoDesign/PostBase/one-post.vue';
 import ImageAssetService from '@/sevices/imageAssets.service';
 import UserService from '@/sevices/user.service';
 import modalPreview from '@/components/ModalPreview/modalPreview.vue';
+import DesignService from '@/sevices/design.service';
 import baseFilter from '@/components/BaseFilter/baseFilter.vue';
 const designMappper = createNamespacedHelpers('design');
 export default {
@@ -124,6 +125,7 @@ export default {
 
 			infoDesign: '',
 			userInfo: '',
+			statisticalByDesign: '',
 		};
 	},
 	computed: {
@@ -139,6 +141,11 @@ export default {
 			userId: this.$route.params.userId,
 		});
 		this.userInfo = user.data.data[0];
+
+		const statistical = await DesignService.statisticalInfoByDesign({
+			idUser: user.data.data[0].id,
+		});
+		this.statisticalByDesign = statistical.data.data;
 
 		console.log({ user });
 	},

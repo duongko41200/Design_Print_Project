@@ -13,6 +13,7 @@ const DesignApi = (app) => {
 	// router.post('/SearchDesign', DesignControl.SearchDesign);
 	router.put('/likeDesign', DesignControl.likeDesign);
 	router.put('/unLikeDesign', DesignControl.unLikeDesign);
+	router.get('/statisticalInfoByDesign', DesignControl.statisticalByDesign);
 	
 
 	return app.use('/api/design', router);

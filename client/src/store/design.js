@@ -21,13 +21,58 @@ export default {
 	},
 
 	actions: {
+		async getAllDesign({ commit }, payload) {
+			console.log('payload AllDesign:', payload);
+
+			const favoriteDesigns = payload?.favoriteDesign
+				? payload.favoriteDesign
+				: [];
+			const allDesign = await DesignService.getAllDesign();
+			const statusFavorite = allDesign.data.data;
+
+			// add isLike for Design
+			if (favoriteDesigns.length > 0) {
+				for (let i = 0; i < statusFavorite.length; i++) {
+					for (let j = 0; j < favoriteDesigns.length; j++) {
+						if (statusFavorite[i].id === favoriteDesigns[j]) {
+							console.log('ddax vaof day ', i);
+							statusFavorite[i].isLike = true;
+						}
+					}
+				}
+			}
+
+			console.log('allDesign', favoriteDesigns, statusFavorite);
+			commit('SET_ALL_DESIGN', statusFavorite);
+			commit('SET_ORIGINAL_DESIGN', statusFavorite);
+		},
 		async getListDesignByUser({ commit }, payload) {
+			console.log('payload AllDesign dffsdf:', payload);
+
+			const favoriteDesigns = payload?.favoriteDesign
+				? payload.favoriteDesign
+				: [];
 			const allDesigns = await DesignService.getAllDesignByUser({
 				userId: payload.userId,
 				isPublic: payload.isPublic,
 			});
-			commit('SET_LIST_DESIGN', allDesigns.data.data);
-			commit('SET_ORIGIN_LIST_DESIGN', allDesigns.data.data);
+			const designUpdate = allDesigns.data.data;
+
+			// add isLike for Design
+			if (favoriteDesigns.length > 0) {
+				for (let i = 0; i < designUpdate.length; i++) {
+					for (let j = 0; j < favoriteDesigns.length; j++) {
+						if (designUpdate[i].id === favoriteDesigns[j]) {
+							console.log('ddax vaof day ', i);
+							designUpdate[i].isLike = true;
+						}
+					}
+				}
+			}
+
+
+			commit('SET_LIST_DESIGN', designUpdate);
+			commit('SET_ORIGIN_LIST_DESIGN',designUpdate);
 		},
 		async deleteDesignByUser({ commit }, payload) {
 			const allDesigns = await DesignService.deleteDesignByUser({
@@ -53,31 +98,6 @@ export default {
 			};
 			commit('SET_EDIT_DESIGN', designCanvas);
 			commit('SET_INFO_DESIGN', design.data.data[0]);
-		},
-		async getAllDesign({ commit }, payload) {
-			console.log('dksjfksdj:', payload);
-
-			const favoriteDesigns = payload?.favoriteDesign
-				? payload.favoriteDesign
-				: [];
-			const allDesign = await DesignService.getAllDesign();
-			const statusFavorite = allDesign.data.data;
-
-			// add isLike for Design
-			if (favoriteDesigns.length > 0) {
-				for (let i = 0; i < statusFavorite.length; i++) {
-					for (let j = 0; j < favoriteDesigns.length; j++) {
-						if (statusFavorite[i].id === favoriteDesigns[j]) {
-							console.log('ddax vaof day ', i);
-							statusFavorite[i].isLike = true;
-						}
-					}
-				}
-			}
-
-			console.log('allDesign', favoriteDesigns, statusFavorite);
-			commit('SET_ALL_DESIGN', statusFavorite);
-			commit('SET_ORIGINAL_DESIGN', statusFavorite);
 		},
 
 		searchDesign({ commit, state, dispatch }, payload) {
@@ -133,7 +153,9 @@ export default {
 			for (let i = 0; i < originAllDesign.length; i++) {
 				for (let j = 0; j < listFavorite.length; j++) {
 					if (listFavorite[j] == originAllDesign[i].id) {
+						originAllDesign[i].isLike = true;
 						favoriteDesign = [...favoriteDesign, originAllDesign[i]];
+					
 						continue;
 					}
 				}
@@ -143,8 +165,11 @@ export default {
 			commit('SET_ORIGIN_LIST_DESIGN', favoriteDesign);
 		},
 
+		/// backlog check lai khi filter
+
 		handleFavoriteList({ commit, state }, { designId, type }) {
 			const originAllDesign = state.originAllDesign;
+			const originListDesign = state.originListDesign;
 
 			for (let i = 0; i < originAllDesign.length; i++) {
 				if (originAllDesign[i].id === designId) {
@@ -155,9 +180,21 @@ export default {
 					}
 				}
 			}
+
+			for (let i = 0; i < originListDesign.length; i++) {
+				if (originListDesign[i].id === designId) {
+					if (type === 'create') {
+						originListDesign[i].isLike = true;
+					} else {
+						originListDesign[i].isLike = false;
+					}
+				}
+			}
 			console.log('originAllDesign sadasd', originAllDesign);
 			commit('SET_ALL_DESIGN', originAllDesign);
 			commit('SET_ORIGINAL_DESIGN', originAllDesign);
+			commit('SET_LIST_DESIGN', originListDesign);
+			commit('SET_ORIGIN_LIST_DESIGN', originListDesign);
 		},
 	},
 

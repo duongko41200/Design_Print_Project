@@ -48,7 +48,9 @@
 												<div
 													class="mt-6 px-4 py-3 bg-zinc-600 rounded-xl shadow bg-opacity-50 font-light flex flex-col space-y-5 text-slate-50"
 												>
-													<p class="bg-opacity-0 rounded font-bold capitalize">
+													<p
+														class="bg-opacity-0 rounded font-bold capitalize"
+													>
 														{{ infoDesign.name }}
 													</p>
 													<div class="flex text-xs font-light">
@@ -57,8 +59,8 @@
 														>
 															<div
 																class="text-xs rounded-md sm:text-xs active:scale-95 transition-all transform-gpu whitespace-nowrap flex-1 flex select-none cursor-pointer hover:bg-zinc-600 border border-zinc-600 bg-zinc-700 items-center justify-center shadow px-2.5 py-2 w-fit-content"
-															@click="creatFavoriteDesign(infoDesign)"
-																>
+																@click="creatFavoriteDesign(infoDesign)"
+															>
 																<svg
 																	xmlns="http://www.w3.org/2000/svg"
 																	stroke="currentColor"
@@ -68,6 +70,11 @@
 																	stroke-linecap="round"
 																	stroke-linejoin="round"
 																	class="text-sm mr-2"
+																	:class="
+																		infoDesign.isLike === true
+																			? 'text-red-600'
+																			: ''
+																	"
 																	height="1em"
 																	width="1em"
 																>
@@ -78,7 +85,11 @@
 																	/>
 																</svg>
 
-																Design favories
+																{{
+																	infoDesign.isLike === true
+																		? 'Unlike Design'
+																		: 'Like Design'
+																}}
 															</div>
 															<div
 																class="text-xs rounded-md sm:text-xs active:scale-95 transition-all transform-gpu whitespace-nowrap flex-1 flex select-none cursor-pointer hover:bg-zinc-600 border border-zinc-600 bg-zinc-700 items-center justify-center shadow px-2.5 py-2 w-fit-content"
@@ -619,8 +630,8 @@ export default {
 			}
 		},
 		creatFavoriteDesign(design) {
-			this.$emit('CreateFavoriteDesign',design)
-		}
+			this.$emit('CreateFavoriteDesign', design);
+		},
 	},
 };
 </script>

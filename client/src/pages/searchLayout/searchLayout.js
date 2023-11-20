@@ -44,7 +44,7 @@ export default {
 			'handleFavoriteList',
 		]),
 		...productMappper.mapActions(['handleCataloge']),
-		...authMappper.mapActions(['SET_USER_INFO']),
+		...authMappper.mapMutations(['SET_USER_INFO']),
 		onCreateDesign() {
 			this.$emit('onCreateDesign');
 		},
@@ -78,7 +78,7 @@ export default {
 			this.valueSearch = '';
 		},
 		onMoveUserDesign(design) {
-			console.log('dklsjksdjfkdsj', design.user);
+	
 			if (this.userInfo.id !== design.user.id) {
 				this.$router.push(`/user/${design.user.id}`);
 			} else {

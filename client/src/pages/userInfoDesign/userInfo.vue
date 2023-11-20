@@ -30,11 +30,15 @@
 					class="justufy-content-start w-[100%] align-items-center d-flex gap-4"
 				>
 					<div>
-						<span class="f-bold1">100</span>
+						<span class="f-bold1">{{
+							statisticalByDesign.sumDesign
+						}}</span>
 						<span> Design</span>
 					</div>
 					<div>
-						<span class="f-bold1">100</span>
+						<span class="f-bold1">{{
+							statisticalByDesign.sumLike
+						}}</span>
 						<span> Likes</span>
 					</div>
 					<!-- <div>
@@ -89,12 +93,16 @@
 				class="exploreContainer p-1"
 			>
 				<one-post
-					:boxWidth="rowList"
-					:data="item"
 					v-for="(item, idx) in listDesign"
 					:key="idx"
+					:boxWidth="rowList"
+					:data="item"
+					:typeCatolog="activeOption"
 					class="border"
 					@onClickImage="onPreviweDesign(item)"
+					@CreateFavoriteDesign="creatFavoriteDesign"
+					@deleteDesign="deleteDesign"
+					@onDownload ="onDownload"
 				></one-post>
 			</div>
 		</div>
@@ -102,16 +110,19 @@
 	<modalPreview
 		:showModal="isShowPreview"
 		:infoDesign="infoDesign"
-		:type="'detail'"
+		:type="typePreview"
 		@oncloseModal="oncloseModal"
+		@CreateFavoriteDesign="creatFavoriteDesign"
 	></modalPreview>
 </template>
 <script>
 import { createNamespacedHelpers } from 'vuex';
 import onePost from '@/pages/userInfoDesign/PostBase/one-post.vue';
 import ImageAssetService from '@/sevices/imageAssets.service';
+import DesignService from '@/sevices/design.service';
 import modalPreview from '@/components/ModalPreview/modalPreview.vue';
 import baseFilter from '@/components/BaseFilter/baseFilter.vue';
+import UserService from '@/sevices/user.service';
 const authMappper = createNamespacedHelpers('auth');
 const designMappper = createNamespacedHelpers('design');
 export default {
@@ -127,6 +138,10 @@ export default {
 			isShowPreview: false,
 
 			infoDesign: '',
+			statisticalByDesign: '',
+			typePreview: '',
+
+			isUnLike: false,
 		};
 	},
 	computed: {
@@ -142,12 +157,25 @@ export default {
 		await this.getListDesignByUser({
 			userId: this.userInfo.id,
 			isPublic: 'all',
+			favoriteDesign: this.userInfo.favoriteDesign,
 		});
-		console.log('fksdjfkds: ', this.listDesign);
+
+		const statistical = await DesignService.statisticalInfoByDesign({
+			idUser: this.userInfo.id,
+		});
+
+		this.statisticalByDesign = statistical.data.data;
 	},
 	methods: {
-		...designMappper.mapActions(['getListDesignByUser','getFavoriteDesign']),
+		...designMappper.mapActions([
+			'getListDesignByUser',
+			'getFavoriteDesign',
+			'handleFavoriteList',
+			'getAllDesign',
+			'deleteDesignByUser'
+		]),
 		...designMappper.mapMutations(['SET_LIST_DESIGN']),
+		...authMappper.mapMutations(['SET_USER_INFO']),
 		async onChooseOption(value) {
 			switch (value) {
 				case 'design': {
@@ -158,6 +186,7 @@ export default {
 						await this.getListDesignByUser({
 							userId: this.userInfo.id,
 							isPublic: 'all',
+							favoriteDesign: this.userInfo.favoriteDesign,
 						});
 					} catch (error) {
 						console.log('error :', error);
@@ -179,11 +208,15 @@ export default {
 					this.SET_LIST_DESIGN([]);
 					this.activeOption = value;
 
-					console.log("userinfo:", this.userInfo)
+					console.log('userinfo:', this.userInfo);
 
-					const favoriteDesign = this.userInfo.favoriteDesign
-					console.log("this.userInfo.favoriteDesign",this.userInfo.favoriteDesign)
-					this.getFavoriteDesign(favoriteDesign)
+					const favoriteDesign = this.userInfo.favoriteDesign;
+					console.log(
+						'this.userInfo.favoriteDesign',
+						this.userInfo.favoriteDesign
+					);
+					this.getFavoriteDesign(favoriteDesign);
+					// await this.getAllDesign(this.userInfo);
 					break;
 				}
 
@@ -195,9 +228,81 @@ export default {
 			console.log('infoDesign:', infoDesign);
 			this.infoDesign = infoDesign;
 			this.isShowPreview = true;
+			this.typePreview = 'detail';
 		},
 		oncloseModal() {
 			this.isShowPreview = false;
+		},
+
+		async deleteDesign(id) {
+			const payload = {
+				userId: this.userInfo.id,
+				idDesign: id,
+			};
+			await this.deleteDesignByUser(payload);
+			const statistical = await DesignService.statisticalInfoByDesign({
+				idUser: this.userInfo.id,
+			});
+
+			this.statisticalByDesign = statistical.data.data;
+			this.$toast.success('deleted success', {
+				position: 'top-right',
+				duration: 2000,
+			});
+		},
+		onDownload(infoDesign) {
+			this.typePreview = 'preview';
+			this.infoDesign = infoDesign;
+			this.isShowPreview = true;
+		},
+
+		async creatFavoriteDesign(design) {
+			console.log('design :', design);
+			let userInfoUpdate = '';
+			if (design.isLike === true) {
+				const favoriteDesign = await UserService.deleteFavoriteDesign({
+					userId: this.userInfo.id,
+					designId: design.id,
+				});
+				await DesignService.unLikeDesign({
+					idDesign: design.id,
+					idUser: this.userInfo.id,
+				});
+				userInfoUpdate = favoriteDesign;
+				this.handleFavoriteList({
+					designId: design.id,
+					type: 'delete',
+				});
+				this.isUnLike = true;
+			} else {
+				const favoriteDesign = await UserService.creatFavoriteDesign({
+					userId: this.userInfo.id,
+					designId: design.id,
+				});
+				await DesignService.likeDesign({
+					idDesign: design.id,
+					idUser: this.userInfo.id,
+				});
+				userInfoUpdate = favoriteDesign;
+				this.handleFavoriteList({
+					designId: design.id,
+					type: 'create',
+				});
+				this.isUnLike = false;
+			}
+			const statistical = await DesignService.statisticalInfoByDesign({
+				idUser: this.userInfo.id,
+			});
+
+			this.statisticalByDesign = statistical.data.data;
+			this.SET_USER_INFO(userInfoUpdate.data?.data);
+			localStorage.setItem('tokens', userInfoUpdate.data.token);
+
+			if (this.isUnLike === true && this.activeOption === 'favorite') {
+				this.getFavoriteDesign(this.userInfo.favoriteDesign);
+				this.oncloseModal();
+			}
+			console.log('like :', userInfoUpdate);
 		},
 	},
 };

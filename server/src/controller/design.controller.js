@@ -144,15 +144,37 @@ const unLikeDesign = async (req, res) => {
 		},
 	});
 };
-// const SearchDesign = async (req, res) => {
-// 	const contentSearch = req.body.contentSearch
-// 	const typeSearch = req.body.typeSearch
-// 	const idProduct = req.query.idProduct
 
-// 	if (typeSearch === 'design') {
-// 		const listSearch = await Design.find({})
-// 	}
-// }
+/**
+ * statistical Design and like 
+ */
+const statisticalByDesign = async (req, res) => { 
+	// const designId = req.body.idDesign;
+	const userId = req.query.idUser;
+	const design = await Design.find({ user: userId });
+	console.log("design", design)
+
+	
+	let sumLike = 0
+	for (let i = 0; i < design.length; i++) {
+		sumLike = design[i].numberLike + sumLike
+		
+	}
+
+
+
+	res.status(200).json({
+		status: 'success',
+		data: {
+			sumLike: sumLike,
+			sumDesign: design.length
+		}
+	});
+
+}
+
+
+
 
 module.exports = {
 	createDesign,
@@ -160,7 +182,7 @@ module.exports = {
 	deleteDesign,
 	findDesign,
 	getAllDesign,
-	// SearchDesign
 	likeDesign,
-	unLikeDesign
+	unLikeDesign,
+	statisticalByDesign
 };

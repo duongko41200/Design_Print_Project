@@ -35,11 +35,50 @@
 			<div
 				class="absolute bg-red w-full h-full inset-0"
 				@click="onClickImage"
-			/>
+			></div>
+
+			<div
+				class="absolute z-9 top-2 left-2 bg-zinc-900 bg-opacity-30 hover:bg-opacity-100 transition-opacity flex items-center justify-center cursor-pointer rounded text-lg h-8 w-8"
+			>
+				<icon icon="fa-solid fa-magnifying-glass" style="color: #fff" />
+			</div>
+			<div class="flex flex-col space-y-2 absolute top-2 z- 10 right-2">
+				<div
+					class="bg-zinc-900 bg-opacity-30 hover:bg-opacity-100 transition-opacity flex items-center justify-center cursor-pointer rounded text-lg h-8 w-8"
+					@click="creatFavoriteDesign()"
+				>
+					<icon
+						icon="fa-solid fa-heart"
+						:class="data.isLike === true ? 'text-rose-600' : ''"
+					/>
+				</div>
+				<div
+					class="bg-zinc-900 z-10 bg-opacity-30 hover:bg-opacity-100 transition-opacity flex items-center justify-center cursor-pointer rounded text-lg h-8 w-8"
+					@click="onDownload(data)"
+				>
+					<icon icon="fa-solid fa-download" style="color: #fff" />
+				</div>
+			</div>
+
+			<div
+				class="absolute bottom-8 left-2 mx-0.5 overflow-hidden z-0 fit-w text-start z-10 font-bold text-base text-white capitalize"
+			>
+				{{ data.name }}
+			</div>
+			<div
+				class="absolute bottom-2 left-2 mx-0.5 z-0 text-start fit-w z-10 font-bold text-gray"
+				@click="onMoveUserDesign(data)"
+			>
+				by
+				<span class="hover:text-blue-500 hover:underline"
+					>{{ data.user.username }}
+				</span>
+			</div>
 
 			<Menu
 				as="div"
 				class="absolute bottom-5 right-5 inline-block text-left"
+				v-if="typeCatolog != 'favorite'"
 			>
 				<div v-if="role != 'view'">
 					<MenuButton
@@ -61,7 +100,10 @@
 						class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
 					>
 						<div class="py-1">
-							<MenuItem v-slot="{ active }">
+							<MenuItem
+								v-slot="{ active }"
+								v-if="typeCatolog != 'assets'"
+							>
 								<div
 									:class="[
 										active
@@ -87,7 +129,10 @@
 									Delete
 								</div>
 							</MenuItem>
-							<MenuItem v-slot="{ active }">
+							<MenuItem
+								v-slot="{ active }"
+								v-if="typeCatolog != 'assets'"
+							>
 								<a
 									href="#"
 									:class="[
@@ -128,6 +173,10 @@ export default {
 			type: String,
 			default: 'all',
 		},
+		typeCatolog: {
+			type: String,
+			default: 'design',
+		},
 	},
 	data() {
 		return {
@@ -144,15 +193,7 @@ export default {
 			console.log('height:' + this.$refs.square.clientWidth + 'px');
 		},
 		async deleteDesign(id) {
-			const payload = {
-				userId: this.userInfo.id,
-				idDesign: id,
-			};
-			await this.deleteDesignByUser(payload);
-			this.$toast.success('deleted success', {
-				position: 'top-right',
-				duration: 2000,
-			});
+			this.$emit('deleteDesign', id);
 		},
 		async editDesign(id) {
 			const payload = {
@@ -165,9 +206,22 @@ export default {
 		onClickImage() {
 			this.$emit('onClickImage');
 		},
+		onDownload(infoDesign) {
+			this.$emit('onDownload', infoDesign);
+		},
+		onMoveUserDesign(design) {
+			if (this.userInfo.id !== design.user.id) {
+				this.$router.push(`/user/${design.user.id}`);
+			} else {
+				this.$router.push(`/userInfo`);
+			}
+		},
+		creatFavoriteDesign() {
+			this.$emit('CreateFavoriteDesign', this.data);
+		},
 	},
 	created() {
-		console.log('sdffdsfdsfsdfsdfsd', this.data);
+
 		setInterval(() => {
 			try {
 				this.square = 'height:' + this.$refs.square.clientWidth + 'px';

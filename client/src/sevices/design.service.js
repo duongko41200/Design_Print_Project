@@ -28,6 +28,9 @@ const DesignService = {
 	async unLikeDesign(params) {
 		return ApiService.put(baseUrl + 'unLikeDesign', params);
 	},
+	async statisticalInfoByDesign(params) {
+		return ApiService.get(baseUrl + 'statisticalInfoByDesign', params);
+	},
 
 
 	
