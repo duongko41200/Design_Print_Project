@@ -1,51 +1,22 @@
 <template>
 	<div class="design">
 		<!-- ////HEADER//////////// -->
-		<div class="header">
-			<header class="bg-current p-1">
-				<nav class="flex justify-between items-center w-[92%] mx-auto">
-					<div
-						class="text-white cursor-pointer min-h-[5vh] flex justify-between items-center gap-3"
-						@click="onMoveHome"
-					>
-						<icon icon="fa-solid fa-chevron-left" />
-						<div>Home</div>
-					</div>
-					<div
-						class="nav-links duration-500 md:static absolute bg-current md:min-h-fit min-h-[60vh] left-0 top-[-100%] md:w-auto w-full flex items-center px-5"
-					>
-						<label class="relative block">
-							<span class="sr-only">Search</span>
-							<span
-								class="absolute inset-y-0 left-0 flex items-center pl-2"
-							>
-								<svg class="h-5 w-5 fill-slate-300" viewBox="0 0 20 20">
-									<!-- ... -->
-								</svg>
-							</span>
-							<input
-								class="placeholder:italic placeholder:text-slate-400 block bg-current w-full border border-slate-300 rounded-md py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
-								placeholder="Name design"
-								type="text"
-								name="search"
-							/>
-						</label>
-					</div>
-					<!-- /// logo -->
-					<logoUser></logoUser>
-				</nav>
-			</header>
-		</div>
+		<navbarDesign
+			@onSaveDesignByProduct="openModeSave"
+			@onPreviewDesign="PreviewDesign"
+			@onMoveHome = "handleBack"
+		></navbarDesign>
 
-		<!-- sidebar -->
-		<div class="swap flex w-[100%] h-[90vh]">
+		<!-- body -->
+		<div class="swap flex w-[100%] h-[88vh]">
+			<!-- sideBar -->
 			<div
 				class="swap-sidebar w-fit min-w-[6%] border-slate-200 border"
 			>
 				<div
 					v-for="(option, idx) in optionDesign"
 					:key="idx"
-					class="swap-sidebar__option p-4 cursor-pointer grid place-items-center"
+					class="swap-sidebar__option md:p-2 2xl:p-4 cursor-pointer grid place-items-center"
 					:class="option.active ? 'border-r-2 border-sky-500' : ''"
 					@click="onMoveOption(idx, option.name)"
 				>
@@ -79,7 +50,7 @@
 				<template v-slot:upload>
 					<div class="swap-sidebar w-fit">
 						<label
-							class="swap-sidebar__option p-4 cursor-pointer grid place-items-center w-fit border-dashed border-2 border-indigo-600"
+							class="swap-sidebar__option 2xl:p-4 md:p-2 cursor-pointer grid place-items-center w-fit border-dashed border-2 border-indigo-600"
 						>
 							<icon icon="fa-solid fa-upload" size="lg"></icon>
 							<!-- <img v-else src="../../assets/pixabay.svg" /> -->
@@ -97,12 +68,10 @@
 				</template>
 			</baseSidebar>
 
-			<!-- //// <canvas></canvas>  -->
+			<!--  <canvas></canvas>  -->
 
-			<div class="swap-design relative bg-slate-100 w-[78%] h-[93vh]">
-				<div class="design-nav bg-white w-[100%] h-[6vh]">
-					<!-- <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor> -->
-
+			<div class="swap-design relative bg-slate-100 w-[78%] h-[88vh]">
+				<div class="design-nav bg-white w-[100%] h-[6vh] md:h-[50px]">
 					<!-- tool text -->
 
 					<div
@@ -115,15 +84,20 @@
 							<div class="toolbar p-1">
 								<div class="btn-toolbar flex flex-wrap items-center">
 									<select
-										class="mr-3 w-[200px] h-10 bg-white border border-gray-400 rounded outline-none cursor-pointer"
+										class="mr-3 w-[150px] h-10 bg-white border border-gray-400 rounded outline-none cursor-pointer"
 										v-model="textDesign.fontFamily"
 										@change="changeTextDesign"
 									>
 										<option value="" selected hidden disabled>
 											Font size
 										</option>
-										<option v-for="(fontFamily, idx) in fontFamilyOptions" :key="idx" :style="{ 'font-family': fontFamily }">{{fontFamily}}</option>
-			
+										<option
+											v-for="(fontFamily, idx) in fontFamilyOptions"
+											:key="idx"
+											:style="{ 'font-family': fontFamily }"
+										>
+											{{ fontFamily }}
+										</option>
 									</select>
 									<div
 										class="mr-3 h-10 color bg-white border border-gray-400 rounded outline-none cursor-pointer flex items-center gap-2 px-2"
@@ -207,7 +181,6 @@
 											<icon icon=" fa-solid fa-align-justify" />
 										</button>
 									</div>
-
 								</div>
 							</div>
 						</div>
@@ -220,12 +193,12 @@
 
 				<div class="fit-h w-[80%] absolute left-[6%] pt-6 pl-0">
 					<div
-						class="canvas w-[100%] fit-w absolute flex justify-start bg-white p-1 shadow-xl border p-6 rounded-2xl"
+						class="canvas w-[100%] fit-w absolute flex justify-between bg-white p-1 shadow-xl border p-6 rounded-2xl"
 					>
-						<div class="w-[11vh] h-[100%] rounded p-2">
+						<div class="md:w-[80px] 2xl:w-[90px] h-[100%] rounded p-2 md:px-0">
 							<div
 								@click="changeMode('front')"
-								class="w-[100%] h-[13vh] cursor-pointer rounded border-2 shadow-lg bg-white"
+								class="w-[100%] md:h-[100px] cursor-pointer rounded border-2 shadow-lg bg-white"
 								:class="
 									mode === 'front'
 										? 'border-sky-300'
@@ -236,7 +209,7 @@
 							</div>
 							<div
 								@click="changeMode('back')"
-								class="w-[100%] h-[13vh] cursor-pointer mt-3 rounded border-2 shadow-lg bg-white"
+								class="w-[100%] md:h-[100px] cursor-pointer mt-3 rounded border-2 shadow-lg bg-white"
 								:class="
 									mode === 'back' ? 'border-sky-300' : 'border-gray-200'
 								"
@@ -244,37 +217,50 @@
 								back
 							</div>
 						</div>
-						<div class="w-[1000px] flex justify-center">
+						<div class="fit-w flex justify-center">
 							<canvas ref="canvas" class="">
 								<!-- <img src="../../assets/anh_test.png" ref="image" /> -->
 							</canvas>
 						</div>
 
 						<div
-							class="w-[60px] h-[100%]  rounded p-2 flex justify-center flex-col"
+							class="w-[60px] h-[100%] rounded p-2 flex justify-center flex-col"
 						>
 							<div
 								@click="copySelectedObject"
-								class="w-[100%] h-[4vh] cursor-pointer rounded border-2 p-1 shadow-lg bg-white"
+								class="w-[100%]  cursor-pointer rounded border-2 p-1 shadow-lg bg-white"
 							>
 								<icon icon="fa-solid fa-copy" class="w-[2vh] h-[3vh]" />
 							</div>
 							<div
 								@click="deleteSelectedObject"
-								class="w-[100%] h-[4vh] cursor-pointer mt-3 rounded border-2 p-1 shadow-lg bg-white"
+								class="w-[100%] 2xl:h-[4vh] cursor-pointer 2xl:mt-3 md:mt-2 rounded border-2 p-1 shadow-lg bg-white"
 							>
 								<icon
 									icon="fa-solid fa-trash"
 									class="w-[2vh] h-[3vh]"
 								/>
 							</div>
-							
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+
+	<modalPreview
+		:showModal="isShowPreview"
+		:infoDesign = 'infoDesign'
+		:type="typePreview"
+		:previewFront="imgPreviewFront"
+		:previewBack="imgPreviewBack"
+		@oncloseModal="oncloseModal"
+		@onclickSaveDesign="clickSaveDesign"
+	></modalPreview>
+
+	<!-- <div v-if="imgCanvasPreview">
+		<img  :src="imgCanvasPreview" alt="Hình ảnh từ canvas" />
+	</div> -->
 </template>
 <script src="./designs"></script>
 <style>

@@ -1,26 +1,35 @@
 import baseSidebar from '@/components/BaseSidebar/baseSidebar.vue';
 import ImageAssetService from '@/sevices/imageAssets.service';
 import ApiService from '@/sevices/api.service';
+import ImageService from '@/sevices/image.service';
+import DesignService from '@/sevices/design.service';
 import { fabric } from 'fabric';
 import { createNamespacedHelpers } from 'vuex';
-import logoUser from '@/components/logoUser/logoUser.vue';
-import {
-	AvailableFontFamilies,
-
-} from '@/Contant/WebFontConfig';
-import WebFontConfig from "@/Contant/WebFontConfig";
+import navbarDesign from '@/components/NavbarDesign/navbarDesign.vue';
+import { AvailableFontFamilies } from '@/Contant/WebFontConfig';
+import WebFontConfig from '@/Contant/WebFontConfig';
 import WebFont from 'webfontloader';
+import modalSave from '@/components/ModalFormSave/modalSave.vue';
+import modalPreview from '@/components/ModalPreview/modalPreview.vue';
 const authMappper = createNamespacedHelpers('auth');
 const globalMappper = createNamespacedHelpers('global');
+const productMappper = createNamespacedHelpers('product');
+const designMappper = createNamespacedHelpers('design');
 export default {
 	components: {
 		baseSidebar,
-		logoUser,
+		navbarDesign,
+		modalSave,
+		modalPreview,
 	},
 	data() {
 		return {
 			titleOption: 'Templates',
 			contentOption: [],
+			isShowPreview: false,
+			typePreview:'',
+			width: '',
+			height: '',
 			optionDesign: [
 				{ icon: 'fa-solid fa-list', name: 'Templates', active: true },
 				{ icon: 'fa-solid fa-shapes', name: 'Shapes', active: false },
@@ -30,6 +39,10 @@ export default {
 				{ icon: 'fa-solid fa-pencil', name: 'Draw', active: false },
 			],
 			isImage: true,
+			showModalSave: false,
+			imgPreviewFront: '',
+			imgPreviewBack: '',
+			imageUrlPixabay: '',
 
 			//DEMO IMAGE LIST
 
@@ -49,7 +62,7 @@ export default {
 			textDesign: {
 				textColor: 'black',
 				bgColor: '',
-				fontFamily: "Roboto",
+				fontFamily: 'Roboto',
 				fontSize: '40',
 				textDecoration: '',
 				textAlign: '',
@@ -73,16 +86,35 @@ export default {
 	},
 	computed: {
 		...authMappper.mapState(['email', 'userInfo']),
+		...productMappper.mapState(['product']),
+		...designMappper.mapState(['designEdit', 'infoDesign']),
 	},
+	beforeDestroy() {
+		// Gỡ bỏ sự kiện lắng nghe khi component bị hủy
+		window.removeEventListener('popstate', this.handleBack);
+	},
+
 	async mounted() {
+		const screenWidth = window.innerWidth;
+		const screenHeight = window.innerHeight;
+		this.width = screenWidth;
+		this.height = screenHeight;
+
+		// console.log('info design:', this.infoDesign._id);
 		// this.contentOption = this.images;
+		window.document.body.style.paddingLeft = '0px';
+
 		this.canvas = await this.initCanvas(this.$refs.canvas);
 		this.canvas.selection = true;
-		// this.setBackground(this.url, this.canvas);
+		window.addEventListener('popstate', this.handleBack);
+		if (this.product) {
+			this.setBackgroundBack();
+			this.setBackgroundFront();
+		}
+
 		this.handleEvents();
 		this.fontFamilyOptions = AvailableFontFamilies;
 		WebFont.load(WebFontConfig);
-
 	},
 
 	methods: {
@@ -90,19 +122,75 @@ export default {
 			'uploadImageByS3',
 			'uploadImageByDesign',
 		]),
+		...productMappper.mapMutations(['SET_PRODUCT_MODEL']),
+		...designMappper.mapMutations(['SET_INFO_DESIGN']),
 
 		///canvas
 		initCanvas(id) {
-			return new fabric.Canvas(id, {
+			const initCanvas = new fabric.Canvas(id, {
 				preserveObjectStacking: true,
-				width: 900,
-				height: 600,
+				width: this.width / 2,
+				height: this.height - 200,
 				backgroundColor: 'white',
 			});
+
+			// khi chọn vào sản phẩm để edit thì chạy cái này
+			if (this.designEdit) {
+				initCanvas?.loadFromJSON(this.designEdit);
+
+			}
+
+			return initCanvas;
 		},
 
-		onMoveHome() {
-			this.$router.push('/');
+		setBackgroundFront() {
+			fabric.Image.fromURL(
+				require(`@/uploadImage/${this.product.imageFront}`),
+				(img) => {
+					console.log('front');
+					// const imageWidth = img.width;
+					// const imageHeight = img.height;
+					// const left = (800 - imageWidth) / 2;
+					// const top = (750 - imageHeight) / 2;
+					const imageWidth = img.width;
+					const imageHeight = img.height;
+					const left = (this.width - imageWidth) / 5;
+					const top = (this.height - imageHeight) / 10;
+					img.set({
+						selectable: false,
+						scaleX: 0.6,
+						scaleY: 0.6,
+						top: top,
+						left: left,
+						mode: 'front',
+					});
+					this.canvas.add(img);
+				}
+			);
+		},
+		setBackgroundBack() {
+			fabric.Image.fromURL(
+				require(`@/uploadImage/${this.product.imageBack}`),
+				(img) => {
+					console.log('bACK');
+
+					const imageWidth = img.width;
+					const imageHeight = img.height;
+					const left = (this.width - imageWidth) / 5;
+					const top = (this.height - imageHeight) / 10;
+					img.set({
+						selectable: false,
+						scaleX: 0.6,
+						scaleY: 0.6,
+						top: top,
+						left: left,
+						mode: 'back',
+					});
+					this.canvas.add(img);
+					this.canvas.renderAll();
+				}
+			);
+			``;
 		},
 
 		/// choose option design
@@ -128,7 +216,7 @@ export default {
 				this.imagePixaBay = [];
 				this.canvas.isDrawingMode = false;
 				const imageAsset = await ImageAssetService.getAllImagAsset({
-					email: this.email,
+					userId: this.userInfo.id,
 				});
 				console.log('imageAsset', imageAsset.data.data);
 				this.contentOption = imageAsset.data.data;
@@ -174,7 +262,7 @@ export default {
 				});
 
 				const imageAsset = await ImageAssetService.getAllImagAsset({
-					email: this.email,
+					userId: this.userInfo.id,
 				});
 				setTimeout(() => {
 					this.contentOption = imageAsset.data.data;
@@ -194,7 +282,7 @@ export default {
 				type: 'text',
 
 				mode: this.mode,
-				fontFamily: "Roboto",
+				fontFamily: 'Roboto',
 				opacity: 1,
 				shadow: undefined,
 				visible: true,
@@ -240,6 +328,9 @@ export default {
 			// Kích hoạt chế độ vẽ bằng bút
 			this.canvas.isDrawingMode = !this.canvas.isDrawingMode;
 			this.canvas.freeDrawingBrush = pencilBrush;
+
+			//handle logic add mode vao cavans
+
 			this.canvas.on('mouse:up', () => {
 				if (this.isDrawing === true) {
 					// add mode for canvas to handle font and back
@@ -331,10 +422,10 @@ export default {
 					this.textDesign.fontWeight = activeObject.fontWeight;
 					this.textDesign.fontStyle = activeObject.fontStyle;
 					this.textDesign.textAlign = activeObject.textAlign;
-					this.textDesign.fontFamily = activeObject.fontFamily
+					this.textDesign.fontFamily = activeObject.fontFamily;
 				}
 
-				console.log('cavas value:', activeObject);
+				console.log('click value:', activeObject);
 			});
 			this.canvas.on('selection:updated', () => {
 				let activeObject = this.canvas.getActiveObject();
@@ -347,7 +438,7 @@ export default {
 					this.textDesign.fontWeight = activeObject.fontWeight;
 					this.textDesign.fontStyle = activeObject.fontStyle;
 					this.textDesign.textAlign = activeObject.textAlign;
-					this.textDesign.fontFamily = activeObject.fontFamily
+					this.textDesign.fontFamily = activeObject.fontFamily;
 				} else {
 					this.isBoxEditText = false;
 				}
@@ -393,7 +484,6 @@ export default {
 				require(`@/uploadImage/${image.image}`),
 				(img) => {
 					img.set({
-						// selectable: false,
 						scaleX: 0.3,
 						scaleY: 0.3,
 						mode: this.mode,
@@ -403,17 +493,22 @@ export default {
 				}
 			);
 		},
-		onClickImageFixabay(image) {
-			console.log('fixabay image', image);
-
-			fabric.Image.fromURL(image.previewURL, (img) => {
-				img.set({
-					// selectable: false,
-					mode: this.mode,
+		async onClickImageFixabay(image) {
+			try {
+				const imageRemote = await ImageService.getRemoteImage({
+					url: image.previewURL,
 				});
-				this.canvas.add(img);
-				// this.canvas.renderAll()
-			});
+				console.log('imageRemote', imageRemote);
+				fabric.Image.fromURL(imageRemote.data, (img) => {
+					img.set({
+						mode: this.mode,
+					});
+					this.canvas.add(img);
+					// this.canvas.renderAll()
+				});
+			} catch (error) {
+				console.log('error;', error);
+			}
 		},
 
 		changeMode(mode) {
@@ -422,21 +517,123 @@ export default {
 			console.log('get object mode', this.canvas.getObjects());
 
 			this.canvas.getObjects().forEach((object) => {
-				console.log('object:', object);
 				object.visible = object.mode != mode ? false : true;
 			});
 
 			this.canvas.discardActiveObject();
 			this.canvas.renderAll();
 		},
+
+		///// handlle logic design
+
+		handleBack() {
+			// Thực hiện tác vụ khi nút "Back" được nhấn
+			console.log("Back")
+			this.SET_PRODUCT_MODEL('')
+			this.SET_INFO_DESIGN('')
+			
+
+			// Xóa tất cả các thành phần trên canvas
+			this.canvas.clear();
+		},
+		openModeSave() {
+			this.onPreviewDesign('front');
+			this.onPreviewDesign('back');
+			this.typePreview='save'
+
+			this.isShowPreview = true;
+		},
+		oncloseModal() {
+			this.isShowPreview = false;
+			this.changeMode('front');
+		},
+
+		async clickSaveDesign(payload) {
+			/**
+			 * @param {name,description,userId,productId,object:"thong so design",thumbnailFront,thumbnailBack, isPublic}
+			 */
+
+			const object = this.canvas.getObjects();
+			const json = this.canvas?.toJSON();
+			const objectCanvas = JSON.parse(JSON.stringify(json));
+
+			object.map((value, idx) => {
+				objectCanvas.objects[idx].mode = value.mode;
+			});
+
+			// localStorage.setItem('canvas', JSON.stringify(objectCanvas));
+			console.log('product:', this.product);
+
+			const idDesign = this.infoDesign?._id;
+			const idProduct = this.product
+				? this.product.id
+				: this.infoDesign.product;
+			console.log('idDesign', idDesign);
+
+			const params = {
+				name: payload.name,
+				description: payload.description,
+				user: this.userInfo.id,
+				product: idProduct,
+				objects: objectCanvas.objects,
+				thumbnailFront: this.imgPreviewFront,
+				thumbnailBack: this.imgPreviewBack,
+				isPublic: payload.status.type,
+			};
+
+			try {
+				await DesignService.createDesignByProduct({ params, idDesign });
+				this.oncloseModal();
+
+				console.log('params:', params);
+
+				this.$toast.success('saved success', {
+					position: 'top-right',
+					duration: 2000,
+				});
+
+				// goi api them design
+
+				this.SET_PRODUCT_MODEL(null);
+			} catch (error) {
+				console.log(error);
+			}
+		},
+
+		// handle image Preview
+		onPreviewDesign(mode) {
+			const img = new Image();
+			img.crossOrigin = 'Anonymous';
+
+			//dung de loc anh mat truoc va mat sau
+			this.canvas.getObjects().forEach((object) => {
+				object.visible = object.mode == mode ? true : false;
+			});
+
+			img.src = this.canvas.toDataURL({ format: 'png', quality: 1 });
+
+			img.onload = () => {
+				if (mode === 'front') {
+					this.imgPreviewFront = img.src;
+				} else if (mode === 'back') {
+					this.imgPreviewBack = img.src;
+				}
+			};
+		},
+		PreviewDesign() {
+			this.onPreviewDesign('front');
+			this.onPreviewDesign('back');
+			this.typePreview='preview'
+
+			this.isShowPreview = true;
+		}
 	},
 
 	watch: {
 		textDesign() {
 			let activeObject = this.canvas.getActiveObject();
-			console.log('activeObject', activeObject);
+
 			if (activeObject) {
-				console.log('activeObject ádfsdfdsf', activeObject);
 				activeObject.set({
 					fill: this.textDesign.textColor,
 					backgroundColor: this.textDesign.bgColor,

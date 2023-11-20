@@ -7,6 +7,9 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 
 /* import font awesome icon component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+import globalStyle from '@/assets/globalStyle.css';
 
 /* import specific icons */
 import {
@@ -36,7 +39,11 @@ import {
 	faUnderline,
 	faItalic,
 	faCopy,
-	faTrash
+	faTrash,
+	faMagnifyingGlass,
+	faHeart,
+	faDownload,
+	faEllipsisVertical
 } from '@fortawesome/free-solid-svg-icons';
 
 // import {faCopy} from '@fortawesome/free-regular-svg-icons'
@@ -68,7 +75,11 @@ library.add(
 	faUnderline,
 	faItalic,
 	faCopy,
-	faTrash
+	faTrash,
+	faMagnifyingGlass,
+	faHeart,
+	faDownload,
+	faEllipsisVertical
 );
 
 // import css
@@ -78,9 +89,16 @@ import './assets/css/app.css';
 import router from './router';
 import store from './store';
 
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+
+
+
 const app = createApp(App);
+app.component('VueDatePicker', VueDatePicker);
 app.use(router);
 app.use(VueToast);
 app.use(store);
+app.use(globalStyle);
 app.component('icon', FontAwesomeIcon);
 app.mount('#app');

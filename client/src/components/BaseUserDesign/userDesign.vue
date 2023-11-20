@@ -7,7 +7,7 @@
 				<img
 					:src="
 						require(`@/uploadImage/${
-							userInfo.image ? userInfo.image : 'man.png'
+							userInfos.image ? userInfos.image : 'man.png'
 						}`)
 					"
 					class="profilePhoto rounded-circle"
@@ -20,10 +20,10 @@
 				<div
 					class="w-[100%] d-flex justufy-content-start align-items-center"
 				>
-					<span class="font6 prUsername">{{ userInfo.username }}</span>
-					<div class="myEditButton f-bold1 crs-pointer">
+					<span class="font6 prUsername">{{ userInfos.username }}</span>
+					<!-- <div class="myEditButton f-bold1 crs-pointer">
 						Create Design
-					</div>
+					</div> -->
 				</div>
 				<br />
 				<div
@@ -39,7 +39,7 @@
 						<span class="f-bold1">{{
 							statisticalByDesign.sumLike
 						}}</span>
-						<span> Likes</span>
+						<span> Like</span>
 					</div>
 					<!-- <div>
 						<span class="f-bold1">20</span>
@@ -54,7 +54,7 @@
 					style="text-align: left"
 					class="w-[100%] text-slate-100 mt-1"
 				>
-					{{ userInfo.description }}
+					{{ userInfos.description }}
 				</div>
 			</div>
 		</div>
@@ -83,8 +83,10 @@
 				Favorite
 			</div>
 		</div>
-
-		<baseFilter :typeCatolog="activeOption"></baseFilter>
+		<baseFilter
+			:isStatus="false"
+			:typeCatolog="activeOption"
+		></baseFilter>
 		<div>
 			<div
 				:style="
@@ -93,16 +95,15 @@
 				class="exploreContainer p-1"
 			>
 				<one-post
-					v-for="(item, idx) in listDesign"
-					:key="idx"
 					:boxWidth="rowList"
 					:data="item"
-					:typeCatolog="activeOption"
+					:role="'view'"
+					v-for="(item, idx) in listDesign"
+					:key="idx"
 					class="border"
 					@onClickImage="onPreviweDesign(item)"
+					@onDownload="onDownload"
 					@CreateFavoriteDesign="creatFavoriteDesign"
-					@deleteDesign="deleteDesign"
-					@onDownload ="onDownload"
 				></one-post>
 			</div>
 		</div>
@@ -119,12 +120,12 @@
 import { createNamespacedHelpers } from 'vuex';
 import onePost from '@/pages/userInfoDesign/PostBase/one-post.vue';
 import ImageAssetService from '@/sevices/imageAssets.service';
-import DesignService from '@/sevices/design.service';
-import modalPreview from '@/components/ModalPreview/modalPreview.vue';
-import baseFilter from '@/components/BaseFilter/baseFilter.vue';
 import UserService from '@/sevices/user.service';
-const authMappper = createNamespacedHelpers('auth');
+import modalPreview from '@/components/ModalPreview/modalPreview.vue';
+import DesignService from '@/sevices/design.service';
+import baseFilter from '@/components/BaseFilter/baseFilter.vue';
 const designMappper = createNamespacedHelpers('design');
+const authMappper = createNamespacedHelpers('auth');
 export default {
 	components: {
 		onePost,
@@ -136,43 +137,41 @@ export default {
 			isPopoverOpen: false,
 			activeOption: 'design',
 			isShowPreview: false,
-
-			infoDesign: '',
-			statisticalByDesign: '',
 			typePreview: '',
-
-			isUnLike: false,
+			infoDesign: '',
+			userInfos: '',
+			statisticalByDesign: '',
 		};
 	},
 	computed: {
-		...authMappper.mapState(['email', 'userInfo']),
 		...designMappper.mapState(['listDesign']),
+		...authMappper.mapState(['email', 'userInfo']),
 	},
+
 	async mounted() {
-		const startDate = new Date();
-		const endDate = new Date(
-			new Date().setDate(startDate.getDate() + 7)
-		);
-		this.date = [startDate, endDate];
+		const user = await UserService.findByUser({
+			userId: this.$route.params.userId,
+		});
+		this.userInfos = user.data.data[0];
+
 		await this.getListDesignByUser({
-			userId: this.userInfo.id,
-			isPublic: 'all',
+			userId: this.$route.params.userId,
+			isPublic: 'public',
 			favoriteDesign: this.userInfo.favoriteDesign,
 		});
 
 		const statistical = await DesignService.statisticalInfoByDesign({
-			idUser: this.userInfo.id,
+			idUser: user.data.data[0].id,
 		});
-
 		this.statisticalByDesign = statistical.data.data;
+
+		console.log({ user });
 	},
 	methods: {
 		...designMappper.mapActions([
 			'getListDesignByUser',
-			'getFavoriteDesign',
 			'handleFavoriteList',
-			'getAllDesign',
-			'deleteDesignByUser'
+			'getFavoriteDesign'
 		]),
 		...designMappper.mapMutations(['SET_LIST_DESIGN']),
 		...authMappper.mapMutations(['SET_USER_INFO']),
@@ -181,11 +180,10 @@ export default {
 				case 'design': {
 					this.SET_LIST_DESIGN([]);
 					this.activeOption = value;
-					console.log('id :', this.userInfo.id);
 					try {
 						await this.getListDesignByUser({
-							userId: this.userInfo.id,
-							isPublic: 'all',
+							userId: this.$route.params.userId,
+							isPublic: 'public',
 							favoriteDesign: this.userInfo.favoriteDesign,
 						});
 					} catch (error) {
@@ -198,22 +196,24 @@ export default {
 					this.SET_LIST_DESIGN([]);
 					this.activeOption = value;
 					let imageAsset = await ImageAssetService.getAllImagAsset({
-						userId: this.userInfo.id,
+						userId: this.$route.params.userId,
 					});
 					console.log('imageAsset:', imageAsset);
 					this.SET_LIST_DESIGN(imageAsset.data.data);
+
+					console.log('this.listData:', this.listData);
 					break;
 				}
 				case 'favorite': {
 					this.SET_LIST_DESIGN([]);
 					this.activeOption = value;
 
-					console.log('userinfo:', this.userInfo);
+					console.log('userinfo:', this.userInfos);
 
-					const favoriteDesign = this.userInfo.favoriteDesign;
+					const favoriteDesign = this.userInfos.favoriteDesign;
 					console.log(
 						'this.userInfo.favoriteDesign',
-						this.userInfo.favoriteDesign
+						this.userInfos.favoriteDesign
 					);
 					this.getFavoriteDesign(favoriteDesign);
 					// await this.getAllDesign(this.userInfo);
@@ -232,23 +232,6 @@ export default {
 		},
 		oncloseModal() {
 			this.isShowPreview = false;
-		},
-
-		async deleteDesign(id) {
-			const payload = {
-				userId: this.userInfo.id,
-				idDesign: id,
-			};
-			await this.deleteDesignByUser(payload);
-			const statistical = await DesignService.statisticalInfoByDesign({
-				idUser: this.userInfo.id,
-			});
-
-			this.statisticalByDesign = statistical.data.data;
-			this.$toast.success('deleted success', {
-				position: 'top-right',
-				duration: 2000,
-			});
 		},
 		onDownload(infoDesign) {
 			this.typePreview = 'preview';
@@ -291,7 +274,7 @@ export default {
 				this.isUnLike = false;
 			}
 			const statistical = await DesignService.statisticalInfoByDesign({
-				idUser: this.userInfo.id,
+				idUser: this.userInfos.id,
 			});
 
 			this.statisticalByDesign = statistical.data.data;

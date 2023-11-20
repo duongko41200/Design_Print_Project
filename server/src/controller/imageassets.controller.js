@@ -33,11 +33,11 @@ const creatImageAsset = async (req, res) => {
 
 }
 const getAllImages = async (req, res) => { 
-	const email = req.query.email
-	console.log("email: ", email)
+	const _id = req.query.userId
+	console.log("email: ", _id)
 	try {
-		const checkEmail = await User.find({ email });
-		const getAllImagesAssets = await ImageAsset.find({ user: checkEmail[0].id });
+		const checkUser = await User.find({ _id });
+		const getAllImagesAssets = await ImageAsset.find({ user: checkUser[0].id });
 		
 		console.log("getAllImagesAssets: ", getAllImagesAssets)
 		res.status(200).json({
@@ -47,7 +47,7 @@ const getAllImages = async (req, res) => {
 
 
 	} catch (error) {
-		
+		console.log({error})
 	}
 
 }

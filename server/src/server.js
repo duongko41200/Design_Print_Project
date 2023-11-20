@@ -4,12 +4,15 @@ var cors = require('cors')
 const userApi = require("./routes/user.api")
 const imageAssetApi = require("./routes/imageassets.api")
 const uploadImageByS3 = require("./routes/image.api")
+const productApi = require("./routes/product.api")
+const DesignApi = require("./routes/design.api")
 require('dotenv').config()
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 
 const app = express()
+app.use(bodyParser.json({ limit: '10mb' }))
 const PORT = process.env.PORT ||3000
 app.set('trust proxy', process.env.VM_INSTANCE_IP);
 
@@ -17,7 +20,9 @@ app.use(cors())
 app.use(function (req, res, next) {
 
   // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080'||'http://localhost:8081');
+  // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080','https://cdn.pixabay.com');
+
+  res.header('Access-Control-Allow-Origin', '*');
 
   // Request methods you wish to allow
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -37,9 +42,13 @@ app.use(function (req, res, next) {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
+// call api
 userApi(app)
 uploadImageByS3(app)
 imageAssetApi(app)
+productApi(app)
+DesignApi(app)
 
 
 

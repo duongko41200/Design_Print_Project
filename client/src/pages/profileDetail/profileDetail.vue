@@ -133,11 +133,13 @@ export default {
 		//updateProfile
 		async updateProfile() {
 			const param = {
+				id: this.userInfo.id,
 				username: this.username,
 				image: this.imageProfile,
 				email: this.email,
 				password: this.password,
 				description: this.description,
+				favoriteDesign: this.userInfo.favoriteDesign
 			};
 			try {
 				const updatedata = await UserService.updateProfile({ param });

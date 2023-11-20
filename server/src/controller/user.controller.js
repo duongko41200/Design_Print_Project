@@ -77,6 +77,14 @@ const handleLogin = async (req, res) => {
 
 	const checkLogin = await User.find({ email });
 
+	/**
+	 * đếm số design
+	 * b1 lay id user
+	 * b2 tim id user trong bang design 
+	 * b3 dem so design cua nguoi dung
+	 */
+
+
 	if (checkLogin.length === 0) {
 		return res.status(200).json({
 			status: 'fail',
@@ -92,7 +100,8 @@ const handleLogin = async (req, res) => {
 			password: password,
 			email: email,
 			image: checkLogin[0].image,
-			description: checkLogin[0].description
+			description: checkLogin[0].description,
+			favoriteDesign:checkLogin[0].favoriteDesign
 		});
 
 		return res.status(200).json({
@@ -111,17 +120,21 @@ const handleLogin = async (req, res) => {
 const handleUpdate = async (req, res) => {
 	const body = req.body.param;
 
+	console.log('body;',body)
+
 	////kiểm tra lại chõ này
 	const bodyCopy = req.body.param
 
 
 
 	const tokenUser = CreatJWT({
+		id:body.id,
 		username: body.username,
 		email: body.email,
 		password: body.password,
 		image: body.image,
-		description: body.description
+		description: body.description,
+		favoriteDesign:body.favoriteDesign,
 	});
 
 	console.log('body request:', body);
@@ -136,7 +149,8 @@ const handleUpdate = async (req, res) => {
 				email: body.email,
 				password: body.password,
 				image: body.image,
-				description: body.description
+				description: body.description,
+				favoriteDesign:body.favoriteDesign,
 			}
 		);
 
@@ -161,6 +175,7 @@ const handleValidateToken = async (req, res) => {
 
 	try {
 		const validateToken = veryfiToken(token);
+		console.log(validateToken);
 
 		return res.status(200).json({
 			status: 'success',
@@ -171,10 +186,125 @@ const handleValidateToken = async (req, res) => {
 	}
 };
 
+const handleFindByUser = async (req, res) => { 
+	const _id = req.query.userId
+	const getUser = await User.find({ _id });
+	console.log("user:", getUser);
+	return res.status(200).json({
+		status: 'success',
+		data: getUser,
+	});
+}
+
+const handleCreateFavoriteDesign = async (req, res) => { 
+	const uerId = req.body.userId
+	const designId = req.body.designId
+	console.log("user:", uerId, designId);
+
+	const getUser = await User.find({ _id: uerId });
+	console.log('getUser.favoriteDesign', getUser[0])
+
+	const listfavorite = getUser[0].favoriteDesign?getUser[0].favoriteDesign:[]
+
+	const favoriteDesignArray = [...listfavorite, designId];
+	console.log("favoriteDesign fdsfdsg:", favoriteDesignArray);
+	
+	const tokenUser = CreatJWT({
+		id:getUser[0].id,
+		username: getUser[0].username,
+		email: getUser[0].email,
+		password: getUser[0].password,
+		image: getUser[0].image,
+		description: getUser[0].description,
+		favoriteDesign:favoriteDesignArray,
+	});
+
+	const updateListfavorite  = await User.findOneAndUpdate(
+		{ _id: uerId },
+		{
+			favoriteDesign: favoriteDesignArray
+		}
+	);
+	
+	return res.status(200).json({
+		status: 'success',
+		token: tokenUser,
+		data:{
+			id:getUser[0].id,
+			username: getUser[0].username,
+			email: getUser[0].email,
+			password: getUser[0].password,
+			image: getUser[0].image,
+			description: getUser[0].description,
+			favoriteDesign:favoriteDesignArray,
+		}
+	});
+
+
+}
+const handleDeleteFavoriteDesign = async (req, res) => { 
+	const uerId = req.body.userId
+	const designId = req.body.designId
+	console.log("user:", uerId, designId);
+
+	const getUser = await User.find({ _id: uerId });
+	console.log('getUser.favoriteDesign', getUser[0])
+
+	const listfavorite = getUser[0].favoriteDesign ? getUser[0].favoriteDesign : []
+	let favoriteDesignArray = [];
+	for (let i = 0; i < listfavorite.length; i++) {
+		if (listfavorite[i] !== designId) {
+			favoriteDesignArray= [...favoriteDesignArray, listfavorite[i]]
+		}
+		
+	}
+
+	console.log("favoriteDesign delete:", favoriteDesignArray);
+	
+	const tokenUser = CreatJWT({
+		id:getUser[0].id,
+		username: getUser[0].username,
+		email: getUser[0].email,
+		password: getUser[0].password,
+		image: getUser[0].image,
+		description: getUser[0].description,
+		favoriteDesign:favoriteDesignArray,
+	});
+
+	const updateListfavorite  = await User.findOneAndUpdate(
+		{ _id: uerId },
+		{
+			favoriteDesign: favoriteDesignArray
+		}
+	);
+	
+	return res.status(200).json({
+		status: 'success',
+		token: tokenUser,
+		data:{
+			id:getUser[0].id,
+			username: getUser[0].username,
+			email: getUser[0].email,
+			password: getUser[0].password,
+			image: getUser[0].image,
+			description: getUser[0].description,
+			favoriteDesign:favoriteDesignArray,
+		}
+	});
+
+
+}
+
+
+
+
 module.exports = {
 	handleSignup,
 	handleLogin,
 	handleLogout,
 	handleValidateToken,
 	handleUpdate,
+	handleFindByUser,
+	handleCreateFavoriteDesign,
+	handleDeleteFavoriteDesign
 };
