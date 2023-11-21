@@ -186,10 +186,20 @@ const handleValidateToken = async (req, res) => {
 	}
 };
 
-const handleFindByUser = async (req, res) => { 
+const handleFindByUser = async (req, res) => {
 	const _id = req.query.userId
 	const getUser = await User.find({ _id });
 	console.log("user:", getUser);
+	return res.status(200).json({
+		status: 'success',
+		data: getUser,
+	});
+};
+
+const getAllUser = async (req, res) => { 
+
+	const getUser = await User.find();
+	console.log("user dfsdfsdf:", getUser);
 	return res.status(200).json({
 		status: 'success',
 		data: getUser,
@@ -306,5 +316,6 @@ module.exports = {
 	handleUpdate,
 	handleFindByUser,
 	handleCreateFavoriteDesign,
-	handleDeleteFavoriteDesign
+	handleDeleteFavoriteDesign,
+	getAllUser
 };

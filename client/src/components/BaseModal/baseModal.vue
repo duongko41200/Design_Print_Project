@@ -11,7 +11,7 @@
 				leave-to="opacity-0"
 			>
 				<div
-					class="fixed inset-0 bg-gray-200 bg-opacity-75 transition-opacity"
+					class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
 				/>
 			</TransitionChild>
 
@@ -43,9 +43,10 @@
 											@click="onDesignProduct(product)"
 										>
 											<div
-												class="mt-1 relative  flex h-11 w-11 flex-none items-center justify-center bg-gray-50 group-hover:bg-white"
+												class="mt-1 relative flex h-11 w-11 flex-none items-center justify-center bg-gray-50 group-hover:bg-white"
 											>
-												<img v-if = "imageType === 'front'"
+												<img
+													v-if="imageType === 'front'"
 													:src="
 														require(`@/uploadImage/${
 															product.thumbnail
@@ -55,7 +56,7 @@
 													"
 													class="absolute z-10"
 												/>
-												<img 
+												<img
 													:src="
 														require(`@/uploadImage/${
 															product.thumbnail
@@ -65,7 +66,6 @@
 													"
 													class="absolute"
 												/>
-												
 											</div>
 											<div>
 												<div class="font-semibold text-gray-900">
@@ -78,8 +78,59 @@
 											</div>
 										</div>
 									</div>
-									<div class>
 
+									<div class="p-4 max-h-[400px] overflow-auto"  v-if="modalType === 'manageUser'">
+										<table class="table table-striped table-hover">
+											<thead>
+												<tr>
+													<th scope="col">#</th>
+													<th scope="col">Image</th>
+													<th scope="col">Infomation Design</th>
+													
+												
+													<th scope="col">Like</th>
+
+													<th scope="col">Status Public</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr
+													v-for="(product, idx) in products"
+													:key="idx"
+												>
+													<th scope="row">{{ idx + 1 }}</th>
+													<td>
+														<div class="center">
+															<img
+																:src="
+																	product.thumbnailFront
+																		? product.thumbnailFront
+																		: 'man.png'
+																"
+																class=" w-[50px] h-[40px]"
+																alt=""
+															/>
+														</div>
+													</td>
+													<td>
+														<div>
+															<div class="font-semibold text-gray-900">
+																{{ product.name }}
+																
+															</div>
+															<p class="mt-1 text-gray-600">
+																{{ product.description }}
+															</p>
+														</div>
+													</td>
+													<td>{{ product.numberLike }}</td>
+
+													<td>{{ product.isPublic }}</td>
+
+										
+												</tr>
+											</tbody>
+										</table>
 
 									</div>
 								</div>
@@ -110,9 +161,7 @@ import {
 	DialogPanel,
 	TransitionChild,
 	TransitionRoot,
-
 } from '@headlessui/vue';
-
 
 export default {
 	components: {
@@ -121,7 +170,6 @@ export default {
 
 		TransitionChild,
 		TransitionRoot,
-
 	},
 	props: {
 		showModal: {
@@ -133,12 +181,12 @@ export default {
 		},
 		imageType: {
 			type: String,
-			default: "front"
+			default: 'front',
 		},
 		modalType: {
 			type: String,
-			default: 'product'
-		}
+			default: 'product',
+		},
 	},
 	data() {
 		return {};
@@ -148,13 +196,13 @@ export default {
 	},
 	methods: {
 		oncloseModal() {
+			console.log("ksdjksdjfksdjf")
 			this.$emit('oncloseModal');
-
 		},
 
 		onDesignProduct(product) {
-			this.$emit('onDesignProduct',product);
-		}
+			this.$emit('onDesignProduct', product);
+		},
 	},
 };
 </script>

@@ -1,5 +1,11 @@
+
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
+import { ChevronDownIcon } from '@heroicons/vue/20/solid'
 export default {
 	name: 'SidebarMenuAkahon',
+	components: {
+		Menu, MenuButton, MenuItem, MenuItems,ChevronDownIcon
+	},
 	props: {
 		//! Menu settings
 		isMenuOpen: {
@@ -70,20 +76,20 @@ export default {
 					icon: 'bx-data',
 	
 				},
-				{
-					link: '/quantri',
-					name: 'Quản trị',
-					tooltip: 'Quản trị',
-					icon: 'bx-cog',
+				// {
+				// 	link: '/quantri',
+				// 	name: 'Quản trị',
+				// 	tooltip: 'Quản trị',
+				// 	icon: 'bx-cog',
 			
-				},
-				{
-					link: '/baocao',
-					name: 'Thống Kê',
-					tooltip: 'Thống kê báo cáo',
-					icon: 'bx-bookmark',
+				// },
+				// {
+				// 	link: '/baocao',
+				// 	name: 'Thống Kê',
+				// 	tooltip: 'Thống kê báo cáo',
+				// 	icon: 'bx-bookmark',
 		
-				},
+				// },
 				// {
 				// 	link: '#',
 				// 	name: 'Setting',
@@ -173,6 +179,9 @@ export default {
 	data() {
 		return {
 			isOpened: false,
+			isHover: false,
+			
+			isSelectByAdmin:false
 		};
 	},
 	mounted() {
@@ -225,16 +234,30 @@ export default {
 					tooltip.classList.remove('active');
 				});
 			});
+
+
+
 		},
-		/**
-		 * To check if at least one item in two arrays is equal
-		 * @param {*} arr1
-		 * @param {*} arr2
-		 * @returns
-		 */
-		// hasCommonElement(arr1, arr2) {
-		// 	if(arr1) return arr1.some((item1) => arr2.includes(item1));
-	
-		// },
+		handleHover() {
+			this.isHover = true;
+			// this.isSelectByAdmin = true
+		},
+		handleOver() {
+			this.isHover = false;
+			// this.isSelectByAdmin = false
+		},
+		onClickAdmin() {
+			this.isSelectByAdmin = !this.isSelectByAdmin
+			console.log('isSelectByAdmin', this.isSelectByAdmin)
+		},
+		onMoveManageUser() {
+			this.isSelectByAdmin = false
+			this.isOpened = false
+			this.$router.push('/manageUser')
+		},
+		onMoveManageProduct() {
+			this.isSelectByAdmin = false
+			this.isOpened = false
+		}
 	},
 };

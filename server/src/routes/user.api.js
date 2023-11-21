@@ -9,6 +9,7 @@ const userApi = (app) => {
 	router.get('/logout', ApiControl.handleLogout);
 	router.post('/validate', ApiControl.handleValidateToken)
 	router.get('/findByUser', ApiControl.handleFindByUser)
+	router.get('/allUser', ApiControl.getAllUser)
 	router.put('/update', ApiControl.handleUpdate)
 	router.post('/creatFavoriteDesign', ApiControl.handleCreateFavoriteDesign)
 	router.post('/deleteFavoriteDesign', ApiControl.handleDeleteFavoriteDesign)

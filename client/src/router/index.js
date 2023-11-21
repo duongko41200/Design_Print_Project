@@ -11,6 +11,7 @@ import userDesign from '@/components/BaseUserDesign/userDesign.vue'
  
 // import home from '../pages/home';
 import homeLayout from '@/pages/home/homeLayout.vue';
+import manageUser from '@/pages/Admin/ManageUser/manageUser.vue';
 // import profile from '../pages/profile';
 
 const routes = [
@@ -38,6 +39,11 @@ const routes = [
 				name: 'userDesign',
 				path: '/user/:userId',
 				component: userDesign,
+			},
+			{
+				name: 'manageUser',
+				path: '/manageUser',
+				component: manageUser,
 			},
 		],
 	},
