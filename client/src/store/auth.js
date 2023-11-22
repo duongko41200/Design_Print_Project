@@ -2,6 +2,7 @@ import { getField, updateField } from 'vuex-map-fields';
 import UserService from '@/sevices/user.service.js';
 import DesignService from '@/sevices/design.service';
 import { pagination } from '@/utils/pagination';
+import { filterKeyWord } from '@/utils/filter.js';
 export default {
 	namespaced: true,
 
@@ -13,6 +14,7 @@ export default {
 			originAllListUser: [],
 			allListUser: [],
 			limitUserPerPage: 15,
+			originPaginationsResult: [],
 		};
 	},
 
@@ -25,15 +27,7 @@ export default {
 			commit('SET_USER_INFO', validate.data.data);
 			commit('SET_EMAIL', validate.data.data.email);
 		},
-		paginationListUser({ commit, state }, { list, currentPage }) {
-			const data = pagination(
-				list,
-				state.limitUserPerPage,
-				currentPage
-			);
-			console.log('ksdjfkdsj:', data);
-			commit('SET_ALL_LIST_USER', data);
-		},
+
 		async getAllListUser({ commit, dispatch }) {
 			const allUser = await UserService.getAllUser();
 			let arrayAllUsers = allUser.data.data;
@@ -52,6 +46,27 @@ export default {
 			commit('SET_ORIGIN_ALL_LIST_USER', arrayAllUsers);
 			dispatch('paginationListUser', {
 				list: arrayAllUsers,
+				currentPage: 1,
+			});
+		},
+		paginationListUser({ commit, state }, { list, currentPage }) {
+			const data = pagination(
+				list,
+				state.limitUserPerPage,
+				currentPage
+			);
+			commit('SET_ALL_LIST_USER', data);
+		},
+
+		filterListUser({ dispatch,state }, { searchKeyword }) {
+			if (!state.originAllListUser) return;
+			let searchResult = [...state.originAllListUser];
+			if (searchKeyword) {
+				searchResult = filterKeyWord(searchResult, searchKeyword);
+			}
+			state.originPaginationsResult = searchResult
+			dispatch('paginationListUser', {
+				list: searchResult,
 				currentPage: 1,
 			});
 		},

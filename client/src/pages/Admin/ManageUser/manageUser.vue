@@ -3,12 +3,41 @@
 		class="max-h-full h-[100%] w-[100%] overflow-x-hidden flex flex-col bg-zinc-800 text-gray-100 text-sm flex justify-center items-center"
 	>
 		<div
-			class="body h-full max-h-full 2xl:h-[600px] overflow-auto w-[80%] flex flex-col py-4 p-6 bg-zinc-700 rounded-2xl shadow-xl shadow-zinc-700/20"
+			class="body h-full max-h-full 2xl:h-[700px] overflow-auto w-[80%] flex flex-col py-4 p-6 bg-zinc-700 rounded-2xl shadow-xl shadow-zinc-700/20"
 		>
+			<div class="w-full  flex justify-start ">
+				<div class=" py-2 flex items-center relative w-[200px]">
+					<svg
+						stroke="currentColor"
+						fill="none"
+						stroke-width="2"
+						viewBox="0 0 24 24"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="absolute left-4 pointer-events-none"
+						height="1em"
+						width="1em"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<circle cx="11" cy="11" r="8"></circle>
+						<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+					</svg>
+					<input
+						id="main-search"
+						autocomplete="off"
+						class="bg-zinc-700 flex-1 pl-10 pr-12  rounded-full border text-sm px-10 py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-700"
+						placeholder="Search for account"
+						v-model="valueSearch"
+						fdprocessedid="d00fvp"
+						@input="filterAccount"
+					/>
+				</div>
+			</div>
+
 			<div
-				class="h-[600px] w-[100%] relative bg-white rounded-2xl shadow-xl shadow-zinc-700/20"
+				class="h-[600px] w-[100%] relative bg-white rounded-2xl flex flex-col shadow-xl shadow-zinc-700/20"
 			>
-				<div class="2xl:h-[500px] md:h-[300px] overflow-auto">
+				<div class="2xl:h-[550px] md:h-[270px] overflow-auto">
 					<table class="table table-striped table-hover">
 						<thead>
 							<tr>
@@ -92,7 +121,10 @@
 															Edit
 														</div>
 													</MenuItem>
-													<MenuItem v-slot="{ active }" v-if="userInfo.role === 'owner'">
+													<MenuItem
+														v-slot="{ active }"
+														v-if="userInfo.role === 'owner'"
+													>
 														<div
 															:class="[
 																active
@@ -110,7 +142,7 @@
 										</transition>
 									</Menu>
 								</td>
-							</tr>
+							</tr>		
 						</tbody>
 					</table>
 				</div>
@@ -146,7 +178,6 @@
 		:id="idUser"
 		@closeModalNotify="closeModalNotify"
 		@deleteAccess="deleteUser"
-
 	></modalNotify>
 </template>
 <script>
@@ -175,7 +206,8 @@ export default {
 			showEditForm: false,
 			userInfos: '',
 			showModalNotify: false,
-			idUser:''
+			idUser: '',
+			valueSearch:'',
 		};
 	},
 
@@ -183,13 +215,18 @@ export default {
 		await this.getAllListUser();
 	},
 	computed: {
-		...authMappper.mapState(['allListUser', 'originAllListUser','userInfo']),
+		...authMappper.mapState([
+			'allListUser',
+			'originAllListUser',
+			'userInfo',
+			'originPaginationsResult'
+		]),
 		...designMappper.mapState(['listDesign']),
 	},
 
 	methods: {
 		...authMappper.mapMutations(['SET_USER_INFO']),
-		...authMappper.mapActions(['getAllListUser', 'paginationListUser']),
+		...authMappper.mapActions(['getAllListUser', 'paginationListUser','filterListUser']),
 		...designMappper.mapActions(['getListDesignByUser']),
 
 		async showListDesign(userId) {
@@ -203,18 +240,18 @@ export default {
 			this.showModal = false;
 			this.showEditForm = false;
 		},
-		
+
 		shoModalDeleteUser(id) {
 			this.showModalNotify = true;
-			this.idUser = id
+			this.idUser = id;
 		},
 		closeModalNotify() {
-			this.showModalNotify=false;
+			this.showModalNotify = false;
 		},
 		updateHandler() {
 			console.log('all list:', this.originAllListUser);
 			this.paginationListUser({
-				list: this.originAllListUser,
+				list: this.originPaginationsResult,
 				currentPage: this.page,
 			});
 		},
@@ -234,16 +271,22 @@ export default {
 					duration: 2000,
 				});
 				await this.getAllListUser();
-				this.showModalNotify=false
+				this.showModalNotify = false;
 			} catch (error) {
 				console.log('error:', error);
 				this.$toast.error('delete user faile', {
 					position: 'top-right',
 					duration: 2000,
 				});
-				this.showModalNotify=false
+				this.showModalNotify = false;
 			}
 		},
+
+		filterAccount() {
+			this.filterListUser({
+				searchKeyword: this.valueSearch
+			})
+		}
 	},
 };
 </script>
