@@ -92,7 +92,7 @@
 															Edit
 														</div>
 													</MenuItem>
-													<MenuItem v-slot="{ active }">
+													<MenuItem v-slot="{ active }" v-if="userInfo.role === 'owner'">
 														<div
 															:class="[
 																active
@@ -136,7 +136,7 @@
 
 	<userModal
 		:showModal="showEditForm"
-		:userInfos="userInfo"
+		:userInfos="userInfos"
 		@oncloseModal="oncloseModal"
 	></userModal>
 	<modalNotify
@@ -173,7 +173,7 @@ export default {
 			showModal: false,
 			page: 1,
 			showEditForm: false,
-			userInfo: '',
+			userInfos: '',
 			showModalNotify: false,
 			idUser:''
 		};
@@ -183,7 +183,7 @@ export default {
 		await this.getAllListUser();
 	},
 	computed: {
-		...authMappper.mapState(['allListUser', 'originAllListUser']),
+		...authMappper.mapState(['allListUser', 'originAllListUser','userInfo']),
 		...designMappper.mapState(['listDesign']),
 	},
 
@@ -221,7 +221,7 @@ export default {
 		editUser(user) {
 			console.log('userID:', user);
 			this.showEditForm = true;
-			this.userInfo = user;
+			this.userInfos = user;
 		},
 
 		async deleteUser(id) {

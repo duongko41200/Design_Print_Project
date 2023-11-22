@@ -1,6 +1,7 @@
 const User = require('../models/user.model');
 const { CreatJWT, veryfiToken } = require('../middleware/JWTAction');
 const bcrypt = require('bcrypt');
+const Design = require('../models/design.model');
 
 var checkEmail = (email) => {
 	const emailRegexp =
@@ -84,7 +85,7 @@ const handleLogin = async (req, res) => {
 	 * b3 dem so design cua nguoi dung
 	 */
 
-
+	console.log(checkLogin)
 	if (checkLogin.length === 0) {
 		return res.status(200).json({
 			status: 'fail',
@@ -93,13 +94,16 @@ const handleLogin = async (req, res) => {
 	}
 	const hashPassword = checkLogin[0].password;
 	const comparePass = await bcrypt.compare(password, hashPassword);
+	// console.log(comparePass,password, hashPassword)
 	if (comparePass) {
+
 		const token = CreatJWT({
 			id: checkLogin[0]._id.toString(),
 			username: checkLogin[0].username,
 			password: password,
 			email: email,
 			image: checkLogin[0].image,
+			role:checkLogin[0].role,
 			description: checkLogin[0].description,
 			favoriteDesign:checkLogin[0].favoriteDesign
 		});
@@ -133,6 +137,7 @@ const handleUpdate = async (req, res) => {
 		email: body.email,
 		password: body.password,
 		image: body.image,
+		role: body.role,
 		description: body.description,
 		favoriteDesign:body.favoriteDesign,
 	});
@@ -149,6 +154,7 @@ const handleUpdate = async (req, res) => {
 				email: body.email,
 				password: body.password,
 				image: body.image,
+				role: body.role,
 				description: body.description,
 				favoriteDesign:body.favoriteDesign,
 			}
@@ -196,7 +202,7 @@ const handleFindByUser = async (req, res) => {
 	});
 };
 
-const getAllUser = async (req, res) => { 
+const getAllUser = async (req, res) => {
 
 	const getUser = await User.find();
 	console.log("user dfsdfsdf:", getUser);
@@ -204,7 +210,16 @@ const getAllUser = async (req, res) => {
 		status: 'success',
 		data: getUser,
 	});
-}
+};
+const handleDeleteByUser = async (req, res) => {
+
+	const id = req.query.userId;
+	await User.deleteMany({ _id: id });
+	await Design.deleteMany({ user: id });
+	res.status(200).json({
+		status: 'success',
+	});
+ }
 
 const handleCreateFavoriteDesign = async (req, res) => { 
 	const uerId = req.body.userId
@@ -225,6 +240,7 @@ const handleCreateFavoriteDesign = async (req, res) => {
 		email: getUser[0].email,
 		password: getUser[0].password,
 		image: getUser[0].image,
+		role: getUser[0].role,
 		description: getUser[0].description,
 		favoriteDesign:favoriteDesignArray,
 	});
@@ -245,6 +261,7 @@ const handleCreateFavoriteDesign = async (req, res) => {
 			email: getUser[0].email,
 			password: getUser[0].password,
 			image: getUser[0].image,
+			role: getUser[0].role,
 			description: getUser[0].description,
 			favoriteDesign:favoriteDesignArray,
 		}
@@ -277,6 +294,7 @@ const handleDeleteFavoriteDesign = async (req, res) => {
 		email: getUser[0].email,
 		password: getUser[0].password,
 		image: getUser[0].image,
+		role: getUser[0].role,
 		description: getUser[0].description,
 		favoriteDesign:favoriteDesignArray,
 	});
@@ -297,6 +315,7 @@ const handleDeleteFavoriteDesign = async (req, res) => {
 			email: getUser[0].email,
 			password: getUser[0].password,
 			image: getUser[0].image,
+			role: getUser[0].role,
 			description: getUser[0].description,
 			favoriteDesign:favoriteDesignArray,
 		}
@@ -317,5 +336,6 @@ module.exports = {
 	handleFindByUser,
 	handleCreateFavoriteDesign,
 	handleDeleteFavoriteDesign,
-	getAllUser
+	getAllUser,
+	handleDeleteByUser
 };

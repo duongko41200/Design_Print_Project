@@ -13,7 +13,6 @@ const createDesign = async (req, res) => {
 
 	const getDesign = await Design.find({ _id: req.body.idDesign });
 
-	console.log('getDesign', getDesign);
 	if (getDesign.length > 0) {
 		const updateDesign = await Design.updateMany(
 			{ _id: req.body.idDesign },
@@ -34,7 +33,7 @@ const createDesign = async (req, res) => {
 	}
 };
 const getAllDesignByUser = async (req, res) => {
-	console.log('req.query', req.query);
+
 	let listDesign = '';
 	if (req.query.isPublic === 'public') {
 		const listDesignByPublic = await Design.find({
@@ -78,7 +77,7 @@ const getAllDesign = async (req, res) => {
 		isPublic: 'public',
 	}).populate('user');
 
-	console.log('lise All Design :', listDesign);
+	console.log('lise All Design sdfdsfsdfsdfsdfsdfsdf werwerwerwerwerewr:', listDesign[0]);
 
 	res.status(200).json({
 		status: 'success',
@@ -97,7 +96,7 @@ const likeDesign = async (req, res) => {
 		parseInt(design[0].numberLike ? design[0].numberLike : 0) + 1;
 	const array = design[0].userLike ? design[0].userLike : [];
 	let userLike = [...array, userId];
-	console.log('like design', numberLike, userLike);
+
 	
 	const updateDesign = await Design.updateMany(
 		{ _id: designId },
