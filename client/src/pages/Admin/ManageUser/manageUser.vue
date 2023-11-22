@@ -3,10 +3,10 @@
 		class="max-h-full h-[100%] w-[100%] overflow-x-hidden flex flex-col bg-zinc-800 text-gray-100 text-sm flex justify-center items-center"
 	>
 		<div
-			class="body h-full max-h-full 2xl:h-[700px] overflow-auto w-[80%] flex flex-col py-4 p-6 bg-zinc-700 rounded-2xl shadow-xl shadow-zinc-700/20"
+			class="body h-full max-h-full 2xl:h-[700px] overflow-auto w-[80%] flex flex-col py-4 pt-2 p-6 bg-zinc-700 rounded-2xl shadow-xl shadow-zinc-700/20"
 		>
-			<div class="w-full  flex justify-start ">
-				<div class=" py-2 flex items-center relative w-[200px]">
+			<div class="w-full 2xl:p-4  flex justify-end ">
+				<div class=" py-2 flex items-center relative md:w-[250px] 2xl:w-[350px] ">
 					<svg
 						stroke="currentColor"
 						fill="none"
@@ -25,7 +25,7 @@
 					<input
 						id="main-search"
 						autocomplete="off"
-						class="bg-zinc-700 flex-1 pl-10 pr-12  rounded-full border text-sm px-10 py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-700"
+						class="bg-zinc-700 flex-1 pl-10  rounded-full border text-sm  py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-700"
 						placeholder="Search for account"
 						v-model="valueSearch"
 						fdprocessedid="d00fvp"
@@ -142,7 +142,8 @@
 										</transition>
 									</Menu>
 								</td>
-							</tr>		
+							</tr>	
+								
 						</tbody>
 					</table>
 				</div>

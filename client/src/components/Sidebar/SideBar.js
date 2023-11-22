@@ -258,6 +258,7 @@ export default {
 		onMoveManageProduct() {
 			this.isSelectByAdmin = false
 			this.isOpened = false
+			this.$router.push('/manageProduct')
 		}
 	},
 };

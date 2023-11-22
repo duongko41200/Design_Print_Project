@@ -12,6 +12,7 @@ import userDesign from '@/components/BaseUserDesign/userDesign.vue'
 // import home from '../pages/home';
 import homeLayout from '@/pages/home/homeLayout.vue';
 import manageUser from '@/pages/Admin/ManageUser/manageUser.vue';
+import manageProduct from '@/pages/Admin/ManageProduct/manageProduct.vue'
 // import profile from '../pages/profile';
 
 const routes = [
@@ -44,6 +45,11 @@ const routes = [
 				name: 'manageUser',
 				path: '/manageUser',
 				component: manageUser,
+			},
+			{
+				name: 'manageProduct',
+				path: '/manageProduct',
+				component: manageProduct,
 			},
 		],
 	},
