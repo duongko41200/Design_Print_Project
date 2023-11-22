@@ -216,7 +216,7 @@
 								>
 									by
 									<span class="hover:text-blue-500 hover:underline">
-										{{ design.user.username }}</span
+										{{ design.user?.username?design.user.username:'none' }}</span
 									>
 								</div>
 							</div>

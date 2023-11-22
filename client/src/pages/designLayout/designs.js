@@ -9,7 +9,6 @@ import navbarDesign from '@/components/NavbarDesign/navbarDesign.vue';
 import { AvailableFontFamilies } from '@/Contant/WebFontConfig';
 import WebFontConfig from '@/Contant/WebFontConfig';
 import WebFont from 'webfontloader';
-import modalSave from '@/components/ModalFormSave/modalSave.vue';
 import modalPreview from '@/components/ModalPreview/modalPreview.vue';
 const authMappper = createNamespacedHelpers('auth');
 const globalMappper = createNamespacedHelpers('global');
@@ -19,7 +18,6 @@ export default {
 	components: {
 		baseSidebar,
 		navbarDesign,
-		modalSave,
 		modalPreview,
 	},
 	data() {

@@ -30,6 +30,7 @@ export default {
 	},
 	async mounted() {
 		await this.getAllDesign(this.userInfo);
+		console.log("allDesign dssdfdsff",this.allDesign)
 	},
 	computed: {
 		...designMappper.mapState(['allDesign']),

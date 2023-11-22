@@ -54,7 +54,7 @@
 								<td>
 									<Menu
 										as="div"
-										class="bottom-5 right-5 inline-block text-left"
+										class="bottom-5 right-5 inline-block text-left cursor-pointer"
 									>
 										<div>
 											<MenuButton
@@ -87,7 +87,7 @@
 																	: 'text-gray-700',
 																'block px-4 py-2 text-sm',
 															]"
-															@click="editUser(user.id)"
+															@click="editUser(user)"
 														>
 															Edit
 														</div>
@@ -100,7 +100,7 @@
 																	: 'text-gray-700',
 																'block px-4 py-2 text-sm',
 															]"
-															@click="deleteUser(user.id)"
+															@click="shoModalDeleteUser(user.id)"
 														>
 															Delete
 														</div>
@@ -111,7 +111,6 @@
 									</Menu>
 								</td>
 							</tr>
-	
 						</tbody>
 					</table>
 				</div>
@@ -134,10 +133,28 @@
 		@oncloseModal="oncloseModal"
 		@onDesignProduct="onDesignProduct"
 	></baseModal>
+
+	<userModal
+		:showModal="showEditForm"
+		:userInfos="userInfo"
+		@oncloseModal="oncloseModal"
+	></userModal>
+	<modalNotify
+		title="Delete Account"
+		content="When deleting an account the designs of this account will be deleted.You may want to delete?"
+		:showModalNotify="showModalNotify"
+		:id="idUser"
+		@closeModalNotify="closeModalNotify"
+		@deleteAccess="deleteUser"
+
+	></modalNotify>
 </template>
 <script>
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
+import userModal from '@/components/ModalFormUser/userModal.vue';
 import baseModal from '@/components/BaseModal/baseModal.vue';
+import UserService from '@/sevices/user.service.js';
+import modalNotify from '@/components/ModalNotify/modalNotify.vue';
 import { createNamespacedHelpers } from 'vuex';
 const authMappper = createNamespacedHelpers('auth');
 const designMappper = createNamespacedHelpers('design');
@@ -148,11 +165,17 @@ export default {
 		MenuButton,
 		MenuItem,
 		MenuItems,
+		userModal,
+		modalNotify,
 	},
 	data() {
 		return {
 			showModal: false,
-			page:1
+			page: 1,
+			showEditForm: false,
+			userInfo: '',
+			showModalNotify: false,
+			idUser:''
 		};
 	},
 
@@ -160,13 +183,13 @@ export default {
 		await this.getAllListUser();
 	},
 	computed: {
-		...authMappper.mapState(['allListUser','originAllListUser']),
+		...authMappper.mapState(['allListUser', 'originAllListUser']),
 		...designMappper.mapState(['listDesign']),
 	},
 
 	methods: {
 		...authMappper.mapMutations(['SET_USER_INFO']),
-		...authMappper.mapActions(['getAllListUser','paginationListUser']),
+		...authMappper.mapActions(['getAllListUser', 'paginationListUser']),
 		...designMappper.mapActions(['getListDesignByUser']),
 
 		async showListDesign(userId) {
@@ -178,11 +201,49 @@ export default {
 		},
 		oncloseModal() {
 			this.showModal = false;
+			this.showEditForm = false;
+		},
+		
+		shoModalDeleteUser(id) {
+			this.showModalNotify = true;
+			this.idUser = id
+		},
+		closeModalNotify() {
+			this.showModalNotify=false;
 		},
 		updateHandler() {
 			console.log('all list:', this.originAllListUser);
-			this.paginationListUser({list:this.originAllListUser,currentPage:this.page})
-		}
+			this.paginationListUser({
+				list: this.originAllListUser,
+				currentPage: this.page,
+			});
+		},
+		editUser(user) {
+			console.log('userID:', user);
+			this.showEditForm = true;
+			this.userInfo = user;
+		},
+
+		async deleteUser(id) {
+			try {
+				await UserService.deleteByUser({
+					userId: id,
+				});
+				this.$toast.success('Delete user success', {
+					position: 'top-right',
+					duration: 2000,
+				});
+				await this.getAllListUser();
+				this.showModalNotify=false
+			} catch (error) {
+				console.log('error:', error);
+				this.$toast.error('delete user faile', {
+					position: 'top-right',
+					duration: 2000,
+				});
+				this.showModalNotify=false
+			}
+		},
 	},
 };
 </script>

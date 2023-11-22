@@ -29,6 +29,7 @@ export default {
 				? payload.favoriteDesign
 				: [];
 			const allDesign = await DesignService.getAllDesign();
+			console.log("allDesign duong dep trai:", allDesign)
 			const statusFavorite = allDesign.data.data;
 
 			// add isLike for Design

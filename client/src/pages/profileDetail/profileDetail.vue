@@ -138,6 +138,7 @@ export default {
 				image: this.imageProfile,
 				email: this.email,
 				password: this.password,
+				role: this.userInfo.role,
 				description: this.description,
 				favoriteDesign: this.userInfo.favoriteDesign
 			};

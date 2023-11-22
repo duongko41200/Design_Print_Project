@@ -12,7 +12,7 @@ export default {
 			imageProfile: '',
 			originAllListUser: [],
 			allListUser: [],
-			limitUserPerPage: 10,
+			limitUserPerPage: 15,
 		};
 	},
 

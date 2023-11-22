@@ -196,7 +196,6 @@ export default {
 	},
 	methods: {
 		oncloseModal() {
-			console.log("ksdjksdjfksdjf")
 			this.$emit('oncloseModal');
 		},
 
