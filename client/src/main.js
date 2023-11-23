@@ -44,7 +44,8 @@ import {
 	faHeart,
 	faDownload,
 	faEllipsisVertical,
-	faCaretDown
+	faCaretDown,
+	faPlus
 } from '@fortawesome/free-solid-svg-icons';
 
 // import {faCopy} from '@fortawesome/free-regular-svg-icons'
@@ -81,7 +82,8 @@ library.add(
 	faHeart,
 	faDownload,
 	faEllipsisVertical,
-	faCaretDown
+	faCaretDown,
+	faPlus
 );
 
 // import css

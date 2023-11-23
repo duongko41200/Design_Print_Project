@@ -11,10 +11,13 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const uploadProfile = multer({
 	dest: '../client/src/uploadImage/upload_Profile/',
-}); //tai anh se vao thu muc nay
+}); //tao thu muc
 const uploadImageDesign = multer({
 	dest: '../client/src/uploadImage/upload_Image_Design/',
-}); //tai anh se vao thu muc nay
+}); //tâo thu muc nay
+const uploadImageProduct = multer({
+	dest: '../client/src/uploadImage/upload_Image_Design/',
+});
 const path = require('path');
 
 const { uploadFile, getFileStream } = require('../utills/s3');
@@ -28,6 +31,10 @@ const imageFolderPath = path.join(clientFolderPath, 'upload_Profile');
 const imageUploadDesign = path.join(
 	clientFolderPath,
 	'upload_Image_Design'
+);
+const imageUploadProduct = path.join(
+	clientFolderPath,
+	'Product_Model'
 );
 const checkFilePath = (req, res, next) => {
 	if (!fs.existsSync(imageFolderPath)) {
@@ -130,6 +137,49 @@ const uploadImageByS3 = (app) => {
 			}
 		}
 	);
+	router.post(
+		'/uploadImageProduct',
+		checkFilePath,
+		uploadImageDesign.single('file'),
+		async (req, res, next) => {
+			const tempPath = req.file.path;
+			const targetPath = `${imageUploadProduct}/${req.file.originalname}`;
+			console.log('targetPath: ', targetPath);
+
+			const pathImage = `Product_Model/${req.file.originalname}`;
+			console.log('path name: ', pathImage);
+
+			let isEist = false;
+			fs.rename(tempPath, targetPath, (err) => {
+				if (err) {
+					console.error(err);
+					return res.status(500).send('Lỗi khi lưu tệp.');
+				}
+			});
+
+			while (isEist === false) {
+				console.log(
+					'checkImageExists(targetPath) ',
+					checkImageExists(targetPath)
+				);
+
+				if (checkImageExists(targetPath) === true) {
+					console.log(
+						'checkImageExists(targetPath) ',
+						checkImageExists(targetPath)
+					);
+					console.log('Image already exists');
+					res.status(200).json({
+						status: 'success',
+						data: pathImage,
+					});
+
+					isEist = true;
+				}
+			}
+		}
+	);
+
 
 	// fix 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported
 	router.post('/get-remote-image', (req, res) => {

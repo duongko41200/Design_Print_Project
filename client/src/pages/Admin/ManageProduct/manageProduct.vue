@@ -6,7 +6,7 @@
 			class="body h-full max-h-full 2xl:h-[700px] overflow-auto w-[80%] flex flex-col py-4 p-6 bg-zinc-700 rounded-2xl shadow-xl shadow-zinc-700/20"
 		>
 			<div class="w-full flex justify-end">
-				<div class="py-2 flex items-center relative w-[250px]">
+				<div class="py-2 flex items-center relative w-[250px] mx-2">
 					<svg
 						stroke="currentColor"
 						fill="none"
@@ -32,12 +32,21 @@
 						@input="filterAccount"
 					/>
 				</div>
+				<div class="py-2 flex items-center relative w-[40px]">
+					<div
+						class="border absolute w-full rounded-lg h-[36px] cursor-pointer"
+						@click="openFormCreatProduct"
+					>
+						<icon icon="fa-solid fa-plus" style="font-size: 30px" />
+					</div>
+				</div>
 			</div>
 
 			<div
 				class="h-[600px] w-[100%] relative bg-white rounded-2xl flex flex-col shadow-xl shadow-zinc-700/20"
 			>
 				<div class="2xl:h-[550px] md:h-[270px] overflow-auto">
+					<!-- table product -->
 					<table class="table table-striped table-hover">
 						<thead>
 							<tr>
@@ -193,6 +202,10 @@
 		@closeModalNotify="closeModalNotify"
 		@deleteAccess="deleteUser"
 	></modalNotify>
+	<modalFormProduct
+		:showModal="showFormCreatProduct"
+		@oncloseModal="closeModalFormCreateProduct" 
+	></modalFormProduct>
 </template>
 <script>
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
@@ -202,6 +215,7 @@ import baseModal from '@/components/BaseModal/baseModal.vue';
 import ProductService from '@/sevices/product.service.js';
 import modalNotify from '@/components/ModalNotify/modalNotify.vue';
 import modalPreview from '@/components/ModalPreview/modalPreview.vue';
+import modalFormProduct from '@/components/ModalCreatProduct/modalFormProduct.vue';
 import { createNamespacedHelpers } from 'vuex';
 const productMappper = createNamespacedHelpers('product');
 const authMappper = createNamespacedHelpers('auth');
@@ -216,6 +230,7 @@ export default {
 		modalProduct,
 		modalNotify,
 		modalPreview,
+		modalFormProduct,
 	},
 	data() {
 		return {
@@ -224,6 +239,7 @@ export default {
 			showEditForm: false,
 			showModalNotify: false,
 			isShowPreview: false,
+			showFormCreatProduct: false,
 
 			productInfos: '',
 			idUser: '',
@@ -266,6 +282,12 @@ export default {
 				productId: productId,
 				isPublic: 'all',
 			});
+		},
+		openFormCreatProduct() {
+			this.showFormCreatProduct = true;
+		},
+		closeModalFormCreateProduct() {
+			this.showFormCreatProduct = false;
 		},
 		oncloseModal() {
 			this.showModal = false;
