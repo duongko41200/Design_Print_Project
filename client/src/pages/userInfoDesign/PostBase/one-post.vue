@@ -124,7 +124,7 @@
 											: 'text-gray-700',
 										'block px-4 py-2 text-sm',
 									]"
-									@click="deleteDesign(data.id)"
+									@click="deleteDesign(data)"
 								>
 									Delete
 								</div>
@@ -192,8 +192,8 @@ export default {
 		test() {
 			console.log('height:' + this.$refs.square.clientWidth + 'px');
 		},
-		async deleteDesign(id) {
-			this.$emit('deleteDesign', id);
+		async deleteDesign(design) {
+			this.$emit('deleteDesign', design);
 		},
 		async editDesign(id) {
 			const payload = {

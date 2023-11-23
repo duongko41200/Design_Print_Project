@@ -77,7 +77,7 @@
 								<td>
 									<div
 										class="text-sky-600 cursor-pointer font-bold"
-										@click="showListDesign(user.id)"
+										@click="showListDesign(product.id)"
 									>
 										{{ product.numDesigns }}
 									</div>
@@ -121,7 +121,7 @@
 																	: 'text-gray-700',
 																'block px-4 py-2 text-sm',
 															]"
-															@click="editUser(user)"
+															@click="editProduct(product)"
 														>
 															Edit
 														</div>
@@ -137,7 +137,7 @@
 																	: 'text-gray-700',
 																'block px-4 py-2 text-sm',
 															]"
-															@click="shoModalDeleteUser(user.id)"
+															@click="deleteProduct(product.id)"
 														>
 															Delete
 														</div>
@@ -171,35 +171,35 @@
 		:previewFront="productModel.imageFront"
 		:previewBack="productModel.imageBack"
 		@oncloseModal="oncloseModalPreview"
-		
 	></modalPreview>
 	<baseModal
 		:showModal="showModal"
 		:products="listDesign"
-		:modalType="'manageUser'"
+		:modalType="'manageProduct'"
 		@oncloseModal="oncloseModal"
 		@onDesignProduct="onDesignProduct"
 	></baseModal>
 
-	<userModal
+	<modalProduct
 		:showModal="showEditForm"
-		:userInfos="userInfos"
+		:productInfos="productInfos"
 		@oncloseModal="oncloseModal"
-	></userModal>
+	></modalProduct>
 	<modalNotify
-		title="Delete Account"
-		content="When deleting an account the designs of this account will be deleted.You may want to delete?"
+		title="Delete Product"
+		content="You cannot delete this template as it has been used to create other instances."
 		:showModalNotify="showModalNotify"
-		:id="idUser"
+		type="view"
 		@closeModalNotify="closeModalNotify"
 		@deleteAccess="deleteUser"
 	></modalNotify>
 </template>
 <script>
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
-import userModal from '@/components/ModalFormUser/userModal.vue';
+import modalProduct from '@/components/ModalFormUser/modalProduct.vue';
 import baseModal from '@/components/BaseModal/baseModal.vue';
-import UserService from '@/sevices/user.service.js';
+// import UserService from '@/sevices/user.service.js';
+import ProductService from '@/sevices/product.service.js';
 import modalNotify from '@/components/ModalNotify/modalNotify.vue';
 import modalPreview from '@/components/ModalPreview/modalPreview.vue';
 import { createNamespacedHelpers } from 'vuex';
@@ -213,9 +213,9 @@ export default {
 		MenuButton,
 		MenuItem,
 		MenuItems,
-		userModal,
+		modalProduct,
 		modalNotify,
-		modalPreview
+		modalPreview,
 	},
 	data() {
 		return {
@@ -225,19 +225,17 @@ export default {
 			showModalNotify: false,
 			isShowPreview: false,
 
-			
-			userInfos: '',		
+			productInfos: '',
 			idUser: '',
 			valueSearch: '',
 
-			productModel:''
-			
+			productModel: '',
 		};
 	},
 
-	async mounted() {
-		await this.getAllListUser();
-	},
+	// async mounted() {
+	// 	await this.getAllListUser();
+	// },
 	computed: {
 		...authMappper.mapState([
 			'allListUser',
@@ -256,12 +254,16 @@ export default {
 			'paginationListUser',
 			'filterListUser',
 		]),
-		...designMappper.mapActions(['getListDesignByUser']),
+		...designMappper.mapActions([
+			'getListDesignByUser',
+			'getListDesignByProduct',
+		]),
 
-		async showListDesign(userId) {
+		async showListDesign(productId) {
 			this.showModal = true;
-			await this.getListDesignByUser({
-				userId: userId,
+			console.log('product:', productId);
+			await this.getListDesignByProduct({
+				productId: productId,
 				isPublic: 'all',
 			});
 		},
@@ -270,14 +272,9 @@ export default {
 			this.showEditForm = false;
 		},
 		oncloseModalPreview() {
-		
-			this.isShowPreview = false
+			this.isShowPreview = false;
 		},
 
-		shoModalDeleteUser(id) {
-			this.showModalNotify = true;
-			this.idUser = id;
-		},
 		closeModalNotify() {
 			this.showModalNotify = false;
 		},
@@ -288,26 +285,30 @@ export default {
 				currentPage: this.page,
 			});
 		},
-		editUser(user) {
-			console.log('userID:', user);
+		editProduct(product) {
 			this.showEditForm = true;
-			this.userInfos = user;
+			this.productInfos = product;
 		},
 
-		async deleteUser(id) {
+		async deleteProduct(id) {
 			try {
-				await UserService.deleteByUser({
-					userId: id,
+				const productDelete = await ProductService.deleteProduct({
+					productId: id,
 				});
-				this.$toast.success('Delete user success', {
-					position: 'top-right',
-					duration: 2000,
-				});
-				await this.getAllListUser();
-				this.showModalNotify = false;
+
+				if (productDelete.data.status == 'fail') {
+					this.showModalNotify = true;
+				} else {
+					this.$toast.success('Delete product success', {
+						position: 'top-right',
+						duration: 2000,
+					});
+				}
+
+				// await this.getAllListUser();
 			} catch (error) {
 				console.log('error:', error);
-				this.$toast.error('delete user faile', {
+				this.$toast.error('delete product fail', {
 					position: 'top-right',
 					duration: 2000,
 				});
@@ -321,9 +322,9 @@ export default {
 			});
 		},
 		previewImageProduct(product) {
-			console.log("product", product)
-			this.productModel = product
-			this.isShowPreview = true
+			console.log('product', product);
+			this.productModel = product;
+			this.isShowPreview = true;
 		},
 	},
 };

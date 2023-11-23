@@ -9,6 +9,12 @@ const ProductService = {
 	async getAllProduct(params) {
 		return ApiService.get(baseUrl + 'product', params);
 	},
+	async updateProduct(params) {
+		return ApiService.put(baseUrl + 'updateProduct', params);
+	},
+	async deleteProduct(params) {
+		return ApiService.delete(baseUrl + 'deleteProduct', params);
+	},
 
 
 	

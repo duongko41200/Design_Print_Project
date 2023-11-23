@@ -76,10 +76,26 @@ export default {
 			commit('SET_LIST_DESIGN', designUpdate);
 			commit('SET_ORIGIN_LIST_DESIGN',designUpdate);
 		},
+		///product
+		async getListDesignByProduct({ commit }, payload) {
+
+			const allDesigns = await DesignService.getDesignByProduct({
+				productId: payload.productId,
+				isPublic: payload.isPublic,
+			});
+
+			console.log('allDesigns dsffsddsf', allDesigns)
+			const designUpdate = allDesigns.data.data;
+
+
+			commit('SET_LIST_DESIGN', designUpdate);
+		
+		},
 		async deleteDesignByUser({ commit }, payload) {
 			const allDesigns = await DesignService.deleteDesignByUser({
 				idDesign: payload.idDesign,
 				userId: payload.userId,
+				productId: payload.productId
 			});
 			commit('SET_LIST_DESIGN', allDesigns.data.data);
 			commit('SET_ORIGIN_LIST_DESIGN', allDesigns.data.data);

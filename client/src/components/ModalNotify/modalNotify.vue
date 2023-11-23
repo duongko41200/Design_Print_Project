@@ -60,7 +60,7 @@
 							<div
 								class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6"
 							>
-								<button
+								<button v-if="type != 'view'"
 									type="button"
 									class="mt-3 inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm font-semibold  shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto text-white shadow-sm hover:bg-green-700 sm:ml-3 sm:w-auto"
 									@click="deleteAccess"
@@ -122,6 +122,9 @@ export default {
 			default: 'Notification'
 		},
 		content: {
+			type: String,
+		},
+		type: {
 			type: String,
 		}
 	},

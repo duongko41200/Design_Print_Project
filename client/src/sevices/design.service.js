@@ -31,6 +31,12 @@ const DesignService = {
 	async statisticalInfoByDesign(params) {
 		return ApiService.get(baseUrl + 'statisticalInfoByDesign', params);
 	},
+	async getDesignByProduct(params) {
+		return ApiService.get(baseUrl + 'listDesignOfProduct', params);
+	},
+
+
+	
 
 
 	

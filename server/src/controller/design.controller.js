@@ -1,4 +1,5 @@
 const Design = require('../models/design.model');
+const Product = require('../models/product.model');
 // const getAllProduct = async (req, res) => {
 // 	const products = await Product.find({ isPublic: true }).sort('-numDesigns')
 // 	res.status(200).json({
@@ -33,7 +34,6 @@ const createDesign = async (req, res) => {
 	}
 };
 const getAllDesignByUser = async (req, res) => {
-
 	let listDesign = '';
 	if (req.query.isPublic === 'public') {
 		const listDesignByPublic = await Design.find({
@@ -53,10 +53,41 @@ const getAllDesignByUser = async (req, res) => {
 		data: listDesign,
 	});
 };
+const getAllDesignByProduct = async (req, res, next) => {
+	const listDesign = await Design.find({
+		product: req.query.productId,		
+	}).populate(['user', 'product']);;
+
+	res.status(200).json({
+		status: 'success',
+		data: listDesign,
+	});
+};
 const deleteDesign = async (req, res) => {
 	const id = req.query.idDesign;
 	const user = req.query.userId;
+	const productId = req.query.productId;
+
+	console.log(
+		'deleteDesign sjdhfkjsdhfkhfskjhfdjk:',
+		id,
+		user,
+		productId
+	);
 	await Design.deleteMany({ _id: id });
+	const product = await Product.find({ _id: productId });
+	console.log('product deleted', product);
+	if (!product) {
+		return next(new AppError('No product found with that id', 404));
+	}
+	const count = product[0].numDesigns - 1;
+	const updateProfile = await Product.findOneAndUpdate(
+		{ _id: productId },
+		{
+			numDesigns: count,
+		}
+	);
+
 	const listDesign = await Design.find({ user: user }).populate('user');
 	res.status(200).json({
 		status: 'success',
@@ -77,7 +108,10 @@ const getAllDesign = async (req, res) => {
 		isPublic: 'public',
 	}).populate('user');
 
-	console.log('lise All Design sdfdsfsdfsdfsdfsdfsdf werwerwerwerwerewr:', listDesign[0]);
+	console.log(
+		'lise All Design sdfdsfsdfsdfsdfsdfsdf werwerwerwerwerewr:',
+		listDesign[0]
+	);
 
 	res.status(200).json({
 		status: 'success',
@@ -97,7 +131,6 @@ const likeDesign = async (req, res) => {
 	const array = design[0].userLike ? design[0].userLike : [];
 	let userLike = [...array, userId];
 
-	
 	const updateDesign = await Design.updateMany(
 		{ _id: designId },
 		{ numberLike: numberLike, userLike: userLike }
@@ -122,12 +155,11 @@ const unLikeDesign = async (req, res) => {
 		parseInt(design[0].numberLike ? design[0].numberLike : 0) - 1;
 	const array = design[0].userLike ? design[0].userLike : [];
 
-	let userLike =[]
+	let userLike = [];
 	for (let i = 0; i < array.length; i++) {
-		if (array[i] != userId) { 
-			userLike =[...userLike, array[i]]
+		if (array[i] != userId) {
+			userLike = [...userLike, array[i]];
 		}
-		
 	}
 
 	const updateDesign = await Design.updateMany(
@@ -145,33 +177,27 @@ const unLikeDesign = async (req, res) => {
 };
 
 /**
- * statistical Design and like 
+ * statistical Design and like
  */
-const statisticalByDesign = async (req, res) => { 
+const statisticalByDesign = async (req, res) => {
 	// const designId = req.body.idDesign;
 	const userId = req.query.idUser;
 	const design = await Design.find({ user: userId });
 
-	let sumLike = 0
+	let sumLike = 0;
 	for (let i = 0; i < design.length; i++) {
-		console.log("design", design[i].numberLike)
-		sumLike = design[i].numberLike + sumLike
-		
+		console.log('design', design[i].numberLike);
+		sumLike = design[i].numberLike + sumLike;
 	}
-
 
 	res.status(200).json({
 		status: 'success',
 		data: {
 			sumLike: sumLike,
-			sumDesign: design.length
-		}
+			sumDesign: design.length,
+		},
 	});
-
-}
-
-
-
+};
 
 module.exports = {
 	createDesign,
@@ -181,5 +207,6 @@ module.exports = {
 	getAllDesign,
 	likeDesign,
 	unLikeDesign,
-	statisticalByDesign
+	statisticalByDesign,
+	getAllDesignByProduct,
 };

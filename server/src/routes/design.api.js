@@ -10,6 +10,7 @@ const DesignApi = (app) => {
 	router.delete('/delete', DesignControl.deleteDesign);
 	router.get('/findDesign', DesignControl.findDesign);
 	router.get('/allDesign', DesignControl.getAllDesign);
+	router.get('/listDesignOfProduct', DesignControl.getAllDesignByProduct);
 	// router.post('/SearchDesign', DesignControl.SearchDesign);
 	router.put('/likeDesign', DesignControl.likeDesign);
 	router.put('/unLikeDesign', DesignControl.unLikeDesign);

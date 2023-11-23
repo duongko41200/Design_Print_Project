@@ -133,6 +133,64 @@
 										</table>
 
 									</div>
+
+
+									<div class="p-4 max-h-[400px] overflow-auto"  v-if="modalType === 'manageProduct'">
+										<table class="table table-striped table-hover">
+											<thead>
+												<tr>
+													<th scope="col">#</th>
+													<th scope="col">Image</th>
+													<th scope="col">Infomation Design</th>
+
+														<th scope="col">User</th>
+												
+													<th scope="col">Like</th>
+
+													<th scope="col">Status Public</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr
+													v-for="(product, idx) in products"
+													:key="idx"
+												>
+													<th scope="row">{{ idx + 1 }}</th>
+													<td>
+														<div class="center">
+															<img
+																:src="
+																	product.thumbnailFront
+																		? product.thumbnailFront
+																		: 'man.png'
+																"
+																class=" w-[50px] h-[40px]"
+																alt=""
+															/>
+														</div>
+													</td>
+													<td>
+														<div>
+															<div class="font-semibold text-gray-900">
+																{{ product.name }}
+																
+															</div>
+															<p class="mt-1 text-gray-600">
+																{{ product.description }}
+															</p>
+														</div>
+													</td>
+													<td>{{ product.user.username }}</td>
+													<td>{{ product.numberLike }}</td>
+
+													<td>{{ product.isPublic }}</td>
+
+										
+												</tr>
+											</tbody>
+										</table>
+
+									</div>
 								</div>
 							</div>
 							<div

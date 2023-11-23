@@ -234,10 +234,11 @@ export default {
 			this.isShowPreview = false;
 		},
 
-		async deleteDesign(id) {
+		async deleteDesign(design) {
 			const payload = {
 				userId: this.userInfo.id,
-				idDesign: id,
+				idDesign: design.id,
+				productId: design.product
 			};
 			await this.deleteDesignByUser(payload);
 			const statistical = await DesignService.statisticalInfoByDesign({
