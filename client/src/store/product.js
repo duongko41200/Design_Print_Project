@@ -1,6 +1,7 @@
 import { getField, updateField } from 'vuex-map-fields';
 import ProductService from '@/sevices/product.service';
 import { pagination } from '@/utils/pagination';
+import { filterKeyWord } from '@/utils/filter.js';
 export default {
 	namespaced: true,
 
@@ -10,8 +11,9 @@ export default {
 			cataloge: [],
 			products: null,
 			originProducts: [],
-			limiProductPerPage: 1,
-			totalPages:''
+			limiProductPerPage: 15,
+			totalPages: '',
+			originPaginationsProduct:''
 			
 
 		};
@@ -53,6 +55,18 @@ export default {
 			commit('SET_PRODUCTS', data.data)
 			commit('SET_TOTAL_PAGE',data.totalPages)
 
+		},
+		filterListProduct({ dispatch,state }, { searchKeyword }) {
+			if (!state.originProducts) return;
+			let searchResult = [...state.originProducts];
+			if (searchKeyword) {
+				searchResult = filterKeyWord(searchResult, searchKeyword);
+			}
+			state.originPaginationsProduct = searchResult
+			dispatch('paginationListProduct', {
+				list: searchResult,
+				currentPage: 1,
+			});
 		},
 
 		handleCataloge({ commit ,state}, payload ) {

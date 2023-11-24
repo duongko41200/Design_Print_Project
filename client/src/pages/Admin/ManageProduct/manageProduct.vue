@@ -10,14 +10,16 @@
 			>
 				<div class="flex gap-2 h-[30px]">
 					<div
-						class="border flex items-center w-[100px] cursor-pointer hover:bg-emerald-800 rounded justify-center text-center h-full bg-emerald-700"
+						class="border flex items-center w-[100px] cursor-pointer hover:bg-emerald-800 rounded justify-center text-center h-full "
+						:class="optionStatus === 'accept'? 'bg-emerald-700':''"
 						@click="ChooseAcceptProduct"
 					>
 						<div>Accept</div>
 					</div>
 
 					<div
-						class="border border-yellow-700 cursor-pointer hover:bg-yellow-700 rounded flex items-center w-[100px] justify-center text-center h-full"
+						class="border border-yellow-700 cursor-pointer hover:bg-yellow-800 rounded flex items-center w-[100px] justify-center text-center h-full"
+						:class="optionStatus === 'pending'? 'bg-yellow-700':''"
 						@click="ChoosePendingProduct"
 					>
 						<div>Pending</div>
@@ -279,6 +281,7 @@ export default {
 			showModalNotify: false,
 			isShowPreview: false,
 			showFormCreatProduct: false,
+			optionStatus:'accept',
 
 			productInfos: '',
 			idUser: '',
@@ -296,24 +299,22 @@ export default {
 			'allListUser',
 			'originAllListUser',
 			'userInfo',
-			'originPaginationsResult',
+			
 		]),
 		...designMappper.mapState(['listDesign']),
-		...productMappper.mapState(['products', 'cataloge','totalPages','originProducts']),
+		...productMappper.mapState(['products', 'cataloge','totalPages','originProducts','originPaginationsProduct']),
 	},
 
 	methods: {
 		...authMappper.mapMutations(['SET_USER_INFO']),
 		...authMappper.mapActions([
 			'getAllListUser',
-			
-			'filterListUser',
 		]),
 		...designMappper.mapActions([
 			'getListDesignByUser',
 			'getListDesignByProduct',
 		]),
-		...productMappper.mapActions(['getAllProducts','paginationListProduct']),
+		...productMappper.mapActions(['getAllProducts','paginationListProduct','filterListProduct']),
 
 		async showListDesign(productId) {
 			this.showModal = true;
@@ -341,9 +342,9 @@ export default {
 			this.showModalNotify = false;
 		},
 		updateHandler() {
-			console.log('all product:', this.originProducts);
+			console.log('all product:', this.originPaginationsProduct);
 			this.paginationListProduct({
-				list: this.originProducts,
+				list: this.originPaginationsProduct,
 				currentPage: this.page,
 			});
 		},
@@ -380,7 +381,7 @@ export default {
 		},
 
 		filterAccount() {
-			this.filterListUser({
+			this.filterListProduct({
 				searchKeyword: this.valueSearch,
 			});
 		},
@@ -390,9 +391,11 @@ export default {
 			this.isShowPreview = true;
 		},
 		ChoosePendingProduct() {
+			this.optionStatus = 'pending'
 			this.getAllProducts({ status: 'pending' });
 		},
 		ChooseAcceptProduct() {
+			this.optionStatus = 'accept'
 			this.getAllProducts({ status: 'accept' });
 		},
 		async handleAcceptProduct(product) {

@@ -104,7 +104,7 @@
 																height: 200px;
 															"
 														>
-															<img class="object-contain w-[100%] h-[100%]" :src="imageProductFront?require(`@/uploadImage/${imageProductFront?imageProductFront:'man.png'}`):'#'" />
+															<img v-if="imageProductFront" class="object-contain w-[100%] h-[100%]" :src="imageProductFront?require(`@/uploadImage/${imageProductFront?imageProductFront:'man.png'}`):'#'" />
 														</div>
 														<div class="py-0.4 justify-center w-full">
 															<input
@@ -152,7 +152,7 @@
 																height: 200px;
 															"
 														>
-															<img class="object-contain w-[100%] h-[100%]" :src="imageProductBack?require(`@/uploadImage/${imageProductBack?imageProductBack:'man.png'}`):'#'" />
+															<img v-if="imageProductBack" class="object-contain w-[100%] h-[100%]" :src="imageProductBack?require(`@/uploadImage/${imageProductBack?imageProductBack:'man.png'}`):'#'" />
 														</div>
 														<div class="py-0.4 justify-center w-full">
 															<input

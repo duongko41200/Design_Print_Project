@@ -3,9 +3,10 @@ const dayjs = require('dayjs');
 const filterKeyWord = (list, keyWord) => {
 	console.log(list,keyWord);
 	const result = list.filter((item) => {
+		console.log("lsdkflksdflk",item.name?.toLowerCase().includes(keyWord.toLowerCase()) );
 		return item.name?.toLowerCase().includes(keyWord.toLowerCase())
 			? item.name?.toLowerCase().includes(keyWord.toLowerCase())
-			: item.username.toLowerCase().includes(keyWord.toLowerCase());
+			: item.username?.toLowerCase().includes(keyWord.toLowerCase()) || item.user?.username?.toLowerCase().includes(keyWord.toLowerCase());
 	});
 	return result;
 };

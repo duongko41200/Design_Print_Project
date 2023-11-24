@@ -11,7 +11,7 @@ const createProduct = async (req, res) => {
 };
 
 const getAllProduct = async (req, res) => {
-	console.log('req ', req.query);
+	// console.log('req ', req.query);
 
 	if (req.query.status === 'accept') {
 		const products = await Product.find({ status: 'accept' })
