@@ -17,6 +17,9 @@ const ProductService = {
 	async deleteProduct(params) {
 		return ApiService.delete(baseUrl + 'deleteProduct', params);
 	},
+	async getByProduct(params) {
+		return ApiService.get(baseUrl + 'getByProduct', params);
+	}
 
 
 	

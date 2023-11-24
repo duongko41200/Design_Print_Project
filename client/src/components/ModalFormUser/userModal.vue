@@ -190,7 +190,6 @@ export default {
 		},
 		async onUpdateUser() {
 
-
 			const param = {
 				id: this.userInfos.id,
 				username: this.username,
@@ -202,7 +201,7 @@ export default {
 				favoriteDesign: this.userInfos.favoriteDesign,
 			};
 			try {
-				const updatedata = await UserService.updateProfile({ param });
+				const updatedata = await UserService.updateProfile({ param});
 				const response = updatedata.data.data;
 
 				console.log({ response });

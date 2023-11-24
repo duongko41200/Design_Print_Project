@@ -1,3 +1,4 @@
+const { response } = require('express');
 const Product = require('../models/product.model');
 
 const createProduct = async (req, res) => {
@@ -11,12 +12,13 @@ const createProduct = async (req, res) => {
 };
 
 const getAllProduct = async (req, res) => {
-	// console.log('req ', req.query);
+	console.log('req ', req.query);
 
 	if (req.query.status === 'accept') {
 		const products = await Product.find({ status: 'accept' })
 			.populate('user')
 			.sort('-numDesigns');
+
 		res.status(200).json({
 			status: 'success',
 			result: products.length,
@@ -26,6 +28,35 @@ const getAllProduct = async (req, res) => {
 		const products = await Product.find({ status: 'pending' })
 			.populate('user')
 			.sort('-numDesigns');
+		res.status(200).json({
+			status: 'success',
+			result: products.length,
+			data: products,
+		});
+	}
+};
+const getByProduct = async (req, res) => {
+	if (req.query.status === 'accept') {
+		const products = await Product.find({
+			user: req.query.userId,
+			status: 'accept',
+		})
+			.populate('user')
+			.sort('-numDesigns');
+
+		res.status(200).json({
+			status: 'success',
+			result: products.length,
+			data: products,
+		});
+	} else {
+		const products = await Product.find({
+			user: req.query.userId,
+			status: 'pending',
+		})
+			.populate('user')
+			.sort('-numDesigns');
+
 		res.status(200).json({
 			status: 'success',
 			result: products.length,
@@ -76,4 +107,5 @@ module.exports = {
 	UpdatesProduct,
 	deleteProduct,
 	createProduct,
+	getByProduct,
 };

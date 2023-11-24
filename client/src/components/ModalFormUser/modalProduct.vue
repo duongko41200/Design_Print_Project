@@ -150,6 +150,9 @@ export default {
 			type: String,
 			default: 'product',
 		},
+		optionStatus: {
+			type: String,
+		}
 	},
 	data() {
 		return {
@@ -169,7 +172,7 @@ export default {
 	methods: {
 		...authMappper.mapMutations(['SET_USER_INFO']),
 		...authMappper.mapActions(['getAllListUser']),
-		...productMappper.mapActions(['getAllProducts']),
+		...productMappper.mapActions(['getAllProducts','getAllProductsByUser']),
 		oncloseModal() {
 			this.$emit('oncloseModal');
 		},
@@ -193,7 +196,11 @@ export default {
 					position: 'top-right',
 					duration: 2000,
 				});
-				await this.getAllProducts({status:'accept'})
+				if (this.optionStatus === 'pending') {
+					this.getAllProductsByUser({ status: 'pending', role:this.userInfo.role,userId: this.userInfo.id });
+				} else {
+					this.getAllProductsByUser({ status: 'accept', role:this.userInfo.role,userId: this.userInfo.id });
+				}
 				this.oncloseModal()
 			} catch (error) {
 					this.$toast.error('update infomation product faile', {

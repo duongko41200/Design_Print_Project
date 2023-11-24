@@ -9,6 +9,7 @@ const productApi = (app) => {
 	router.put('/updateProduct', ProductControl.UpdatesProduct);
 	router.delete('/deleteProduct', ProductControl.deleteProduct);
 	router.post('/create', ProductControl.createProduct);
+	router.get('/getByProduct', ProductControl.getByProduct)
 
 
 	return app.use('/api/model', router);

@@ -77,13 +77,13 @@
 								<th scope="col">User</th>
 								<th scope="col">Design</th>
 								<th scope="col">Created At</th>
-								<th scope="col">status</th>
+								<th scope="col">Status</th>
 
 								<th scope="col">Handle</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr v-for="(product, idx) in products" :key="idx">
+							<tr v-for="(product, idx) in manageProduct" :key="idx">
 								<th scope="row">{{ idx + 1 }}</th>
 								<td>
 									<div
@@ -177,7 +177,7 @@
 														</MenuItem>
 														<MenuItem
 															v-slot="{ active }"
-															v-if="userInfo.role === 'owner'"
+														
 														>
 															<div
 																:class="[
@@ -233,6 +233,7 @@
 	<modalProduct
 		:showModal="showEditForm"
 		:productInfos="productInfos"
+		:optionStatus="optionStatus"
 		@oncloseModal="oncloseModal"
 	></modalProduct>
 	<modalNotify
@@ -291,9 +292,9 @@ export default {
 		};
 	},
 
-	// async mounted() {
-	// 	await this.getAllListUser();
-	// },
+	async mounted() {
+		await this.getAllProductsByUser({ status: 'accept', role:this.userInfo.role, userId: this.userInfo.id});
+	},
 	computed: {
 		...authMappper.mapState([
 			'allListUser',
@@ -302,7 +303,7 @@ export default {
 			
 		]),
 		...designMappper.mapState(['listDesign']),
-		...productMappper.mapState(['products', 'cataloge','totalPages','originProducts','originPaginationsProduct']),
+		...productMappper.mapState(['products', 'cataloge','totalPages','originProducts','originPaginationsProduct','manageProduct']),
 	},
 
 	methods: {
@@ -314,7 +315,7 @@ export default {
 			'getListDesignByUser',
 			'getListDesignByProduct',
 		]),
-		...productMappper.mapActions(['getAllProducts','paginationListProduct','filterListProduct']),
+		...productMappper.mapActions(['getAllProducts','paginationListProduct','filterListProduct','getAllProductsByUser']),
 
 		async showListDesign(productId) {
 			this.showModal = true;
@@ -367,9 +368,13 @@ export default {
 						duration: 2000,
 					});
 				}
-
-				this.getAllProducts({ status: 'pending' });
-				this.getAllProducts({ status: 'accept' });
+				if (this.optionStatus === 'pending') {
+					this.getAllProductsByUser({ status: 'pending', role:this.userInfo.role,userId: this.userInfo.id });
+				} else {
+					this.getAllProductsByUser({ status: 'accept', role:this.userInfo.role,userId: this.userInfo.id });
+				}
+			
+				
 			} catch (error) {
 				console.log('error:', error);
 				this.$toast.error('delete product fail', {
@@ -390,13 +395,19 @@ export default {
 			this.productModel = product;
 			this.isShowPreview = true;
 		},
-		ChoosePendingProduct() {
+		async ChoosePendingProduct() {
 			this.optionStatus = 'pending'
-			this.getAllProducts({ status: 'pending' });
+			this.page = 1
+		
+			await this.getAllProductsByUser({ status: 'pending', role: this.userInfo.role, userId: this.userInfo.id })
+			this.filterAccount()
 		},
-		ChooseAcceptProduct() {
+		async ChooseAcceptProduct() {
 			this.optionStatus = 'accept'
-			this.getAllProducts({ status: 'accept' });
+			this.page = 1
+			
+			await this.getAllProductsByUser({ status: 'accept', role:this.userInfo.role,userId: this.userInfo.id  })
+			this.filterAccount()
 		},
 		async handleAcceptProduct(product) {
 
@@ -416,7 +427,7 @@ export default {
 					position: 'top-right',
 					duration: 2000,
 				});
-				await this.getAllProducts({status:'pending'})
+				await this.getAllProductsByUser({status:'pending', role:this.userInfo.role,userId: this.userInfo.id })
 			
 			} catch (error) {
 					this.$toast.error('update infomation product faile', {
