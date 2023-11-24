@@ -106,7 +106,7 @@ export default {
 		...productMappper.mapState(['products','cataloge'])
 	},
 	async mounted() {
-		await this.getAllProducts()
+		await this.getAllProducts({status:'accept'})
 	},
 	methods: {
 		...productMappper.mapMutations(['SET_PRODUCT_MODEL']),

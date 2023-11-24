@@ -5,39 +5,58 @@
 		<div
 			class="body h-full max-h-full 2xl:h-[700px] overflow-auto w-[80%] flex flex-col py-4 p-6 bg-zinc-700 rounded-2xl shadow-xl shadow-zinc-700/20"
 		>
-			<div class="w-full flex justify-end">
-				<div class="py-2 flex items-center relative w-[250px] mx-2">
-					<svg
-						stroke="currentColor"
-						fill="none"
-						stroke-width="2"
-						viewBox="0 0 24 24"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						class="absolute left-4 pointer-events-none"
-						height="1em"
-						width="1em"
-						xmlns="http://www.w3.org/2000/svg"
-					>
-						<circle cx="11" cy="11" r="8"></circle>
-						<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-					</svg>
-					<input
-						id="main-search"
-						autocomplete="off"
-						class="bg-zinc-700 flex-1 pl-10 w-full rounded-full border text-sm py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-700"
-						placeholder="Search for account"
-						v-model="valueSearch"
-						fdprocessedid="d00fvp"
-						@input="filterAccount"
-					/>
-				</div>
-				<div class="py-2 flex items-center relative w-[40px]">
+			<div
+				class="w-full Space Between flex justify-between items-center"
+			>
+				<div class="flex gap-2 h-[30px]">
 					<div
-						class="border absolute w-full rounded-lg h-[36px] cursor-pointer"
-						@click="openFormCreatProduct"
+						class="border flex items-center w-[100px] cursor-pointer hover:bg-emerald-800 rounded justify-center text-center h-full bg-emerald-700"
+						@click="ChooseAcceptProduct"
 					>
-						<icon icon="fa-solid fa-plus" style="font-size: 30px" />
+						<div>Accept</div>
+					</div>
+
+					<div
+						class="border border-yellow-700 cursor-pointer hover:bg-yellow-700 rounded flex items-center w-[100px] justify-center text-center h-full"
+						@click="ChoosePendingProduct"
+					>
+						<div>Pending</div>
+					</div>
+				</div>
+				<div class="flex justify-end">
+					<div class="py-2 flex items-center relative w-[250px] mx-2">
+						<svg
+							stroke="currentColor"
+							fill="none"
+							stroke-width="2"
+							viewBox="0 0 24 24"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="absolute left-4 pointer-events-none"
+							height="1em"
+							width="1em"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<circle cx="11" cy="11" r="8"></circle>
+							<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+						</svg>
+						<input
+							id="main-search"
+							autocomplete="off"
+							class="bg-zinc-700 flex-1 pl-10 w-full rounded-full border text-sm py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-700"
+							placeholder="Search for account"
+							v-model="valueSearch"
+							fdprocessedid="d00fvp"
+							@input="filterAccount"
+						/>
+					</div>
+					<div class="py-2 flex items-center relative w-[40px]">
+						<div
+							class="border absolute w-full rounded-lg h-[36px] cursor-pointer"
+							@click="openFormCreatProduct"
+						>
+							<icon icon="fa-solid fa-plus" style="font-size: 30px" />
+						</div>
 					</div>
 				</div>
 			</div>
@@ -56,6 +75,7 @@
 								<th scope="col">User</th>
 								<th scope="col">Design</th>
 								<th scope="col">Created At</th>
+								<th scope="col">status</th>
 
 								<th scope="col">Handle</th>
 							</tr>
@@ -91,70 +111,89 @@
 										{{ product.numDesigns }}
 									</div>
 								</td>
-								<td>caapj nhap ngay sau</td>
+								<td>cap nhap ngay sau</td>
+								<td
+									:class="
+										product.status == 'accept'
+											? 'text-green'
+											: 'text-yellow'
+									"
+								>
+									{{ product.status }}
+								</td>
 
 								<!-- /// option -->
 								<td>
-									<Menu
-										as="div"
-										class="bottom-5 right-5 inline-block text-left cursor-pointer"
-									>
-										<div>
-											<MenuButton
-												class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 transition-opacity z-20 inset-0"
-											>
-												<icon icon="fa-solid fa-ellipsis-vertical" />
-											</MenuButton>
+									<div class="flex gap-2 h-[30px] justify-center">
+										<div
+											v-if="product.status=== 'pending' && userInfo.role ==='owner'"
+											class="border flex items-center w-[80px] h-full cursor-pointer text-white hover:bg-emerald-800 rounded justify-center text-center h-full bg-emerald-700"
+											@click="handleAcceptProduct(product)"
+										>
+											<div>Accept</div>
 										</div>
 
-										<transition
-											enter-active-class="transition ease-out duration-100"
-											enter-from-class="transform opacity-0 scale-95"
-											enter-to-class="transform opacity-100 scale-100"
-											leave-active-class="transition ease-in duration-75"
-											leave-from-class="transform opacity-100 scale-100"
-											leave-to-class="transform opacity-0 scale-95"
+										<Menu
+											as="div"
+											class="bottom-5 right-5 inline-block text-left cursor-pointer"
 										>
-											<MenuItems
-												class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+											<div>
+												<MenuButton
+													class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 transition-opacity z-20 inset-0"
+												>
+													<icon icon="fa-solid fa-ellipsis-vertical" />
+												</MenuButton>
+											</div>
+
+											<transition
+												enter-active-class="transition ease-out duration-100"
+												enter-from-class="transform opacity-0 scale-95"
+												enter-to-class="transform opacity-100 scale-100"
+												leave-active-class="transition ease-in duration-75"
+												leave-from-class="transform opacity-100 scale-100"
+												leave-to-class="transform opacity-0 scale-95"
 											>
-												<div class="py-1">
-													<MenuItem
-														v-slot="{ active }"
-														v-if="typeCatolog != 'assets'"
-													>
-														<div
-															:class="[
-																active
-																	? 'bg-gray-100 text-gray-900'
-																	: 'text-gray-700',
-																'block px-4 py-2 text-sm',
-															]"
-															@click="editProduct(product)"
+												<MenuItems
+													class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+												>
+													<div class="py-1">
+														<MenuItem
+															v-slot="{ active }"
+															v-if="typeCatolog != 'assets'"
 														>
-															Edit
-														</div>
-													</MenuItem>
-													<MenuItem
-														v-slot="{ active }"
-														v-if="userInfo.role === 'owner'"
-													>
-														<div
-															:class="[
-																active
-																	? 'bg-gray-100 text-gray-900'
-																	: 'text-gray-700',
-																'block px-4 py-2 text-sm',
-															]"
-															@click="deleteProduct(product.id)"
+															<div
+																:class="[
+																	active
+																		? 'bg-gray-100 text-gray-900'
+																		: 'text-gray-700',
+																	'block px-4 py-2 text-sm',
+																]"
+																@click="editProduct(product)"
+															>
+																Edit
+															</div>
+														</MenuItem>
+														<MenuItem
+															v-slot="{ active }"
+															v-if="userInfo.role === 'owner'"
 														>
-															Delete
-														</div>
-													</MenuItem>
-												</div>
-											</MenuItems>
-										</transition>
-									</Menu>
+															<div
+																:class="[
+																	active
+																		? 'bg-gray-100 text-gray-900'
+																		: 'text-gray-700',
+																	'block px-4 py-2 text-sm',
+																]"
+																@click="deleteProduct(product.id)"
+															>
+																Delete
+															</div>
+														</MenuItem>
+													</div>
+												</MenuItems>
+											</transition>
+										</Menu>
+									</div>
 								</td>
 							</tr>
 						</tbody>
@@ -163,7 +202,7 @@
 				<div class="p-2 absolute bottom-1">
 					<v-pagination
 						v-model="page"
-						:pages="allListUser.totalPages"
+						:pages="totalPages"
 						:range-size="1"
 						active-color="#DCEDFF"
 						@update:modelValue="updateHandler"
@@ -204,7 +243,7 @@
 	></modalNotify>
 	<modalFormProduct
 		:showModal="showFormCreatProduct"
-		@oncloseModal="closeModalFormCreateProduct" 
+		@oncloseModal="closeModalFormCreateProduct"
 	></modalFormProduct>
 </template>
 <script>
@@ -260,20 +299,21 @@ export default {
 			'originPaginationsResult',
 		]),
 		...designMappper.mapState(['listDesign']),
-		...productMappper.mapState(['products', 'cataloge']),
+		...productMappper.mapState(['products', 'cataloge','totalPages','originProducts']),
 	},
 
 	methods: {
 		...authMappper.mapMutations(['SET_USER_INFO']),
 		...authMappper.mapActions([
 			'getAllListUser',
-			'paginationListUser',
+			
 			'filterListUser',
 		]),
 		...designMappper.mapActions([
 			'getListDesignByUser',
 			'getListDesignByProduct',
 		]),
+		...productMappper.mapActions(['getAllProducts','paginationListProduct']),
 
 		async showListDesign(productId) {
 			this.showModal = true;
@@ -301,9 +341,9 @@ export default {
 			this.showModalNotify = false;
 		},
 		updateHandler() {
-			console.log('all list:', this.originAllListUser);
-			this.paginationListUser({
-				list: this.originPaginationsResult,
+			console.log('all product:', this.originProducts);
+			this.paginationListProduct({
+				list: this.originProducts,
 				currentPage: this.page,
 			});
 		},
@@ -327,7 +367,8 @@ export default {
 					});
 				}
 
-				// await this.getAllListUser();
+				this.getAllProducts({ status: 'pending' });
+				this.getAllProducts({ status: 'accept' });
 			} catch (error) {
 				console.log('error:', error);
 				this.$toast.error('delete product fail', {
@@ -348,6 +389,41 @@ export default {
 			this.productModel = product;
 			this.isShowPreview = true;
 		},
+		ChoosePendingProduct() {
+			this.getAllProducts({ status: 'pending' });
+		},
+		ChooseAcceptProduct() {
+			this.getAllProducts({ status: 'accept' });
+		},
+		async handleAcceptProduct(product) {
+
+			const param = {
+				id: product.id,
+				productName: product.name,
+				description: product.description,
+				status: 'accept',
+
+			};
+
+			
+			try {
+				const updatedata = await ProductService.updateProduct({ param });
+				console.log("updatedata:", updatedata)
+				this.$toast.success('update infomation product success', {
+					position: 'top-right',
+					duration: 2000,
+				});
+				await this.getAllProducts({status:'pending'})
+			
+			} catch (error) {
+					this.$toast.error('update infomation product faile', {
+					position: 'top-right',
+					duration: 2000,
+				});
+			}
+			console.log("product:", product);
+			
+		}
 	},
 };
 </script>
@@ -373,5 +449,13 @@ h4 {
 }
 .test:hover {
 	opacity: 1;
+}
+.text-green {
+	color: rgb(0, 128, 0) !important;
+	font-weight: 700;
+}
+.text-yellow {
+	color: rgb(212, 203, 16) !important;
+	font-weight: 700;
 }
 </style>

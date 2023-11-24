@@ -80,7 +80,7 @@
 												class="form-control"
 												id="exampleFormControlInput1"
 												placeholder="Description"
-												disabled
+											
 											/>
 										</div>
 									</div>
@@ -180,6 +180,8 @@ export default {
 			const param = {
 				id: this.productInfos.id,
 				productName: this.productName,
+				description: this.description,
+				status: this.productInfos.status,
 
 			};
 			console.log('param:', param)
@@ -191,7 +193,7 @@ export default {
 					position: 'top-right',
 					duration: 2000,
 				});
-				await this.getAllProducts()
+				await this.getAllProducts({status:'accept'})
 				this.oncloseModal()
 			} catch (error) {
 					this.$toast.error('update infomation product faile', {

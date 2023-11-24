@@ -133,6 +133,8 @@ const uploadImageByS3 = (app) => {
 					});
 
 					isEist = true;
+				} else {
+					console.log('Image not found')
 				}
 			}
 		}

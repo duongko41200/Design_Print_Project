@@ -54,7 +54,7 @@
 																	id="f_b5eb160d-86dd-4e0c-abb6-fc4b512981d6"
 																	type="text"
 																	placeholder="Name"
-																	required
+																	v-model="nameProduct"
 																/>
 															</div>
 															<div class="w-full">
@@ -68,6 +68,7 @@
 																	id="f_b5eb160d-86dd-4e0c-abb6-fc4b512981d6"
 																	type="text"
 																	placeholder="Description"
+																	v-model="descriptionProduct"
 																/>
 															</div>
 														</div>
@@ -145,12 +146,14 @@
 															</div>
 														</div>
 														<div
-															class="bg-gray-600"
+															class="bg-gray-600 p-1"
 															style="
 																--q-skeleton-speed: 1500ms;
 																height: 200px;
 															"
-														></div>
+														>
+															<img class="object-contain w-[100%] h-[100%]" :src="imageProductBack?require(`@/uploadImage/${imageProductBack?imageProductBack:'man.png'}`):'#'" />
+														</div>
 														<div class="py-0.4 justify-center w-full">
 															<input
 																id="fileBack"
@@ -158,6 +161,7 @@
 																type="file"
 																accept="image/*"
 																class="hidden"
+																@input="uploadImageBack"
 															/><label
 																class="bg-sky-700 hover:bg-sky-800 text-white w-full"
 																for="fileBack"
@@ -166,7 +170,7 @@
 																fdprocessedid="hrdxe5"
 															>
 																<span
-																	class="q-btn__content text-center col items-center q-anchor--skip justify-center row"
+																	class=" text-center col items-center  justify-center row"
 																	>Select</span
 																>
 															</label>
@@ -192,7 +196,7 @@
 								<button
 									type="button"
 									class="mt-3 bg-yellow-300 inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-									@click="onUpdateProduct"
+									@click="onCreateProduct"
 									ref="cancelButtonRef"
 								>
 									Update
@@ -213,6 +217,10 @@ import {
 	TransitionRoot,
 } from '@headlessui/vue';
 import ImageService from '@/sevices/image.service.js';
+import ProductService from '@/sevices/product.service.js';
+import { createNamespacedHelpers } from 'vuex';
+const authMappper = createNamespacedHelpers('auth');
+const productMappper = createNamespacedHelpers('product');
 export default {
 	components: {
 		Dialog,
@@ -238,14 +246,23 @@ export default {
 			default: 'product',
 		},
 	},
+	computed: {
+		...authMappper.mapState(['email', 'userInfo']),
+		
+	},
 	data() {
 		return {
+			nameProduct: '',
+			descriptionProduct: '',
 			imageProductFront: '',
+			imageProductBack:'',
+			
 		};
 	},
 	methods: {
+		...productMappper.mapActions(['getAllProducts']),
 		async uploadImageFront() {
-			console.log('kdsjfksdjfklsdj');
+	
 
 			const fileInput = this.$refs.fileFront;
 			const file = fileInput.files[0];
@@ -261,6 +278,48 @@ export default {
 		oncloseModal() {
 			this.$emit('oncloseModal');
 		},
+		async uploadImageBack() {
+		
+			const fileInput = this.$refs.fileBack;
+			const file = fileInput.files[0];
+			let formData = new FormData();
+			formData.append('file', file);
+			console.log('fileInput', formData, file);
+			const upload = await ImageService.uploadImageProduct(formData);
+			
+			setTimeout(() => {
+				this.imageProductBack = upload.data.data;
+			}, 1500);
+		},
+		async onCreateProduct() {
+			const param = {
+				name: this.nameProduct,
+				description: this.descriptionProduct,
+				user: this.userInfo.id,
+				imageFront: this.imageProductFront,
+				imageBack: this.imageProductBack,
+				thumbnail:this.imageProductFront,
+				
+			}
+			if (!this.nameProduct || !this.imageProductBack || !this.imageProductFront) {
+				this.$toast.error('Please complete the required information', {
+					position: 'top-right',
+					duration: 2000,
+				});
+			} else {
+				const product = await ProductService.creatNewProduct({ param })
+				this.oncloseModal()
+				console.log({ product })
+				
+				this.getAllProducts({ status: 'pending' });
+				this.$toast.success('Created product success', {
+						position: 'top-right',
+						duration: 2000,
+					});
+			}
+			
+		}
+
 		
 	},
 };

@@ -145,7 +145,7 @@ export default {
 	},
 
 	async mounted() {
-		await this.getAllProducts();
+		await this.getAllProducts({ status:'accept'});
 		this.catalogeProduct = this.cataloge[0].name;
 	},
 	methods: {

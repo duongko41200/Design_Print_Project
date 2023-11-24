@@ -29,9 +29,9 @@ const productSchema = new mongoose.Schema(
 			type: Number,
 			default: 0,
 		},
-		isPublic: {
-			type: Boolean,
-			default: true,
+		status: {
+			type: String,
+			default: 'pending',
 		}
 	},
 	{

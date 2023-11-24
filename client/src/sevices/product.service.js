@@ -5,7 +5,9 @@ const baseUrl = 'model/';
 
 const ProductService = {
 
-
+	async creatNewProduct(params) {
+		return ApiService.post(baseUrl + 'create', params);
+	},
 	async getAllProduct(params) {
 		return ApiService.get(baseUrl + 'product', params);
 	},
