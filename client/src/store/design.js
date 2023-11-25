@@ -124,7 +124,7 @@ export default {
 				name: payload.valueCataloge,
 			});
 			const dataSearch = state.allDesign.filter(
-				(design) => design.name === payload.content
+				(design) => design.name?.toLowerCase().includes(payload.content.toLowerCase())
 			);
 			commit('SET_ALL_DESIGN', dataSearch);
 		},

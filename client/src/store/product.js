@@ -11,7 +11,7 @@ export default {
 			cataloge: [],
 			products: null,
 			originProducts: [],
-			limiProductPerPage: 1,
+			limiProductPerPage: 15,
 			totalPages: '',
 			originPaginationsProduct: '',
 

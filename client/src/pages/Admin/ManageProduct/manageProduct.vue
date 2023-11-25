@@ -10,8 +10,8 @@
 			>
 				<div class="flex gap-2 h-[30px]">
 					<div
-						class="border flex items-center w-[100px] cursor-pointer hover:bg-emerald-800 rounded justify-center text-center h-full "
-						:class="optionStatus === 'accept'? 'bg-emerald-700':''"
+						class="border flex items-center w-[100px] cursor-pointer hover:bg-emerald-800 rounded justify-center text-center h-full"
+						:class="optionStatus === 'accept' ? 'bg-emerald-700' : ''"
 						@click="ChooseAcceptProduct"
 					>
 						<div>Accept</div>
@@ -19,7 +19,7 @@
 
 					<div
 						class="border border-yellow-700 cursor-pointer hover:bg-yellow-800 rounded flex items-center w-[100px] justify-center text-center h-full"
-						:class="optionStatus === 'pending'? 'bg-yellow-700':''"
+						:class="optionStatus === 'pending' ? 'bg-yellow-700' : ''"
 						@click="ChoosePendingProduct"
 					>
 						<div>Pending</div>
@@ -113,7 +113,7 @@
 										{{ product.numDesigns }}
 									</div>
 								</td>
-								<td>cap nhap ngay sau</td>
+								<td>{{ createdAt }}</td>
 								<td
 									:class="
 										product.status == 'accept'
@@ -128,7 +128,10 @@
 								<td>
 									<div class="flex gap-2 h-[30px] justify-center">
 										<div
-											v-if="product.status=== 'pending' && userInfo.role ==='owner'"
+											v-if="
+												product.status === 'pending' &&
+												userInfo.role === 'owner'
+											"
 											class="border flex items-center w-[80px] h-full cursor-pointer text-white hover:bg-emerald-800 rounded justify-center text-center h-full bg-emerald-700"
 											@click="handleAcceptProduct(product)"
 										>
@@ -175,10 +178,7 @@
 																Edit
 															</div>
 														</MenuItem>
-														<MenuItem
-															v-slot="{ active }"
-														
-														>
+														<MenuItem v-slot="{ active }">
 															<div
 																:class="[
 																	active
@@ -258,6 +258,9 @@ import ProductService from '@/sevices/product.service.js';
 import modalNotify from '@/components/ModalNotify/modalNotify.vue';
 import modalPreview from '@/components/ModalPreview/modalPreview.vue';
 import modalFormProduct from '@/components/ModalCreatProduct/modalFormProduct.vue';
+const dayjs = require('dayjs');
+// const utc = require('dayjs/plugin/utc'); // Import plugin UTC
+// const customParseFormat = require('dayjs/plugin/customParseFormat');
 import { createNamespacedHelpers } from 'vuex';
 const productMappper = createNamespacedHelpers('product');
 const authMappper = createNamespacedHelpers('auth');
@@ -282,7 +285,7 @@ export default {
 			showModalNotify: false,
 			isShowPreview: false,
 			showFormCreatProduct: false,
-			optionStatus:'accept',
+			optionStatus: 'accept',
 
 			productInfos: '',
 			idUser: '',
@@ -293,29 +296,46 @@ export default {
 	},
 
 	async mounted() {
-		await this.getAllProductsByUser({ status: 'accept', role:this.userInfo.role, userId: this.userInfo.id});
+		await this.getAllProductsByUser({
+			status: 'accept',
+			role: this.userInfo.role,
+			userId: this.userInfo.id,
+		});
+		console.log('manageProduct asdfsdfdsf', this.manageProduct);
 	},
 	computed: {
 		...authMappper.mapState([
 			'allListUser',
 			'originAllListUser',
 			'userInfo',
-			
 		]),
 		...designMappper.mapState(['listDesign']),
-		...productMappper.mapState(['products', 'cataloge','totalPages','originProducts','originPaginationsProduct','manageProduct']),
+		...productMappper.mapState([
+			'products',
+			'cataloge',
+			'totalPages',
+			'originProducts',
+			'originPaginationsProduct',
+			'manageProduct',
+		]),
+		createdAt() {
+			return  dayjs(this.manageProduct.createdAt).format('YYYY/MM/DD');
+		}
 	},
 
 	methods: {
 		...authMappper.mapMutations(['SET_USER_INFO']),
-		...authMappper.mapActions([
-			'getAllListUser',
-		]),
+		...authMappper.mapActions(['getAllListUser']),
 		...designMappper.mapActions([
 			'getListDesignByUser',
 			'getListDesignByProduct',
 		]),
-		...productMappper.mapActions(['getAllProducts','paginationListProduct','filterListProduct','getAllProductsByUser']),
+		...productMappper.mapActions([
+			'getAllProducts',
+			'paginationListProduct',
+			'filterListProduct',
+			'getAllProductsByUser',
+		]),
 
 		async showListDesign(productId) {
 			this.showModal = true;
@@ -369,12 +389,18 @@ export default {
 					});
 				}
 				if (this.optionStatus === 'pending') {
-					this.getAllProductsByUser({ status: 'pending', role:this.userInfo.role,userId: this.userInfo.id });
+					this.getAllProductsByUser({
+						status: 'pending',
+						role: this.userInfo.role,
+						userId: this.userInfo.id,
+					});
 				} else {
-					this.getAllProductsByUser({ status: 'accept', role:this.userInfo.role,userId: this.userInfo.id });
+					this.getAllProductsByUser({
+						status: 'accept',
+						role: this.userInfo.role,
+						userId: this.userInfo.id,
+					});
 				}
-			
-				
 			} catch (error) {
 				console.log('error:', error);
 				this.$toast.error('delete product fail', {
@@ -396,49 +422,59 @@ export default {
 			this.isShowPreview = true;
 		},
 		async ChoosePendingProduct() {
-			this.optionStatus = 'pending'
-			this.page = 1
-		
-			await this.getAllProductsByUser({ status: 'pending', role: this.userInfo.role, userId: this.userInfo.id })
-			this.filterAccount()
+			this.optionStatus = 'pending';
+			this.page = 1;
+
+			await this.getAllProductsByUser({
+				status: 'pending',
+				role: this.userInfo.role,
+				userId: this.userInfo.id,
+			});
+			this.filterAccount();
 		},
 		async ChooseAcceptProduct() {
-			this.optionStatus = 'accept'
-			this.page = 1
-			
-			await this.getAllProductsByUser({ status: 'accept', role:this.userInfo.role,userId: this.userInfo.id  })
-			this.filterAccount()
+			this.optionStatus = 'accept';
+			this.page = 1;
+
+			await this.getAllProductsByUser({
+				status: 'accept',
+				role: this.userInfo.role,
+				userId: this.userInfo.id,
+			});
+			this.filterAccount();
 		},
 		async handleAcceptProduct(product) {
-
 			const param = {
 				id: product.id,
 				productName: product.name,
 				description: product.description,
 				status: 'accept',
-
 			};
 
-			
 			try {
-				const updatedata = await ProductService.updateProduct({ param });
-				console.log("updatedata:", updatedata)
+				const updatedata = await ProductService.updateProduct({
+					param,
+				});
+				console.log('updatedata:', updatedata);
 				this.$toast.success('update infomation product success', {
 					position: 'top-right',
 					duration: 2000,
 				});
-				await this.getAllProductsByUser({status:'pending', role:this.userInfo.role,userId: this.userInfo.id })
-			
+				await this.getAllProductsByUser({
+					status: 'pending',
+					role: this.userInfo.role,
+					userId: this.userInfo.id,
+				});
 			} catch (error) {
-					this.$toast.error('update infomation product faile', {
+				this.$toast.error('update infomation product faile', {
 					position: 'top-right',
 					duration: 2000,
 				});
 			}
-			console.log("product:", product);
-			
-		}
+			console.log('product:', product);
+		},
 	},
+
 };
 </script>
 <style scope>
