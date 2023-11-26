@@ -1,7 +1,7 @@
 <template>
 
 	<div
-		class="flex  justify-center  fit-h py-4 bg-zinc-800"
+		class="flex justify-center  fit-h py-4 bg-zinc-800"
 	>
 		<div
 			class="w-[40%] p-4 rounded fit-h bg-zinc-700 flex flex-col shadow-lg justify-center items-center"

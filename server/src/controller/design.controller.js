@@ -108,10 +108,10 @@ const getAllDesign = async (req, res) => {
 		isPublic: 'public',
 	}).populate('user');
 
-	console.log(
-		'lise All Design sdfdsfsdfsdfsdfsdfsdf werwerwerwerwerewr:',
-		listDesign[0]
-	);
+	// console.log(
+	// 	'lise All Design :',
+	// 	listDesign[0]
+	// );
 
 	res.status(200).json({
 		status: 'success',

@@ -50,7 +50,8 @@
 				<div
 					class="hidden w-32 h-full sm:flex gap-3 items-center justify-end mr-4"
 				>
-					<icon icon="fa-solid fa-bell" size="lg" />
+					<icon icon="fa-solid fa-bell" size="lg" @click="Notification" />
+					<div>{{ Notifi }}</div>
 					<logoUser></logoUser>
 				</div>
 			</div>
@@ -74,6 +75,16 @@ const designMappper = createNamespacedHelpers('design');
 import logoUser from '@/components/logoUser/logoUser.vue';
 import baseModal from '@/components/BaseModal/baseModal.vue';
 import SideBar from '@/components/Sidebar/SideBar.vue';
+import { io } from "socket.io-client"
+var connectionOptions = {
+	withCredentials: true,
+	'transports':["websocket"],
+	
+}
+const socket = io("http://localhost:8888", connectionOptions)
+
+
+console.log('socket,',socket)
 export default {
 	components: {
 		baseModal,
@@ -95,6 +106,9 @@ export default {
 
 			showModal: false,
 
+
+			Notifi:0,
+
 			// products: [],
 
 			//giải quyết tạm
@@ -106,7 +120,19 @@ export default {
 		...productMappper.mapState(['products','cataloge'])
 	},
 	async mounted() {
-		await this.getAllProducts({status:'accept'})
+		await this.getAllProducts({ status: 'accept' })
+
+		socket?.emit("newUser", this.userInfo)
+		socket.on('sendNotifi', (data) => {
+			console.log("datat:",this.userInfo.id)
+
+			if (this.userInfo.id == data) {
+
+				this.Notifi = this.Notifi + 1
+				console.log("data socket;",data)
+			}
+			
+})
 	},
 	methods: {
 		...productMappper.mapMutations(['SET_PRODUCT_MODEL']),
@@ -141,6 +167,11 @@ export default {
 		onMoveHome() {
 			this.$router.push('/');	
 		},
+
+		Notification() {
+			socket.emit('notification','65620ae8730d65462660fd25')
+			
+		}
 	},
 };
 </script>
