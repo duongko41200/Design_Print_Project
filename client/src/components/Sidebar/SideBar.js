@@ -1,6 +1,8 @@
 
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { ChevronDownIcon } from '@heroicons/vue/20/solid'
+const authMappper = createNamespacedHelpers('auth');
+import { createNamespacedHelpers } from 'vuex';
 export default {
 	name: 'SidebarMenuAkahon',
 	components: {
@@ -189,6 +191,7 @@ export default {
 
 	},
 	computed: {
+		...authMappper.mapState(['email', 'userInfo']),
 		cssVars() {
 			return {
 				// '--padding-left-body': this.isOpened ? this.menuOpenedPaddingLeftBody : this.menuClosedPaddingLeftBody,

@@ -32,8 +32,34 @@
 				</div>
 			</div>
 			<div v-else>
-				<div v-for="(stroke, idx) in strokeDrawing" :key="idx" class="mb-1" :class="stroke.active === true?'bg-slate-200 rounded':''">
-					<img class="cursor-pointer" :src="require(`@/assets/${stroke.image}`)" @click="onClickStrokeDraw(stroke)" />
+				<div v-if="nameOption === 'Draw'">
+					<div
+						v-for="(stroke, idx) in strokeDrawing"
+						:key="idx"
+						class="mb-1"
+						:class="
+							stroke.active === true ? 'bg-slate-200 rounded' : ''
+						"
+					>
+						<img
+							class="cursor-pointer"
+							:src="require(`@/assets/${stroke.image}`)"
+							@click="onClickStrokeDraw(stroke)"
+						/>
+					</div>
+				</div>
+				<div v-if="nameOption === 'Shapes'">
+					<div
+						v-for="(shape, idx) in shapes"
+						:key="idx"
+						class="mb-1 bg-gray-900"
+					>
+						<img
+							class="cursor-pointer"
+							:src="require(`@/assets/${shape.url}`)"
+							@click="onClickShapes(shape.type)"
+						/>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -47,6 +73,8 @@ export default {
 		imagePixaBay: Array,
 		isImage: Boolean,
 		strokeDrawing: Array,
+		shapes: Array,
+		nameOption: String,
 	},
 	mounted() {
 		console.log('content;', this.content.length);
@@ -60,7 +88,7 @@ export default {
 		},
 		onClickStrokeDraw(stroke) {
 			this.$emit('onClickStrokeDraw', stroke);
-		}
+		},
 	},
 };
 </script>

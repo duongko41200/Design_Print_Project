@@ -260,7 +260,7 @@ export default {
 		};
 	},
 	methods: {
-		...productMappper.mapActions(['getAllProducts']),
+		...productMappper.mapActions(['getAllProducts','getAllProductsByUser']),
 		async uploadImageFront() {
 	
 
@@ -311,7 +311,12 @@ export default {
 				this.oncloseModal()
 				console.log({ product })
 				
-				this.getAllProducts({ status: 'pending' });
+				this.getAllProducts({ status: 'accept' });
+				await this.getAllProductsByUser({
+					status: 'pending',
+					role: this.userInfo.role,
+					userId: this.userInfo.id,
+				});
 				this.$toast.success('Created product success', {
 						position: 'top-right',
 						duration: 2000,

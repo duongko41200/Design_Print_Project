@@ -22,19 +22,21 @@ export default {
 	},
 	data() {
 		return {
-			titleOption: 'Templates',
+			titleOption: 'Upload',
 			contentOption: [],
 			isShowPreview: false,
 			typePreview:'',
 			width: '',
 			height: '',
+			nameOption:'',
 			optionDesign: [
-				{ icon: 'fa-solid fa-list', name: 'Templates', active: true },
-				{ icon: 'fa-solid fa-shapes', name: 'Shapes', active: false },
-				{ icon: 'fa-solid fa-image', name: 'Upload', active: false },
+		
+				{ icon: 'fa-solid fa-image', name: 'Upload', active: true },
 				{ icon: '', name: 'Pixabay', active: false },
 				{ icon: 'fa-solid fa-font', name: 'Texts', active: false },
 				{ icon: 'fa-solid fa-pencil', name: 'Draw', active: false },
+					
+				{ icon: 'fa-solid fa-shapes', name: 'Shapes', active: false },
 			],
 			isImage: true,
 			showModalSave: false,
@@ -80,6 +82,17 @@ export default {
 				{ stroke: '10', image: 'brushStroke3.svg', active: false },
 				{ stroke: '5', image: 'brushStroke4.svg', active: false },
 			],
+
+			shapes: [
+				{
+					type:"circle",
+					url:'tron.png'
+				},
+				{
+					type:"quad",
+					url:'vuong.png'
+				},
+			]
 		};
 	},
 	computed: {
@@ -193,6 +206,7 @@ export default {
 
 		/// choose option design
 		async onMoveOption(idx, name) {
+			this.nameOption = name
 			this.optionDesign = this.optionDesign.map((value, i) => {
 				if (i === idx) {
 					value.active = true;
@@ -203,13 +217,7 @@ export default {
 			});
 			this.titleOption = name;
 
-			if (name === 'Templates') {
-				this.isImage = true;
-				this.imagePixaBay = [];
-				this.contentOption = [];
-				this.canvas.isDrawingMode = false;
-				// this.contentOption = this.images;
-			} else if (name === 'Upload') {
+			if (name === 'Upload') {
 				this.isImage = true;
 				this.imagePixaBay = [];
 				this.canvas.isDrawingMode = false;
@@ -276,7 +284,7 @@ export default {
 		},
 
 		addHeading() {
-			var text = new fabric.Textbox('Chỉnh sửa tôi!', {
+			var text = new fabric.Textbox('Add heading', {
 				type: 'text',
 
 				mode: this.mode,
@@ -411,6 +419,7 @@ export default {
 		handleEvents() {
 			this.canvas.on('selection:created', () => {
 				let activeObject = this.canvas.getActiveObject();
+				console.log("activeObject: " , activeObject)
 				if (activeObject && activeObject.type === 'text') {
 					this.isBoxEditText = true;
 					this.textDesign.textColor = activeObject.fill;
@@ -589,6 +598,7 @@ export default {
 					position: 'top-right',
 					duration: 2000,
 				});
+				this.$router.push(`/userInfo`);
 
 				// goi api them design
 

@@ -26,6 +26,8 @@ export default {
 			valueCataloge: 'All',
 			idCataloge: '',
 			typePreview: '',
+
+			isSearchDesign: true,
 		};
 	},
 	async mounted() {
@@ -35,7 +37,7 @@ export default {
 	computed: {
 		...designMappper.mapState(['allDesign']),
 		...productMappper.mapState(['cataloge']),
-		...authMappper.mapState(['email', 'userInfo']),
+		...authMappper.mapState(['email', 'userInfo','allListUser']),
 	},
 	methods: {
 		...designMappper.mapActions([
@@ -46,6 +48,7 @@ export default {
 		]),
 		...productMappper.mapActions(['handleCataloge']),
 		...authMappper.mapMutations(['SET_USER_INFO']),
+		...authMappper.mapActions(['getAllListUser','filterListUser']),
 		onCreateDesign() {
 			this.$emit('onCreateDesign');
 		},
@@ -71,11 +74,18 @@ export default {
 			this.filterCataloge({ id, name });
 		},
 		onSearchDesign() {
-			this.searchDesign({
-				content: this.valueSearch,
-				valueCataloge: this.valueCataloge,
-				idCataloge: this.idCataloge,
-			});
+			if (this.isSearchDesign === true) {
+				this.searchDesign({
+					content: this.valueSearch,
+					valueCataloge: this.valueCataloge,
+					idCataloge: this.idCataloge,
+				});
+			} else {
+				this.filterListUser({
+					searchKeyword: this.valueSearch
+				})
+			}
+
 			this.valueSearch = '';
 		},
 		onMoveUserDesign(design) {
@@ -86,6 +96,16 @@ export default {
 				this.$router.push(`/userInfo`);
 			}
 		},
+		onMoveUserAccount(user) {
+	
+			if (this.userInfo.id !== user.id) {
+				this.$router.push(`/user/${user.id}`);
+			} else {
+				this.$router.push(`/userInfo`);
+			}
+		},
+
+
 		async creatFavoriteDesign(design) {
 			console.log('design :', design);
 			let userInfoUpdate = '';
@@ -125,5 +145,16 @@ export default {
 			localStorage.setItem('tokens', userInfoUpdate.data.token);
 			console.log('like :', userInfoUpdate);
 		},
+
+
+		async changeTypeSearch() {
+			this.isSearchDesign = !this.isSearchDesign;
+			if (this.isSearchDesign === true) {
+				await this.getAllDesign(this.userInfo);
+			} else {
+				await this.getAllListUser()
+				console.log('all list user', this.allListUser);
+			}
+		}
 	},
 };

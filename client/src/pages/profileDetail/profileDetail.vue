@@ -1,19 +1,19 @@
 <template>
-	<div class="flex items-center justify-center">
-		<div class="grid grid-flow-row">
+	<div class="flex items-center justify-center h-[100vh] bg-zinc-800">
+		<div class=" w-[70vw] p-4 bg-zinc-700 text-white rounded-xl shadow-lg mt-8">
 			<h2 class="font-bold text-3xl text-center mb-3">
 				Chỉnh sửa hồ sơ
 			</h2>
-			<p class="text-center my-2 flex justify-start flex-col">
-				Hãy giữ riêng tư thông tin cá nhân của bạn. Thông tin bạn thêm
-				vào đây hiển thị cho bất kỳ ai có thể xem hồ sơ của bạn.
-			</p>
-			<div class="my-2 flex justify-start flex-col">
+
+			<div class="my-2 flex justify-center w-full flex-col">
 				<p class="font-semibold text-start text-start">Ảnh:</p>
-				<div class="flex flex-row items-center">
+				<div class="flex flex-row  items-center">
 					<img
-						:src="require(`@/uploadImage/${imageProfile?imageProfile:'man.png'}`)"
-						
+						:src="
+							require(`@/uploadImage/${
+								imageProfile ? imageProfile : 'man.png'
+							}`)
+						"
 						alt="AvatarUser"
 						width="60"
 						height="60"
@@ -33,43 +33,49 @@
 					</div>
 				</div>
 			</div>
-			<div class="my-2 flex justify-start flex-col">
-				<p class="font-semibold text-start">UserName:</p>
-				<input
-					type="text"
-					placeholder="Nhập tên của bạn"
-					class="border-2 border-[#e9e9e9] rounded-2xl p-3 gap-3 w-2/3 focus:outline-none"
-					v-model="username"
-				/>
+			<div class="row">
+				<div class="my-2 flex justify-start flex-col col-6">
+					<p class="font-semibold text-start">UserName:</p>
+					<input
+						type="text"
+						placeholder="Nhập tên của bạn"
+						class="border border-[#e9e9e9] rounded-2xl p-3 gap-3 w-full focus:outline-none bg-zinc-700"
+						v-model="username"
+					/>
+				</div>
+				<div class="my-2 flex justify-start flex-col col-6">
+					<p class="font-semibold text-start">Địa chỉ Email:</p>
+					<input
+						type="text"
+						placeholder="Example@gmail.com"
+						class="border border-[#e9e9e9] rounded-2xl p-3 gap-3 w-full focus:outline-none bg-zinc-600"
+						v-model="userInfo.email"
+						disabled
+					/>
+				</div>
 			</div>
-			<div class="my-2 flex justify-start flex-col">
-				<p class="font-semibold text-start">Địa chỉ Email:</p>
-				<input
-					type="text"
-					placeholder="Example@gmail.com"
-					class="border-2 border-[#e9e9e9] rounded-2xl p-3 gap-3 w-2/3 focus:outline-none"
-					v-model="userInfo.email"
-					disabled
-				/>
+
+			<div class="row">
+				<div class="my-2 flex justify-start flex-col col-6">
+					<p class="font-semibold text-start">Password:</p>
+					<input
+						type="text"
+						placeholder="password"
+						class="border border-[#e9e9e9] rounded-2xl p-3 gap-3 w-full focus:outline-none bg-zinc-700 "
+						v-model="password"
+					/>
+				</div>
+				<div class="my-2 flex justify-start flex-col col-6">
+					<p class="font-semibold text-start">Giới thiệu:</p>
+					<input
+						type="text"
+						placeholder="Giới thiệu của bạn"
+						class="border border-[#e9e9e9] rounded-2xl p-3 gap-3 w-full focus:outline-none bg-zinc-700"
+						v-model="description"
+					/>
+				</div>
 			</div>
-			<div class="my-2 flex justify-start flex-col">
-				<p class="font-semibold text-start">Password:</p>
-				<input
-					type="text"
-					placeholder="password"
-					class="border-2 border-[#e9e9e9] rounded-2xl p-3 gap-3 w-2/3 focus:outline-none"
-					v-model="password"
-				/>
-			</div>
-			<div class="my-2 flex justify-start flex-col">
-				<p class="font-semibold text-start">Giới thiệu:</p>
-				<input
-					type="text"
-					placeholder="Giới thiệu của bạn"
-					class="border-2 border-[#e9e9e9] rounded-2xl p-3 gap-3 w-2/3 focus:outline-none"
-					v-model="description"
-				/>
-			</div>
+
 			<button
 				class="bg-black text-white cursor-pointer p-2 px-4 rounded-3xl max-w-max my-2 flex justify-start flex-col"
 				@click="updateProfile"
@@ -96,11 +102,11 @@ export default {
 		};
 	},
 	computed: {
-		...authMappper.mapState(['email', 'userInfo','imageProfile']),
-		
+		...authMappper.mapState(['email', 'userInfo', 'imageProfile']),
+
 		imageProfiles() {
-			return this.imageProfile
-		}
+			return this.imageProfile;
+		},
 	},
 	mounted() {
 		this.SET_IMAGE_PROFILE(this.userInfo.image);
@@ -110,7 +116,7 @@ export default {
 		this.description = this.userInfo.description;
 	},
 	methods: {
-		...authMappper.mapMutations(['SET_USER_INFO','SET_IMAGE_PROFILE']),
+		...authMappper.mapMutations(['SET_USER_INFO', 'SET_IMAGE_PROFILE']),
 		...globalMappper.mapActions([
 			'uploadImageByS3',
 			'uploadImageByProfile',
@@ -126,8 +132,6 @@ export default {
 			setTimeout(() => {
 				this.SET_IMAGE_PROFILE(upload.data.data);
 			}, 1000);
-
-		
 		},
 
 		//updateProfile
@@ -140,7 +144,7 @@ export default {
 				password: this.password,
 				role: this.userInfo.role,
 				description: this.description,
-				favoriteDesign: this.userInfo.favoriteDesign
+				favoriteDesign: this.userInfo.favoriteDesign,
 			};
 			try {
 				const updatedata = await UserService.updateProfile({ param });

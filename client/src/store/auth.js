@@ -15,6 +15,8 @@ export default {
 			allListUser: [],
 			limitUserPerPage: 15,
 			originPaginationsResult: [],
+
+			listReceiveShare: [],
 		};
 	},
 
@@ -58,18 +60,40 @@ export default {
 			commit('SET_ALL_LIST_USER', data);
 		},
 
-		filterListUser({ dispatch,state }, { searchKeyword }) {
+		filterListUser({ dispatch, state }, { searchKeyword }) {
 			if (!state.originAllListUser) return;
 			let searchResult = [...state.originAllListUser];
 			if (searchKeyword) {
 				searchResult = filterKeyWord(searchResult, searchKeyword);
 			}
-			state.originPaginationsResult = searchResult
+			// console.log("trong startor",searchKeyword)
+			state.originPaginationsResult = searchResult;
 			dispatch('paginationListUser', {
 				list: searchResult,
 				currentPage: 1,
 			});
 		},
+
+		async addUserShare({ state, commit }, payload) {
+			console.log('payload', payload);
+		
+			let list = state.listReceiveShare;
+			const check = list.find((user) => user && user.id === payload.id)
+			console.log('check', check)
+
+			if ( !check) {
+				list = [...list, payload];
+				commit('SET_LIST_RECIEVE_USER', list);
+
+			}
+	
+		},
+		deleteUserShare({ state, commit }, payload) { 
+			console.log('payload', payload);
+			let list = state.listReceiveShare;
+			list = list.filter((user) => user && user.id != payload.id)
+			commit('SET_LIST_RECIEVE_USER', list)
+		}
 	},
 
 	mutations: {
@@ -88,6 +112,9 @@ export default {
 		},
 		SET_ORIGIN_ALL_LIST_USER(state, payload) {
 			state.originAllListUser = payload;
+		},
+		SET_LIST_RECIEVE_USER(state, payload) {
+			state.listReceiveShare = payload;
 		},
 	},
 

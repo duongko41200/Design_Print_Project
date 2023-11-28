@@ -114,6 +114,8 @@
 		@oncloseModal="oncloseModal"
 		@CreateFavoriteDesign="creatFavoriteDesign"
 	></modalPreview>
+
+	
 </template>
 <script>
 import { createNamespacedHelpers } from 'vuex';

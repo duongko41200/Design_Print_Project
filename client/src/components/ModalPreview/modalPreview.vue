@@ -246,11 +246,7 @@
 																						<span
 																							class="flex items-center"
 																						>
-																							<img
-																								:src="selected.avatar"
-																								alt=""
-																								class="h-5 w-5 flex-shrink-0 rounded-full"
-																							/>
+																						<icon :icon="selected.icon" />
 																							<span
 																								class="ml-3 block truncate"
 																								>{{
@@ -297,13 +293,14 @@
 																									<div
 																										class="flex items-center"
 																									>
-																										<img
+																										<!-- <img
 																											:src="
 																												option.avatar
 																											"
 																											alt=""
 																											class="h-5 w-5 flex-shrink-0 rounded-full"
-																										/>
+																										/> -->
+																										<icon :icon="option.icon" />
 																										<span
 																											:class="[
 																												selected
@@ -567,14 +564,14 @@ export default {
 				{
 					id: 1,
 					type: 'public',
-					avatar:
-						'https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+					icon:
+						"fa-solid fa-lock-open",
 				},
 				{
 					id: 2,
 					type: 'private',
-					avatar:
-						'https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+					icon:
+					"fa-solid fa-lock",
 				},
 			],
 		};
@@ -592,6 +589,7 @@ export default {
 			)[0];
 		} else {
 			this.selected = this.options[0];
+		
 		}
 	},
 	methods: {

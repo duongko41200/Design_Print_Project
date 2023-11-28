@@ -43,6 +43,7 @@
 				:imagePixaBay="imagePixaBay"
 				:isImage="isImage"
 				:strokeDrawing="strokeDrawing"
+				:nameOption="nameOption"
 				@onClickImageUpload="onClickImageUpload"
 				@onClickImageFixabay="onClickImageFixabay"
 				@onClickStrokeDraw="onClickStrokeDraw"
@@ -254,6 +255,7 @@
 		:type="typePreview"
 		:previewFront="imgPreviewFront"
 		:previewBack="imgPreviewBack"
+		:shape="shape"
 		@oncloseModal="oncloseModal"
 		@onclickSaveDesign="clickSaveDesign"
 	></modalPreview>

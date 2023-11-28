@@ -2,6 +2,7 @@
 	<div
 		class="max-h-full overflow-auto h-[100%] w-[100%] overflow-x-hidden flex flex-col bg-zinc-800 text-gray-100 text-sm"
 	>
+	
 		<div class="body flex flex-col py-4 mt-16">
 			<div class="flex flex-col items-center">
 				<div>
@@ -97,7 +98,11 @@
 								id="main-search"
 								autocomplete="off"
 								class="bg-zinc-700 flex-1 pl-10 pr-12 rounded-full text-sm px-10 py-2.5 focus:outline-none focus:ring-1 focus:ring-indigo-700"
-								placeholder="Search for an image"
+								:placeholder="
+									isSearchDesign === true
+										? 'Search for an image'
+										: 'Search for accounts'
+								"
 								v-model="valueSearch"
 								fdprocessedid="d00fvp"
 							/>
@@ -117,13 +122,14 @@
 						<button
 							class="w-32 sm:w-36 flex items-center text-xs justify-center text-center h-9 rounded-full hover:brightness-110 bg-opacity-0 shadow-sm mt-4 border border-gray-700 hover:bg-zinc-700"
 							fdprocessedid="oovm8i"
+							@click="changeTypeSearch"
 						>
-							Account
+							{{ isSearchDesign === true ? 'Account' : 'Design' }}
 						</button>
 					</div>
 				</div>
 			</div>
-			<div class="body__content p-2">
+			<div class="body__content p-2" v-if="isSearchDesign === true">
 				<div class="body__content--title text-left mb-4 px-4">
 					<h3 class="text-2xl font-bold leading-9 font-sans">
 						Explore Printify's best
@@ -147,6 +153,8 @@
 						</div>
 					</div>
 				</div>
+
+				<!-- // design image -->
 				<div
 					class="body__content--listImage fit-h flex grid grid-cols-4 gap-2"
 				>
@@ -172,14 +180,14 @@
 									@click="onPreviweDesign(design)"
 								></div>
 
-								<div
+								<!-- <div
 									class="absolute z-9 top-2 left-2 bg-zinc-900 bg-opacity-30 hover:bg-opacity-100 transition-opacity flex items-center justify-center cursor-pointer rounded text-lg h-8 w-8"
 								>
 									<icon
 										icon="fa-solid fa-magnifying-glass"
 										style="color: #fff"
 									/>
-								</div>
+								</div> -->
 								<div
 									class="flex flex-col space-y-2 absolute top-2 z- 10 right-2"
 								>
@@ -189,9 +197,9 @@
 									>
 										<icon
 											icon="fa-solid fa-heart"
-							
-										
-											:class="design.isLike === true?'text-rose-600':''"
+											:class="
+												design.isLike === true ? 'text-rose-600' : ''
+											"
 										/>
 									</div>
 									<div
@@ -216,7 +224,11 @@
 								>
 									by
 									<span class="hover:text-blue-500 hover:underline">
-										{{ design.user?.username?design.user.username:'none' }}</span
+										{{
+											design.user?.username
+												? design.user.username
+												: 'none'
+										}}</span
 									>
 								</div>
 							</div>
@@ -224,6 +236,44 @@
 							<div class="w-[100%] h-[100%]">
 								<img alt="T-shirts" :src="design.thumbnailFront" />
 							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- //Account -->
+			<div class="body__content p-2" v-else>
+				<div class="body__content--title text-left mb-4 px-4">
+					<h3 class="text-2xl font-bold leading-9 font-sans">
+						List of Accounts
+					</h3>
+				</div>
+
+				<div
+					class="body__content--listImage fit-h flex grid grid-cols-4 gap-4"
+				>
+					<div
+						class="border z-10 cursor-pointer bg-zinc-700 p-2 rounded-2xl hover:bg-zinc-800 cursor-pointer"
+						v-for="(user, idx) in allListUser.data"
+						:key="idx"
+						@click="onMoveUserAccount(user)"
+					>
+						<div class="flex justify-between items-center">
+							<div>
+								<img
+									:src="
+										require(`@/uploadImage/${
+											user.image ? user.image  : 'man.png'
+										}`)
+									"
+									alt="AvatarUser"
+									width="60"
+									height="60"
+									class=" rounded-full w-[40px] h-[40px]"
+								/>
+							</div>
+							<div>{{ user.username }}</div>
+							<div>Design: {{ user.sumDesign }}</div>
 						</div>
 					</div>
 				</div>

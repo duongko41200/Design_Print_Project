@@ -21,23 +21,23 @@
 								<!-- ... -->
 							</svg>
 						</span>
-						<input
+						<!-- <input
 							class="placeholder:italic placeholder:text-slate-400 block bg-current w-full border border-slate-300 rounded-md py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
 							placeholder="Name design"
 							type="text"
 							name="search"
-						/>
+						/> -->
 					</label>
 				</div>
 				<div class="flex h-full gap-4  items-center">
 					<div
-						class="bg-green-700 h-[4vh] cursor-pointer text-white p-2 px-4 rounded-lg hidden md:block flex "
+						class=" border  cursor-pointer text-white p-2 px-4 rounded-lg hidden md:block flex fit-h hover:bg-black "
 						@click="onSaveDesignByProduct"
 					>
 						<div class="text-center">Save</div>
 					</div>
 					<div
-						class="bg-green-700 h-[4vh] cursor-pointer text-white p-2 px-4 rounded-lg hidden md:block flex "
+						class="bg-green-700 fit-h cursor-pointer text-white p-2 px-4 rounded-lg hidden md:block flex "
 						@click="onPreviewDesign"
 					>
 						<div class="text-center">Preview</div>

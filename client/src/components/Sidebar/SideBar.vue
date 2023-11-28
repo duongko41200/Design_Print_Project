@@ -123,7 +123,7 @@
 							menuItem.tooltip || menuItem.name
 						}}</span>
 					</li>
-					<li>
+					<li v-if="userInfo.role==='admin'||userInfo.role==='owner'">
 						<div
 							v-if="isUsedVueRouter"
 							class="flex items-center hover:bg-black cursor-pointer"

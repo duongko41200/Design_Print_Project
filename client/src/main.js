@@ -45,7 +45,10 @@ import {
 	faDownload,
 	faEllipsisVertical,
 	faCaretDown,
-	faPlus
+	faPlus,
+	faLock,
+	faLockOpen,
+	faCircleXmark
 } from '@fortawesome/free-solid-svg-icons';
 
 // import {faCopy} from '@fortawesome/free-regular-svg-icons'
@@ -83,7 +86,10 @@ library.add(
 	faDownload,
 	faEllipsisVertical,
 	faCaretDown,
-	faPlus
+	faPlus,
+	faLock,
+	faLockOpen,
+	faCircleXmark
 );
 
 // import css
