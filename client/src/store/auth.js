@@ -1,8 +1,20 @@
 import { getField, updateField } from 'vuex-map-fields';
 import UserService from '@/sevices/user.service.js';
 import DesignService from '@/sevices/design.service';
+import NotificationService from '@/sevices/notification.service';
 import { pagination } from '@/utils/pagination';
 import { filterKeyWord } from '@/utils/filter.js';
+
+const countNotifi = (data) => {
+	let count =0
+	for (let i = 0; i < data.length; i++) {
+		if (data[i].is_readed === false) {
+			count = count + 1
+		}
+		
+	}
+	return count
+}
 export default {
 	namespaced: true,
 
@@ -17,6 +29,8 @@ export default {
 			originPaginationsResult: [],
 
 			listReceiveShare: [],
+			countNotifi_notRead:0,
+			listNotifications: [],
 		};
 	},
 
@@ -93,7 +107,40 @@ export default {
 			let list = state.listReceiveShare;
 			list = list.filter((user) => user && user.id != payload.id)
 			commit('SET_LIST_RECIEVE_USER', list)
+		},
+
+		async createNotificaShare({ state }, payload) { 
+			console.log('payload', payload)
+			console.log("state",state.allListUser)
+			const notifi = await NotificationService.creatNotification(payload)
+
+			console.log('gia tri notifi',notifi)
+		},
+		async getAllNotificationByUser({ commit }, payload) {
+			console.log('payload', payload)
+			
+			const notifi = await NotificationService.getAllNotificationByUser(payload)
+			console.log('gia tri notifi',notifi.data.data)
+		
+			// let data = notifi.data.data
+
+			let count = await countNotifi(notifi.data.data)
+
+
+			console.log('count', count)
+			commit('SET_COUNT_NOT_READ_NOTIFI', count)
+			commit('SET_LIST_NOTIFICATIONS',notifi.data.data)
+			
+		},
+		async updatNotifi({ state }, payload) { 
+			console.log('payload', payload)
+			console.log("state", state.allListUser)
+			
+			const notifi = await NotificationService.updateNotifiShare(payload)
+			console.log('gia tri notifi',notifi.data.data)
+
 		}
+
 	},
 
 	mutations: {
@@ -116,6 +163,12 @@ export default {
 		SET_LIST_RECIEVE_USER(state, payload) {
 			state.listReceiveShare = payload;
 		},
+		SET_COUNT_NOT_READ_NOTIFI(state, payload) { 
+			state.countNotifi_notRead = payload;
+		},
+		SET_LIST_NOTIFICATIONS(state, payload) { 
+			state.listNotifications = payload;
+		}
 	},
 
 	getters: {

@@ -107,10 +107,10 @@ export default {
 
 
 		async creatFavoriteDesign(design) {
-			console.log('design :', design);
+	
 			let userInfoUpdate = '';
 			if (design.isLike === true) {
-				console.log('design dsfsdf :', design);
+	
 
 				const favoriteDesign = await UserService.deleteFavoriteDesign({
 					userId: this.userInfo.id,

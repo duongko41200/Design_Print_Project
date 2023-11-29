@@ -112,13 +112,21 @@
 					<Menu as="div" class="relative inline-block text-left">
 						<div>
 							<MenuButton
-								class="inline-flex w-full justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
-							>
+								class="relative inline-flex w-full justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+								@click="readNotification"
+								>
 								<icon
 									icon="fa-solid fa-bell"
-									size="lg"
+									size="xl"
 									style="color: aliceblue"
+									
 								/>
+								<div
+									v-if="countNotifi_notRead > 0"
+									class="text-white absolute top-0 bg-red-500 rounded-full w-[20px] h-[20px] text-xs flex justify-center items-center"
+								>
+									<div>{{ countNotifi_notRead }}</div>
+								</div>
 								<ChevronDownIcon
 									class="-mr-1 h-5 w-5 text-gray-400"
 									aria-hidden="true"
@@ -137,48 +145,67 @@
 							<MenuItems
 								class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none w-[300px]"
 							>
-								<div class="py-1">
-									<MenuItem v-slot="{ active }">
-										<a
-											href="#"
+								<div
+									class="py-2 fit-h max-h-[82vh] min-h-[40vh] overflow-auto"
+									v-if="listNotifications.length > 0"
+								>
+									<MenuItem
+										v-slot="{ active }"
+										v-for="(notification, idx) in listNotifications"
+										:key="idx"
+									>
+										<div
 											:class="[
 												active
 													? 'bg-gray-100 text-gray-900'
 													: 'text-gray-700',
 												'block px-4 py-2 text-sm',
 											]"
-											>Account settings</a
 										>
+											<div class="flex gap-2">
+												<span class="font-bold">{{
+													notification.user_request.username
+												}}</span>
+												<span> {{ notification.message }}</span>
+											</div>
+											<div
+												class="flex justify-start items-center gap-2 border"
+											>
+												<div class="w-[60px] border-r">
+													<img
+														:src="notification.design.thumbnailFront"
+													/>
+												</div>
+
+												<div>{{ notification.design.name }}</div>
+												<div>
+													like: {{ notification.design.numberLike }}
+												</div>
+											</div>
+											<div
+												class="mt-2 flex justify-end items-center gap-2"
+												v-if="!notification.is_accept"
+											>
+												<div
+													class="bg-green-600 cursor-pointer border p-1 w-[60px] rounded-xl shadow-lg text-white flex justify-center border"
+												>
+													<div class="">Accept</div>
+												</div>
+
+												<div
+													class="bg-red-600 p-1 cursor-pointer border w-[50px] border rounded-xl text-white flex justify-center shadow-lg"
+												>
+													<div>No</div>
+												</div>
+											</div>
+										</div>
 									</MenuItem>
-									<MenuItem v-slot="{ active }">
-										<a
-											href="#"
-											:class="[
-												active
-													? 'bg-gray-100 text-gray-900'
-													: 'text-gray-700',
-												'block px-4 py-2 text-sm',
-											]"
-											>Support</a
-										>
-									</MenuItem>
-									<MenuItem v-slot="{ active }">
-										<a
-											href="#"
-											:class="[
-												active
-													? 'bg-gray-100 text-gray-900'
-													: 'text-gray-700',
-												'block px-4 py-2 text-sm',
-											]"
-											>License</a
-										>
-									</MenuItem>
-									<!-- <form method="POST" action="#">
-            <MenuItem v-slot="{ active }">
-              <button type="submit" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block w-full px-4 py-2 text-left text-sm']">Sign out</button>
-            </MenuItem>
-          </form> -->
+								</div>
+								<div
+									class="py-2 fit-h max-h-[82vh] min-h-[40vh] flex justify-center items-center overflow-auto"
+									v-else
+								>
+									<div class="text-gray-400 text-lg">Not find Notication</div>
 								</div>
 							</MenuItems>
 						</transition>
@@ -208,14 +235,16 @@ import { ChevronDownIcon } from '@heroicons/vue/20/solid';
 import logoUser from '@/components/logoUser/logoUser.vue';
 import baseModal from '@/components/BaseModal/baseModal.vue';
 import SideBar from '@/components/Sidebar/SideBar.vue';
-import { io } from 'socket.io-client';
-var connectionOptions = {
-	withCredentials: true,
-	transports: ['websocket'],
-};
-const socket = io('http://localhost:8888', connectionOptions);
 
-console.log('socket,', socket);
+import { socket } from '@/Contant/socket';
+// import { io } from 'socket.io-client';
+// var connectionOptions = {
+// 	withCredentials: true,
+// 	transports: ['websocket'],
+// };
+// const socket = io('http://localhost:8888', connectionOptions);
+
+// console.log('socket,', socket);
 export default {
 	components: {
 		baseModal,
@@ -251,18 +280,23 @@ export default {
 		};
 	},
 	computed: {
-		...authMappper.mapState(['email', 'userInfo']),
+		...authMappper.mapState([
+			'email',
+			'userInfo',
+			'countNotifi_notRead',
+			'listNotifications',
+		]),
 		...productMappper.mapState(['products', 'cataloge']),
 	},
 	async mounted() {
 		await this.getAllProducts({ status: 'accept' });
 
 		socket?.emit('newUser', this.userInfo);
-		socket.on('sendNotifi', (data) => {
-			console.log('datat:', this.userInfo.id);
-
+		socket.on('sendNotifi', async (data) => {
 			if (this.userInfo.id == data) {
-				this.Notifi = this.Notifi + 1;
+				// let count = this.countNotifi_notRead + 1
+				// this.SET_COUNT_NOT_READ_NOTIFI(count)
+				await this.getAllNotificationByUser(this.userInfo);
 				console.log('data socket;', data);
 			}
 		});
@@ -271,6 +305,8 @@ export default {
 		...productMappper.mapMutations(['SET_PRODUCT_MODEL']),
 		...designMappper.mapMutations(['SET_EDIT_DESIGN']),
 		...productMappper.mapActions(['getAllProducts']),
+		...authMappper.mapMutations(['SET_COUNT_NOT_READ_NOTIFI']),
+		...authMappper.mapActions(['getAllNotificationByUser','updatNotifi']),
 		togglePopover() {
 			this.isPopoverOpen = !this.isPopoverOpen;
 		},
@@ -302,8 +338,9 @@ export default {
 			this.$router.push('/');
 		},
 
-		Notification() {
-			socket.emit('notification', '65620ae8730d65462660fd25');
+		async readNotification() {
+			await this.updatNotifi(this.userInfo)
+			await this.getAllNotificationByUser(this.userInfo)
 		},
 	},
 };

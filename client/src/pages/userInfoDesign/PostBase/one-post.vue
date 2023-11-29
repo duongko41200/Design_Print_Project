@@ -154,8 +154,9 @@
 	</div>
 	<modalShare
 		:showModal="isShowModalShare"
-		:infoDesign="infoDesign"
+		:infoDesign="data"
 		:type="typePreview"
+
 		@oncloseModal="oncloseModal"
 
 	></modalShare>

@@ -42,7 +42,7 @@
 								>
 									<!-- form viet o day -->
 									<div class="flex justify-between">
-										<div>Receive user name</div>
+										<div class="text-lg">Receive user name</div>
 										<div class="relative">
 											<input
 												class="bg-gray-100 border flex-1 pl-10 pr-10 rounded-xl z-10 text-sm w-[200px] py-2"
@@ -67,11 +67,13 @@
 										</div>
 									</div>
 									<div>
-										<div>Receive user name</div>
+										<div class="text-lg">Receive user list</div>
 										<div class="w-full flex justify-center">
 											<div
-												class="h-[200px] w-[70%] px-2 max-h-[170px] overflow-auto"
+												class="h-[200px] w-[70%] px-2  max-h-[170px] overflow-auto"
 											>
+
+											<div v-if="listReceiveShare.length > 0">
 												<div
 													class="flex justify-between items-center p-2 border-b-2 mt-2 border-b-black"
 													v-for="(user, idx) in listReceiveShare"
@@ -81,7 +83,7 @@
 														icon="fa-solid fa-user"
 														class="w-[20px] h-[20px]"
 													/>
-													<div class="shareModal__contentRow--caption">
+													<div class="shareModal__contentRow--caption text-lg">
 														{{ user.username }}
 													</div>
 													<icon
@@ -90,6 +92,13 @@
 														@click="removeUserShare(user)"
 													/>
 												</div>
+
+											</div>
+											<div v-else class="flex justify-center items-center w-full h-full"> 
+
+												<div class="text-lg text-gray-400">Receive user not found</div>
+											</div>
+								
 											</div>
 										</div>
 									</div>
@@ -108,8 +117,9 @@
 								</button>
 								<button
 									type="button"
-									class="mt-3 bg-green-600 inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-green-700 sm:mt-0 text-white w-[180px]"
+									class="mt-3 bg-green-600 inline-flex  justify-center rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-green-700 sm:mt-0 text-white w-[180px]"
 									ref="cancelButtonRef"
+									@click="handleShareDesign"
 								>
 									Share Design
 								</button>
@@ -131,6 +141,7 @@ import {
 // import ImageService from '@/sevices/image.service.js';
 // import ProductService from '@/sevices/product.service.js';
 import { createNamespacedHelpers } from 'vuex';
+import { socket } from "@/Contant/socket"
 const authMappper = createNamespacedHelpers('auth');
 const productMappper = createNamespacedHelpers('product');
 export default {
@@ -146,7 +157,7 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		productInfos: {
+		infoDesign: {
 			type: Object,
 		},
 		imageType: {
@@ -189,6 +200,7 @@ export default {
 			'getAllListUser',
 			'addUserShare',
 			'deleteUserShare',
+			'createNotificaShare'
 		]),
 
 		oncloseModal() {
@@ -207,6 +219,25 @@ export default {
 		removeUserShare(user) {
 			this.deleteUserShare(user);
 		},
+		async handleShareDesign() {
+
+			console.log("design share;", this.infoDesign)
+
+			const param = {
+				design: this.infoDesign.id,
+				user_request: this.userInfo.id,
+				user_recive: this.listReceiveShare[0].id,
+				type: "share",
+				message:' đã chia sẻ cho bạn'
+
+			}
+			console.log("param:", param)
+
+			console.log("listReceiveShare", this.listReceiveShare)
+			await this.createNotificaShare(param)
+			socket.emit('notification', this.listReceiveShare[0].id);
+	
+		}
 	},
 };
 </script>

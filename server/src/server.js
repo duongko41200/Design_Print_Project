@@ -6,6 +6,7 @@ const imageAssetApi = require('./routes/imageassets.api');
 const uploadImageByS3 = require('./routes/image.api');
 const productApi = require('./routes/product.api');
 const DesignApi = require('./routes/design.api');
+const notificationApi = require('./routes/notification.api');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
 require('dotenv').config();
@@ -55,6 +56,7 @@ uploadImageByS3(app);
 imageAssetApi(app);
 productApi(app);
 DesignApi(app);
+notificationApi(app)
 
 mongoose
 	.connect(process.env.DATABASE, {
@@ -105,7 +107,7 @@ io.on('connection', (socket) => {
   socket.on('notification', async (receiverUser) => {
     const receiver = await getUser(receiverUser);
     console.log("receiver: ", receiver)
-    io.to(receiver.socketId).emit("sendNotifi",receiver.userId)
+    io.to(receiver?.socketId).emit("sendNotifi",receiver?.userId)
   })
 
 

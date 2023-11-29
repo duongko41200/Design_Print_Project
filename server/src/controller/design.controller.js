@@ -186,7 +186,7 @@ const statisticalByDesign = async (req, res) => {
 
 	let sumLike = 0;
 	for (let i = 0; i < design.length; i++) {
-		console.log('design', design[i].numberLike);
+	
 		sumLike = design[i].numberLike + sumLike;
 	}
 

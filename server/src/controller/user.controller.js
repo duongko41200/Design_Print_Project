@@ -219,7 +219,7 @@ const handleFindByUser = async (req, res) => {
 
 const getAllUser = async (req, res) => {
 	const getUser = await User.find();
-	console.log('user dfsdfsdf:', getUser);
+
 	return res.status(200).json({
 		status: 'success',
 		data: getUser,
