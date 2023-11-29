@@ -249,6 +249,9 @@
 		</div>
 	</div>
 
+	<img class="w-[200px] h-[300px bg-black]" :sr="imgPreviewFront"/>
+	<img :sr="imgPreviewBack"/>
+
 	<modalPreview
 		:showModal="isShowPreview"
 		:infoDesign = 'infoDesign'

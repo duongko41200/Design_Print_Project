@@ -39,11 +39,11 @@
 										<div
 											v-for="(product, idx) in products"
 											:key="idx"
-											class="group relative cursor-pointer flex gap-x-6 p-4 hover:bg-gray-50"
+											class="group relative cursor-pointer flex gap-x-6 p-2 hover:bg-gray-100"
 											@click="onDesignProduct(product)"
 										>
 											<div
-												class="mt-1 relative flex h-11 w-11 flex-none items-center justify-center bg-gray-50 group-hover:bg-white"
+												class="mt-1 relative flex h-10 w-11 flex-none items-center justify-center bg-gray-50 group-hover:bg-white"
 											>
 												<img
 													v-if="imageType === 'front'"
@@ -90,7 +90,7 @@
 												
 													<th scope="col">Like</th>
 
-													<th scope="col">Status Public</th>
+													<th scope="col">Status</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -147,7 +147,7 @@
 												
 													<th scope="col">Like</th>
 
-													<th scope="col">Status Public</th>
+													<th scope="col"> Status</th>
 												</tr>
 											</thead>
 											<tbody>

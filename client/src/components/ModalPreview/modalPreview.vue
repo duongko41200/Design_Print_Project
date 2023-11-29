@@ -377,9 +377,9 @@
 															class="absolute top-0 left-0 z-10 "
 															:class="type ==='previewProduct'?'object-contain':'object-cover'"
 															:src="
-																infoDesign.thumbnailFront
-																	? infoDesign.thumbnailFront
-																	: type === 'previewProduct'?  require(`@/uploadImage/${previewFront}`):previewFront
+																previewFront
+																	? type === 'previewProduct'?  require(`@/uploadImage/${previewFront}`):previewFront 
+																	: infoDesign.thumbnailFront
 															"
 															style="
 																width: 100%;
@@ -394,9 +394,9 @@
 															class="absolute top-0 left-0 z-10 "
 															:class="type ==='previewProduct'?'object-contain':'object-cover'"
 															:src="
-																infoDesign.thumbnailBack
-																	? infoDesign.thumbnailBack
-																	: type === 'previewProduct'?  require(`@/uploadImage/${previewBack}`):previewBack
+																previewBack
+																	? type === 'previewProduct'?  require(`@/uploadImage/${previewBack}`):previewBack
+																	: infoDesign.thumbnailBack
 															"
 															style="
 																width: 100%;
@@ -443,9 +443,9 @@
 															class="top-0 left-0 z-10 object-cover"
 														
 															:src="
-																infoDesign.thumbnailFront
-																	? infoDesign.thumbnailFront
-																	: previewFront
+																previewFront
+																	? previewFront
+																	:infoDesign.thumbnailFront
 															"
 															style="
 																width: 100%;
@@ -458,9 +458,9 @@
 															class="top-0 left-0 z-10 object-cover"
 														
 															:src="
-																infoDesign.thumbnailBack
-																	? infoDesign.thumbnailBack
-																	: previewBack
+																previewBack
+																	? previewBack
+																	: infoDesign.thumbnailBack
 															"
 															style="
 																width: 100%;
@@ -552,6 +552,7 @@ export default {
 		previewFront: String,
 		previewBack: String,
 	},
+	
 	data() {
 		return {
 			thumbnail: 'front',
@@ -641,5 +642,11 @@ export default {
 			this.$emit('CreateFavoriteDesign', design);
 		},
 	},
+	watch: {
+		showModal() {
+			console.log("mat truoc;", this.previewFront)
+			console.log("mat sau;",this.previewBack)
+		}
+	}
 };
 </script>

@@ -618,6 +618,11 @@ export default {
 				object.visible = object.mode == mode ? true : false;
 			});
 
+			this.canvas.renderAll();
+
+			console.log("element canvas", this.canvas.getObjects());
+			console.log("this.canvas", this.canvas);
+
 			img.src = this.canvas.toDataURL({ format: 'png', quality: 1 });
 
 			img.onload = () => {
