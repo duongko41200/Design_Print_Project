@@ -102,7 +102,7 @@
 					@onClickImage="onPreviweDesign(item)"
 					@CreateFavoriteDesign="creatFavoriteDesign"
 					@deleteDesign="deleteDesign"
-					@onDownload ="onDownload"
+					@onDownload="onDownload"
 				></one-post>
 			</div>
 		</div>
@@ -114,8 +114,6 @@
 		@oncloseModal="oncloseModal"
 		@CreateFavoriteDesign="creatFavoriteDesign"
 	></modalPreview>
-
-	
 </template>
 <script>
 import { createNamespacedHelpers } from 'vuex';
@@ -140,7 +138,7 @@ export default {
 			isShowPreview: false,
 
 			infoDesign: '',
-			statisticalByDesign: '',
+			// statisticalByDesign: '',
 			typePreview: '',
 
 			isUnLike: false,
@@ -148,7 +146,7 @@ export default {
 	},
 	computed: {
 		...authMappper.mapState(['email', 'userInfo']),
-		...designMappper.mapState(['listDesign']),
+		...designMappper.mapState(['listDesign', 'statisticalByDesign']),
 	},
 	async mounted() {
 		const startDate = new Date();
@@ -162,11 +160,11 @@ export default {
 			favoriteDesign: this.userInfo.favoriteDesign,
 		});
 
-		const statistical = await DesignService.statisticalInfoByDesign({
+		await this.statisticalInfoByDesign({
 			idUser: this.userInfo.id,
 		});
 
-		this.statisticalByDesign = statistical.data.data;
+		// this.statisticalByDesign = statistical.data.data;
 	},
 	methods: {
 		...designMappper.mapActions([
@@ -174,7 +172,8 @@ export default {
 			'getFavoriteDesign',
 			'handleFavoriteList',
 			'getAllDesign',
-			'deleteDesignByUser'
+			'deleteDesignByUser',
+			'statisticalInfoByDesign',
 		]),
 		...designMappper.mapMutations(['SET_LIST_DESIGN']),
 		...authMappper.mapMutations(['SET_USER_INFO']),
@@ -240,14 +239,13 @@ export default {
 			const payload = {
 				userId: this.userInfo.id,
 				idDesign: design.id,
-				productId: design.product
+				productId: design.product,
 			};
 			await this.deleteDesignByUser(payload);
-			const statistical = await DesignService.statisticalInfoByDesign({
+
+			await this.statisticalInfoByDesign({
 				idUser: this.userInfo.id,
 			});
-
-			this.statisticalByDesign = statistical.data.data;
 			this.$toast.success('deleted success', {
 				position: 'top-right',
 				duration: 2000,
@@ -260,7 +258,6 @@ export default {
 		},
 
 		async creatFavoriteDesign(design) {
-		
 			let userInfoUpdate = '';
 			if (design.isLike === true) {
 				const favoriteDesign = await UserService.deleteFavoriteDesign({
@@ -293,11 +290,10 @@ export default {
 				});
 				this.isUnLike = false;
 			}
-			const statistical = await DesignService.statisticalInfoByDesign({
+
+			await this.statisticalInfoByDesign({
 				idUser: this.userInfo.id,
 			});
-
-			this.statisticalByDesign = statistical.data.data;
 			this.SET_USER_INFO(userInfoUpdate.data?.data);
 			localStorage.setItem('tokens', userInfoUpdate.data.token);
 

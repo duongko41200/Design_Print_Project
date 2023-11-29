@@ -21,13 +21,20 @@ const updatNotifiShare = async (req, res) => {
 		{ $set: { is_readed: true } }
 	);
 
-	// const notification = await Notification.find({
-	// 	user_recive: req.query.id,
-	// }).populate(['user_recive', 'user_request', 'design']);
+	res.status(200).json({
+		status: 'success',
+	});
+};
+
+const updateStatusAcceptShare = async (req, res) => {
+	console.log('req.body: ', req.body);
+	const updateNotifi = await Notification.findOneAndUpdate(
+		{ _id: req.body.notifiId},
+		{ is_accept: req.body.is_accept }
+	);
 
 	res.status(200).json({
 		status: 'success',
-		// data: notification,
 	});
 };
 
@@ -46,4 +53,5 @@ module.exports = {
 	creatNotifica,
 	getAllByUser,
 	updatNotifiShare,
+	updateStatusAcceptShare,
 };

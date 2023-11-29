@@ -202,10 +202,12 @@ export default {
 			'deleteUserShare',
 			'createNotificaShare'
 		]),
+		...authMappper.mapMutations(['SET_LIST_RECIEVE_USER']),
 
 		oncloseModal() {
 			this.$emit('oncloseModal');
 			this.valueKey = '';
+			this.SET_LIST_RECIEVE_USER([])
 		},
 		onSearchUser() {
 			console.log('duong dep trai', this.allListUser);
@@ -215,18 +217,18 @@ export default {
 		},
 		addUserToListShare(user) {
 			this.addUserShare(user);
+			this.valueKey = ''
 		},
 		removeUserShare(user) {
 			this.deleteUserShare(user);
 		},
 		async handleShareDesign() {
-
-			console.log("design share;", this.infoDesign)
-
-			const param = {
+		
+			for (let i = 0; i < this.listReceiveShare.length; i++) {
+				const param = {
 				design: this.infoDesign.id,
 				user_request: this.userInfo.id,
-				user_recive: this.listReceiveShare[0].id,
+				user_recive: this.listReceiveShare[i].id,
 				type: "share",
 				message:' đã chia sẻ cho bạn'
 
@@ -235,9 +237,18 @@ export default {
 
 			console.log("listReceiveShare", this.listReceiveShare)
 			await this.createNotificaShare(param)
-			socket.emit('notification', this.listReceiveShare[0].id);
+			socket.emit('notification', this.listReceiveShare[i].id);
+				
+			}
+			this.oncloseModal()
+
+			this.$toast.success('The request has been sent', {
+						position: 'top-right',
+						duration: 2000,
+			});
 	
-		}
+		},
+
 	},
 };
 </script>

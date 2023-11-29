@@ -5,7 +5,7 @@ import {
 	filterCatalogeProduct,
 	filterIsPublic,
 	filterDate,
-	filterLike
+	filterLike,
 } from '@/utils/filter.js';
 export default {
 	namespaced: true,
@@ -18,6 +18,8 @@ export default {
 			infoDesign: '',
 			originAllDesign: [],
 			allDesign: [],
+
+			statisticalByDesign: [],
 		};
 	},
 
@@ -29,7 +31,7 @@ export default {
 				? payload.favoriteDesign
 				: [];
 			const allDesign = await DesignService.getAllDesign();
-			console.log("allDesign duong dep trai:", allDesign)
+			console.log('allDesign duong dep trai:', allDesign);
 			const statusFavorite = allDesign.data.data;
 
 			// add isLike for Design
@@ -72,30 +74,26 @@ export default {
 				}
 			}
 
-
 			commit('SET_LIST_DESIGN', designUpdate);
-			commit('SET_ORIGIN_LIST_DESIGN',designUpdate);
+			commit('SET_ORIGIN_LIST_DESIGN', designUpdate);
 		},
 		///product
 		async getListDesignByProduct({ commit }, payload) {
-
 			const allDesigns = await DesignService.getDesignByProduct({
 				productId: payload.productId,
 				isPublic: payload.isPublic,
 			});
 
-			console.log('allDesigns dsffsddsf', allDesigns)
+			console.log('allDesigns dsffsddsf', allDesigns);
 			const designUpdate = allDesigns.data.data;
 
-
 			commit('SET_LIST_DESIGN', designUpdate);
-		
 		},
 		async deleteDesignByUser({ commit }, payload) {
 			const allDesigns = await DesignService.deleteDesignByUser({
 				idDesign: payload.idDesign,
 				userId: payload.userId,
-				productId: payload.productId
+				productId: payload.productId,
 			});
 			commit('SET_LIST_DESIGN', allDesigns.data.data);
 			commit('SET_ORIGIN_LIST_DESIGN', allDesigns.data.data);
@@ -123,8 +121,10 @@ export default {
 				id: payload.idCataloge,
 				name: payload.valueCataloge,
 			});
-			const dataSearch = state.allDesign.filter(
-				(design) => design.name?.toLowerCase().includes(payload.content.toLowerCase())
+			const dataSearch = state.allDesign.filter((design) =>
+				design.name
+					?.toLowerCase()
+					.includes(payload.content.toLowerCase())
 			);
 			commit('SET_ALL_DESIGN', dataSearch);
 		},
@@ -141,7 +141,7 @@ export default {
 
 		filterListDesign(
 			{ commit, state },
-			{ searchKeyword, cataloge, statusPublics, date,numberLike }
+			{ searchKeyword, cataloge, statusPublics, date, numberLike }
 		) {
 			if (!state.originListDesign) return;
 			let searchResult = [...state.originListDesign];
@@ -176,7 +176,7 @@ export default {
 					if (listFavorite[j] == originAllDesign[i].id) {
 						originAllDesign[i].isLike = true;
 						favoriteDesign = [...favoriteDesign, originAllDesign[i]];
-					
+
 						continue;
 					}
 				}
@@ -216,6 +216,17 @@ export default {
 			commit('SET_ORIGINAL_DESIGN', originAllDesign);
 			commit('SET_LIST_DESIGN', originListDesign);
 			commit('SET_ORIGIN_LIST_DESIGN', originListDesign);
+		},
+
+		async statisticalInfoByDesign({ state }, payload) {
+			console.log(state.originAllDesign);
+
+			console.log('payload dsfsdf', payload);
+
+			const statistical = await DesignService.statisticalInfoByDesign({
+				idUser: payload.idUser,
+			});
+			state.statisticalByDesign =statistical.data.data
 		},
 	},
 

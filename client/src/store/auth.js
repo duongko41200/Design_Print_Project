@@ -124,7 +124,7 @@ export default {
 		
 			// let data = notifi.data.data
 
-			let count = await countNotifi(notifi.data.data)
+			let count = countNotifi(notifi.data.data)
 
 
 			console.log('count', count)
@@ -139,6 +139,12 @@ export default {
 			const notifi = await NotificationService.updateNotifiShare(payload)
 			console.log('gia tri notifi',notifi.data.data)
 
+		},
+
+		async updateAcceptShare({ state }, payload) {
+			console.log('payload', payload)
+			console.log("state", state.allListUser)
+			await NotificationService.updateStatusAccept(payload)
 		}
 
 	},

@@ -27,6 +27,12 @@ const NotificationService = {
 	},
 
 
+	async updateStatusAccept(params) {
+		return ApiService.put(baseUrl + 'updateStatusAccept', params);
+	},
+
+
+
 
 	
 

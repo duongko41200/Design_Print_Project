@@ -114,12 +114,11 @@
 							<MenuButton
 								class="relative inline-flex w-full justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
 								@click="readNotification"
-								>
+							>
 								<icon
 									icon="fa-solid fa-bell"
 									size="xl"
 									style="color: aliceblue"
-									
 								/>
 								<div
 									v-if="countNotifi_notRead > 0"
@@ -169,7 +168,7 @@
 												<span> {{ notification.message }}</span>
 											</div>
 											<div
-												class="flex justify-start items-center gap-2 border"
+												class="flex justify-start items-center gap-2 border bg-gray-100"
 											>
 												<div class="w-[60px] border-r">
 													<img
@@ -184,18 +183,45 @@
 											</div>
 											<div
 												class="mt-2 flex justify-end items-center gap-2"
-												v-if="!notification.is_accept"
+												v-if="notification.type === 'share'"
 											>
 												<div
-													class="bg-green-600 cursor-pointer border p-1 w-[60px] rounded-xl shadow-lg text-white flex justify-center border"
+													class="mt-2 flex justify-end items-center gap-2"
+													v-if="!notification.is_accept"
 												>
-													<div class="">Accept</div>
+													<div
+														class="bg-green-600 cursor-pointer border p-1 w-[60px] rounded-xl shadow-lg text-white flex justify-center border"
+														@click="clickAcceptShare(notification)"
+													>
+														<div class="">Accept</div>
+													</div>
+
+													<div
+														class="bg-red-600 p-1 cursor-pointer border w-[50px] border rounded-xl text-white flex justify-center shadow-lg"
+														@click="clickNotAcceptShare(notification)"
+													>
+														<div>No</div>
+													</div>
 												</div>
 
 												<div
-													class="bg-red-600 p-1 cursor-pointer border w-[50px] border rounded-xl text-white flex justify-center shadow-lg"
+													class="mt-2 flex justify-end items-center gap-2"
+													v-else
 												>
-													<div>No</div>
+													<div
+														class="font-bold"
+														:class="
+															notification.is_accept === 'yes'
+																? 'text-green-500'
+																: 'text-gray-500'
+														"
+													>
+														{{
+															notification.is_accept === 'yes'
+																? 'Accepted'
+																: 'Not Accept'
+														}}
+													</div>
 												</div>
 											</div>
 										</div>
@@ -205,7 +231,9 @@
 									class="py-2 fit-h max-h-[82vh] min-h-[40vh] flex justify-center items-center overflow-auto"
 									v-else
 								>
-									<div class="text-gray-400 text-lg">Not find Notication</div>
+									<div class="text-gray-400 text-lg">
+										Not find Notication
+									</div>
 								</div>
 							</MenuItems>
 						</transition>
@@ -235,6 +263,7 @@ import { ChevronDownIcon } from '@heroicons/vue/20/solid';
 import logoUser from '@/components/logoUser/logoUser.vue';
 import baseModal from '@/components/BaseModal/baseModal.vue';
 import SideBar from '@/components/Sidebar/SideBar.vue';
+import DesignService from '@/sevices/design.service';
 
 import { socket } from '@/Contant/socket';
 // import { io } from 'socket.io-client';
@@ -259,19 +288,7 @@ export default {
 	data() {
 		return {
 			isPopoverOpen: false,
-			solutions: [
-				// Define your solutions data here
-				{ name: 'UserName', email: 'Email@gmail.com', href: '#' },
-			],
-			callsToAction: [
-				// Define your calls to action data here
-				{ name: 'Change Profile', href: '/123/change-profile' },
-				{ name: 'Logout', href: '#' },
-			],
-
 			showModal: false,
-
-			Notifi: 0,
 
 			// products: [],
 
@@ -294,8 +311,12 @@ export default {
 		socket?.emit('newUser', this.userInfo);
 		socket.on('sendNotifi', async (data) => {
 			if (this.userInfo.id == data) {
-				// let count = this.countNotifi_notRead + 1
-				// this.SET_COUNT_NOT_READ_NOTIFI(count)
+				await this.getAllNotificationByUser(this.userInfo);
+				console.log('data socket;', data);
+			}
+		});
+		socket.on('resNotifiShare', async (data) => {
+			if (this.userInfo.id == data) {
 				await this.getAllNotificationByUser(this.userInfo);
 				console.log('data socket;', data);
 			}
@@ -306,7 +327,16 @@ export default {
 		...designMappper.mapMutations(['SET_EDIT_DESIGN']),
 		...productMappper.mapActions(['getAllProducts']),
 		...authMappper.mapMutations(['SET_COUNT_NOT_READ_NOTIFI']),
-		...authMappper.mapActions(['getAllNotificationByUser','updatNotifi']),
+		...authMappper.mapActions([
+			'getAllNotificationByUser',
+			'updatNotifi',
+			'createNotificaShare',
+			'updateAcceptShare',
+		]),
+		...designMappper.mapActions([
+			'getListDesignByUser',
+			'statisticalInfoByDesign',
+		]),
 		togglePopover() {
 			this.isPopoverOpen = !this.isPopoverOpen;
 		},
@@ -339,8 +369,83 @@ export default {
 		},
 
 		async readNotification() {
-			await this.updatNotifi(this.userInfo)
-			await this.getAllNotificationByUser(this.userInfo)
+			await this.updatNotifi(this.userInfo);
+			await this.getAllNotificationByUser(this.userInfo);
+		},
+
+		async clickAcceptShare(payload) {
+			/**
+			 * @param {name,description,userId,productId,object:"thong so design",thumbnailFront,thumbnailBack, isPublic}
+			 */
+
+			const params = {
+				name: payload.design.name,
+				description: payload.design.description,
+				user: this.userInfo.id,
+				product: payload.design.product,
+				objects: payload.design.objects,
+				thumbnailFront: payload.design.thumbnailFront,
+				thumbnailBack: payload.design.thumbnailBack,
+				isPublic: 'private',
+			};
+
+			try {
+				await DesignService.createDesignByProduct({ params });
+
+				console.log('params:', params);
+
+				this.$toast.success('saved success', {
+					position: 'top-right',
+					duration: 2000,
+				});
+				await this.getListDesignByUser({
+					userId: this.userInfo.id,
+					isPublic: 'all',
+					favoriteDesign: this.userInfo.favoriteDesign,
+				});
+
+				this.$router.push(`/userInfo`);
+
+				await this.statisticalInfoByDesign({
+					idUser: this.userInfo.id,
+				});
+
+				const param = {
+					design: payload.design.id,
+					user_request: this.userInfo.id,
+					user_recive: payload.user_request.id,
+					type: 'info',
+					message: ' đã chap nhan thiet ke',
+				};
+
+				await this.createNotificaShare(param);
+				await this.updateAcceptShare({
+					notifiId: payload.id,
+					is_accept: 'yes',
+				});
+				this.getAllNotificationByUser(this.userInfo);
+				socket.emit('responseNotifiShare', payload.user_request.id);
+			} catch (error) {
+				console.log(error);
+			}
+		},
+		async clickNotAcceptShare(payload) {
+			console.log('payload:', payload);
+			const param = {
+				design: payload.design.id,
+				user_request: this.userInfo.id,
+				user_recive: payload.user_request.id,
+				type: 'info',
+				message: 'da khong nhan thiet ke  ',
+			};
+
+			await this.createNotificaShare(param);
+			await this.updateAcceptShare({
+				notifiId: payload.id,
+				is_accept: 'no',
+			});
+			this.getAllNotificationByUser(this.userInfo);
+			socket.emit('responseNotifiShare', payload.user_request.id);
 		},
 	},
 };

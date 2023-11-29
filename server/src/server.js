@@ -109,6 +109,12 @@ io.on('connection', (socket) => {
     console.log("receiver: ", receiver)
     io.to(receiver?.socketId).emit("sendNotifi",receiver?.userId)
   })
+	
+  socket.on('responseNotifiShare', async (receiverUser) => {
+    const receiver = await getUser(receiverUser);
+    console.log("receiver: ", receiver)
+    io.to(receiver?.socketId).emit("resNotifiShare",receiver?.userId)
+  })
 
 
 
