@@ -21,7 +21,7 @@
 					class="w-[100%] d-flex justufy-content-start align-items-center"
 				>
 					<span class="font6 prUsername">{{ userInfo.username }}</span>
-					<div class="myEditButton f-bold1 crs-pointer">
+					<div class="myEditButton f-bold1 cursor-pointer" @click= 'onCreatDesign'>
 						Create Design
 					</div>
 				</div>
@@ -102,6 +102,7 @@
 					@onClickImage="onPreviweDesign(item)"
 					@CreateFavoriteDesign="creatFavoriteDesign"
 					@deleteDesign="deleteDesign"
+					@deleteImageAsset ='deleteImageAsset'
 					@onDownload="onDownload"
 				></one-post>
 			</div>
@@ -201,6 +202,7 @@ export default {
 					let imageAsset = await ImageAssetService.getAllImagAsset({
 						userId: this.userInfo.id,
 					});
+
 					console.log('imageAsset:', imageAsset);
 					this.SET_LIST_DESIGN(imageAsset.data.data);
 					break;
@@ -251,6 +253,18 @@ export default {
 				duration: 2000,
 			});
 		},
+		async deleteImageAsset(imageAsset) {
+			console.log('image asset', imageAsset)
+
+			const imageAssets = await ImageAssetService.deleteImageAsset(imageAsset)
+			this.SET_LIST_DESIGN(imageAssets.data.data);		
+		},
+		onCreatDesign() {
+			this.$emit('onCreatDesign')
+		},
+
+
+		
 		onDownload(infoDesign) {
 			this.typePreview = 'preview';
 			this.infoDesign = infoDesign;

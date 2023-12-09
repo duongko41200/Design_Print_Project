@@ -15,7 +15,7 @@ export default {
   },
  async mounted(){
    await this.getAllDesign(this.userInfo)
-    await this.getAllNotificationByUser(this.userInfo)
+   await this.getAllNotificationByUser(this.userInfo)
   },
   computed: {
 
@@ -26,7 +26,7 @@ export default {
 			'getAllDesign',
 
     ]),
-    ...authMappper.mapActions(['getAllNotificationByUser'])
+    ...authMappper.mapActions(['getAllNotificationByUser']),
   }
 }
 </script>

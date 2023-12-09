@@ -70,35 +70,38 @@
 										<div class="text-lg">Receive user list</div>
 										<div class="w-full flex justify-center">
 											<div
-												class="h-[200px] w-[70%] px-2  max-h-[170px] overflow-auto"
+												class="h-[200px] w-[70%] px-2 max-h-[170px] overflow-auto"
 											>
-
-											<div v-if="listReceiveShare.length > 0">
-												<div
-													class="flex justify-between items-center p-2 border-b-2 mt-2 border-b-black"
-													v-for="(user, idx) in listReceiveShare"
-													:key="idx"
-												>
-													<icon
-														icon="fa-solid fa-user"
-														class="w-[20px] h-[20px]"
-													/>
-													<div class="shareModal__contentRow--caption text-lg">
-														{{ user.username }}
+												<div v-if="listReceiveShare.length > 0">
+													<div
+														class="flex justify-between items-center p-2 border-b-2 mt-2 border-b-black"
+														v-for="(user, idx) in listReceiveShare"
+														:key="idx"
+													>
+														<icon
+															icon="fa-solid fa-user"
+															class="w-[20px] h-[20px]"
+														/>
+														<div
+															class="shareModal__contentRow--caption text-lg"
+														>
+															{{ user.username }}
+														</div>
+														<icon
+															icon="fa-solid fa-circle-xmark"
+															class="w-[20px] h-[20px] cursor-pointer"
+															@click="removeUserShare(user)"
+														/>
 													</div>
-													<icon
-														icon="fa-solid fa-circle-xmark"
-														class="w-[20px] h-[20px] cursor-pointer"
-														@click="removeUserShare(user)"
-													/>
 												</div>
-
-											</div>
-											<div v-else class="flex justify-center items-center w-full h-full"> 
-
-												<div class="text-lg text-gray-400">Receive user not found</div>
-											</div>
-								
+												<div
+													v-else
+													class="flex justify-center items-center w-full h-full"
+												>
+													<div class="text-lg text-gray-400">
+														Receive user not found
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -117,7 +120,7 @@
 								</button>
 								<button
 									type="button"
-									class="mt-3 bg-green-600 inline-flex  justify-center rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-green-700 sm:mt-0 text-white w-[180px]"
+									class="mt-3 bg-green-600 inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-green-700 sm:mt-0 text-white w-[180px]"
 									ref="cancelButtonRef"
 									@click="handleShareDesign"
 								>
@@ -141,7 +144,7 @@ import {
 // import ImageService from '@/sevices/image.service.js';
 // import ProductService from '@/sevices/product.service.js';
 import { createNamespacedHelpers } from 'vuex';
-import { socket } from "@/Contant/socket"
+import { socket } from '@/Contant/socket';
 const authMappper = createNamespacedHelpers('auth');
 const productMappper = createNamespacedHelpers('product');
 export default {
@@ -200,14 +203,14 @@ export default {
 			'getAllListUser',
 			'addUserShare',
 			'deleteUserShare',
-			'createNotificaShare'
+			'createNotificaShare',
 		]),
 		...authMappper.mapMutations(['SET_LIST_RECIEVE_USER']),
 
 		oncloseModal() {
 			this.$emit('oncloseModal');
 			this.valueKey = '';
-			this.SET_LIST_RECIEVE_USER([])
+			this.SET_LIST_RECIEVE_USER([]);
 		},
 		onSearchUser() {
 			console.log('duong dep trai', this.allListUser);
@@ -217,38 +220,33 @@ export default {
 		},
 		addUserToListShare(user) {
 			this.addUserShare(user);
-			this.valueKey = ''
+			this.valueKey = '';
 		},
 		removeUserShare(user) {
 			this.deleteUserShare(user);
 		},
 		async handleShareDesign() {
-		
 			for (let i = 0; i < this.listReceiveShare.length; i++) {
 				const param = {
-				design: this.infoDesign.id,
-				user_request: this.userInfo.id,
-				user_recive: this.listReceiveShare[i].id,
-				type: "share",
-				message:' đã chia sẻ cho bạn'
+					design: this.infoDesign.id,
+					user_request: this.userInfo.id,
+					user_recive: this.listReceiveShare[i].id,
+					type: 'share',
+					message: ' đã chia sẻ cho bạn',
+				};
+				console.log('param:', param);
 
+				console.log('listReceiveShare', this.listReceiveShare);
+				await this.createNotificaShare(param);
+				socket.emit('notification', this.listReceiveShare[i].id);
 			}
-			console.log("param:", param)
-
-			console.log("listReceiveShare", this.listReceiveShare)
-			await this.createNotificaShare(param)
-			socket.emit('notification', this.listReceiveShare[i].id);
-				
-			}
-			this.oncloseModal()
+			this.oncloseModal();
 
 			this.$toast.success('The request has been sent', {
-						position: 'top-right',
-						duration: 2000,
+				position: 'top-right',
+				duration: 2000,
 			});
-	
 		},
-
 	},
 };
 </script>

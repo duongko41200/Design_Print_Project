@@ -51,10 +51,26 @@ const getAllImages = async (req, res) => {
 	}
 
 }
+const deleteImageAsset = async (req, res) => { 
+
+	const id = req.query.id
+	const idUser = req.query.user
+	console.log("req.query;",req.query)
+
+	await ImageAsset.deleteMany({ _id: id });
+	const getAllImagesAssets = await ImageAsset.find({ user: idUser });
+	
+	console.log('getAllImagesAssets',getAllImagesAssets)
+	res.status(200).json({
+		status: 'success',
+		data: getAllImagesAssets
+	})
+}
 
 
 
 module.exports = {
 	creatImageAsset,
-	getAllImages
+	getAllImages,
+	deleteImageAsset
 };

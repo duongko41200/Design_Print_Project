@@ -106,7 +106,7 @@ io.on('connection', (socket) => {
 
   socket.on('notification', async (receiverUser) => {
     const receiver = await getUser(receiverUser);
-    console.log("receiver: ", receiver)
+    console.log("receiver dsfsdf: ", receiver)
     io.to(receiver?.socketId).emit("sendNotifi",receiver?.userId)
   })
 	

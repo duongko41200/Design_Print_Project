@@ -208,7 +208,14 @@ export default {
 			console.log('height:' + this.$refs.square.clientWidth + 'px');
 		},
 		async deleteDesign(design) {
-			this.$emit('deleteDesign', design);
+			console.log("design;", design)
+			if (this.typeCatolog === 'assets') {
+				this.$emit('deleteImageAsset', design);
+			} else {
+
+				this.$emit('deleteDesign', design);
+			}
+	
 		},
 		async editDesign(id) {
 			const payload = {

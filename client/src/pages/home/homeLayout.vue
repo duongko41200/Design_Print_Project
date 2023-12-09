@@ -242,7 +242,7 @@
 					<logoUser></logoUser>
 				</div>
 			</div>
-			<router-view></router-view>
+			<router-view @onCreatDesign="onCreateDesign"></router-view>
 			<baseModal
 				:showModal="showModal"
 				:products="products"
@@ -264,7 +264,7 @@ import logoUser from '@/components/logoUser/logoUser.vue';
 import baseModal from '@/components/BaseModal/baseModal.vue';
 import SideBar from '@/components/Sidebar/SideBar.vue';
 import DesignService from '@/sevices/design.service';
-
+const imageAssetMappper = createNamespacedHelpers('imageAsset');
 import { socket } from '@/Contant/socket';
 // import { io } from 'socket.io-client';
 // var connectionOptions = {
@@ -307,7 +307,8 @@ export default {
 	},
 	async mounted() {
 		await this.getAllProducts({ status: 'accept' });
-
+		await this.getAllImageAssets({ userId: this.userInfo.id });
+		await this.getAllNotificationByUser(this.userInfo)
 		socket?.emit('newUser', this.userInfo);
 		socket.on('sendNotifi', async (data) => {
 			if (this.userInfo.id == data) {
@@ -337,6 +338,7 @@ export default {
 			'getListDesignByUser',
 			'statisticalInfoByDesign',
 		]),
+		...imageAssetMappper.mapActions(['getAllImageAssets']),
 		togglePopover() {
 			this.isPopoverOpen = !this.isPopoverOpen;
 		},

@@ -39,7 +39,7 @@ export default {
 				for (let i = 0; i < statusFavorite.length; i++) {
 					for (let j = 0; j < favoriteDesigns.length; j++) {
 						if (statusFavorite[i].id === favoriteDesigns[j]) {
-							console.log('ddax vaof day ', i);
+				
 							statusFavorite[i].isLike = true;
 						}
 					}
@@ -221,7 +221,7 @@ export default {
 		async statisticalInfoByDesign({ state }, payload) {
 			console.log(state.originAllDesign);
 
-			console.log('payload dsfsdf', payload);
+			console.log('statistical InfoByDesign', payload);
 
 			const statistical = await DesignService.statisticalInfoByDesign({
 				idUser: payload.idUser,

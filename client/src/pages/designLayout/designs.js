@@ -14,6 +14,7 @@ const authMappper = createNamespacedHelpers('auth');
 const globalMappper = createNamespacedHelpers('global');
 const productMappper = createNamespacedHelpers('product');
 const designMappper = createNamespacedHelpers('design');
+const imageAssetMappper = createNamespacedHelpers('imageAsset');
 export default {
 	components: {
 		baseSidebar,
@@ -25,17 +26,16 @@ export default {
 			titleOption: 'Upload',
 			contentOption: [],
 			isShowPreview: false,
-			typePreview:'',
+			typePreview: '',
 			width: '',
 			height: '',
-			nameOption:'',
+			nameOption: '',
 			optionDesign: [
-		
 				{ icon: 'fa-solid fa-image', name: 'Upload', active: true },
 				{ icon: '', name: 'Pixabay', active: false },
 				{ icon: 'fa-solid fa-font', name: 'Texts', active: false },
 				{ icon: 'fa-solid fa-pencil', name: 'Draw', active: false },
-					
+
 				{ icon: 'fa-solid fa-shapes', name: 'Shapes', active: false },
 			],
 			isImage: true,
@@ -51,7 +51,7 @@ export default {
 			mode: 'front',
 
 			//////////////////////-------TextBOx-------------------------
-			isBoxEditText: false,
+			customStyle: '',
 			isBoldText: false,
 			isItalicText: false,
 			isAlignLeft: true,
@@ -71,6 +71,15 @@ export default {
 				fontStyle: '',
 			},
 
+			shapeDesign: {
+				color: 'gray',
+			},
+
+			drawDesign: {
+				color: 'black',
+				stroke: '',
+			},
+
 			fontFamilyOptions: [],
 
 			/// Draw ////
@@ -85,20 +94,23 @@ export default {
 
 			shapes: [
 				{
-					type:"circle",
-					url:'tron.png'
+					option: 'shapes',
+					type: 'circle',
+					image: 'tron.png',
 				},
 				{
-					type:"quad",
-					url:'vuong.png'
+					option: 'shapes',
+					type: 'square',
+					image: 'vuong.png',
 				},
-			]
+			],
 		};
 	},
 	computed: {
 		...authMappper.mapState(['email', 'userInfo']),
 		...productMappper.mapState(['product']),
 		...designMappper.mapState(['designEdit', 'infoDesign']),
+		...imageAssetMappper.mapState(['allImageAssets']),
 	},
 	beforeDestroy() {
 		// Gỡ bỏ sự kiện lắng nghe khi component bị hủy
@@ -106,13 +118,20 @@ export default {
 	},
 
 	async mounted() {
+		const imageAsset = await ImageAssetService.getAllImagAsset({
+			userId: this.userInfo.id,
+		});
+		this.contentOption = imageAsset.data.data;
+		console.log('imageAsset', imageAsset.data.data);
+
+
+
+
 		const screenWidth = window.innerWidth;
 		const screenHeight = window.innerHeight;
 		this.width = screenWidth;
 		this.height = screenHeight;
 
-		// console.log('info design:', this.infoDesign._id);
-		// this.contentOption = this.images;
 		window.document.body.style.paddingLeft = '0px';
 
 		this.canvas = await this.initCanvas(this.$refs.canvas);
@@ -135,6 +154,7 @@ export default {
 		]),
 		...productMappper.mapMutations(['SET_PRODUCT_MODEL']),
 		...designMappper.mapMutations(['SET_INFO_DESIGN']),
+		...imageAssetMappper.mapActions(['getAllImageAssets']),
 
 		///canvas
 		initCanvas(id) {
@@ -148,7 +168,6 @@ export default {
 			// khi chọn vào sản phẩm để edit thì chạy cái này
 			if (this.designEdit) {
 				initCanvas?.loadFromJSON(this.designEdit);
-
 			}
 
 			return initCanvas;
@@ -206,7 +225,7 @@ export default {
 
 		/// choose option design
 		async onMoveOption(idx, name) {
-			this.nameOption = name
+			this.nameOption = name;
 			this.optionDesign = this.optionDesign.map((value, i) => {
 				if (i === idx) {
 					value.active = true;
@@ -245,6 +264,12 @@ export default {
 				this.imagePixaBay = [];
 				this.isImage = false;
 				// this.onToggleDraw(this.canvas);
+			} else if (name === 'Shapes') {
+				this.contentOption = [];
+				this.imagePixaBay = [];
+				this.isImage = true;
+				this.contentOption = this.shapes;
+				// this.onToggleDraw(this.canvas);
 			} else {
 				this.contentOption = [];
 				this.imagePixaBay = [];
@@ -258,7 +283,7 @@ export default {
 
 			try {
 				const upload = await this.uploadImageByDesign(fileImageAsset);
-				console.log('upload laf: ', upload);
+				console.log('upload: ', upload);
 				const imageUrl = upload.data.data;
 				// const filename = upload.data.data.key;
 				await ImageAssetService.createImagAsset({
@@ -277,7 +302,7 @@ export default {
 						position: 'top-right',
 						duration: 2000,
 					});
-				}, 1000);
+				}, 1500);
 			} catch (error) {
 				console.log({ error });
 			}
@@ -328,7 +353,11 @@ export default {
 			this.isDrawing = !this.isDrawing;
 
 			const pencilBrush = new fabric.PencilBrush(this.canvas);
+			console.log({ pencilBrush });
+
 			pencilBrush.color = 'black';
+			pencilBrush.type = 'draw';
+
 			pencilBrush.width = parseInt(value.stroke);
 
 			// Kích hoạt chế độ vẽ bằng bút
@@ -341,6 +370,8 @@ export default {
 				if (this.isDrawing === true) {
 					// add mode for canvas to handle font and back
 					const object = this.canvas.getObjects();
+					// object[0].type = 'draw';
+					console.log('object', object);
 					object.map((value) => {
 						if (!value.mode) {
 							value.mode = this.mode;
@@ -355,9 +386,18 @@ export default {
 		},
 
 		changeTextDesign() {
-			console.log('da vaof changed text design');
 			const deepCode = structuredClone(this.textDesign);
 			this.textDesign = deepCode;
+		},
+		changeShapeDesign() {
+			const deepCode = structuredClone(this.shapeDesign);
+			this.shapeDesign = deepCode;
+		},
+
+		changeDrawDesign() {
+			console.log('draw design');
+			const deepCode = structuredClone(this.drawDesign);
+			this.drawDesign = deepCode;
 		},
 		changeTextStyle(value) {
 			switch (value) {
@@ -419,9 +459,9 @@ export default {
 		handleEvents() {
 			this.canvas.on('selection:created', () => {
 				let activeObject = this.canvas.getActiveObject();
-				console.log("activeObject: " , activeObject)
+				console.log('activeObject dfdsfsdf: ', activeObject);
 				if (activeObject && activeObject.type === 'text') {
-					this.isBoxEditText = true;
+					this.customStyle = 'text';
 					this.textDesign.textColor = activeObject.fill;
 					this.textDesign.bgColor = activeObject.backgroundColor;
 					this.textDesign.fontSize = activeObject.fontSize;
@@ -430,6 +470,17 @@ export default {
 					this.textDesign.fontStyle = activeObject.fontStyle;
 					this.textDesign.textAlign = activeObject.textAlign;
 					this.textDesign.fontFamily = activeObject.fontFamily;
+				} else if (activeObject && activeObject.type === 'shape') {
+					this.customStyle = 'shape';
+					this.shapeDesign.color = activeObject.fill;
+				} else if (
+					activeObject &&
+					activeObject.canvas.freeDrawingBrush.type === 'draw'
+				) {
+					this.customStyle = 'draw';
+					this.shapeDesign.color = activeObject.fill;
+					this.drawDesign.stroke = activeObject.strokeWidth;
+					this.drawDesign.color = activeObject.stroke;
 				}
 
 				console.log('click value:', activeObject);
@@ -437,7 +488,7 @@ export default {
 			this.canvas.on('selection:updated', () => {
 				let activeObject = this.canvas.getActiveObject();
 				if (activeObject && activeObject.type === 'text') {
-					this.isBoxEditText = true;
+					this.customStyle = 'text';
 					this.textDesign.textColor = activeObject.fill;
 					this.textDesign.bgColor = activeObject.backgroundColor;
 					this.textDesign.fontSize = activeObject.fontSize;
@@ -446,15 +497,26 @@ export default {
 					this.textDesign.fontStyle = activeObject.fontStyle;
 					this.textDesign.textAlign = activeObject.textAlign;
 					this.textDesign.fontFamily = activeObject.fontFamily;
+				} else if (activeObject && activeObject.type === 'shape') {
+					this.customStyle = 'shape';
+					this.shapeDesign.color = activeObject.fill;
+				} else if (
+					activeObject &&
+					activeObject.canvas.freeDrawingBrush.type === 'draw'
+				) {
+					this.customStyle = 'draw';
+					this.shapeDesign.color = activeObject.fill;
+					this.drawDesign.stroke = activeObject.strokeWidth;
+					this.drawDesign.color = activeObject.stroke;
 				} else {
-					this.isBoxEditText = false;
+					this.customStyle = '';
 				}
 
 				console.log('cavas value:', activeObject);
 			});
 
 			this.canvas.on('selection:cleared', () => {
-				this.isBoxEditText = false;
+				this.customStyle = '';
 			});
 		},
 
@@ -491,8 +553,10 @@ export default {
 				require(`@/uploadImage/${image.image}`),
 				(img) => {
 					img.set({
-						scaleX: 0.3,
-						scaleY: 0.3,
+						scaleX: 0.1,
+						scaleY: 0.1,
+						// width: 100,
+						// height:200,
 						mode: this.mode,
 					});
 					this.canvas.add(img);
@@ -518,6 +582,30 @@ export default {
 			}
 		},
 
+		onClickShapes(shapes) {
+			if (shapes.type === 'circle') {
+				const circle = new fabric.Circle({
+					type: 'shape',
+					mode: this.mode,
+					radius: 50, // Độ rộng của hình tròn
+					fill: 'gray', // Màu sắc của hình tròn
+					left: 100, // Tọa độ X
+					top: 100, // Tọa độ Y
+				});
+				this.canvas.add(circle);
+			} else if (shapes.type === 'square') {
+				const square = new fabric.Rect({
+					type: 'shape',
+					mode: this.mode,
+					width: 80, // Độ rộng của hình vuông
+					height: 80, // Độ cao của hình vuông
+					fill: 'gray', // Màu sắc của hình vuông
+					left: 200, // Tọa độ X
+					top: 150, // Tọa độ Y
+				});
+				this.canvas.add(square);
+			}
+		},
 		changeMode(mode) {
 			this.mode = mode;
 
@@ -535,10 +623,9 @@ export default {
 
 		handleBack() {
 			// Thực hiện tác vụ khi nút "Back" được nhấn
-			console.log("Back")
-			this.SET_PRODUCT_MODEL('')
-			this.SET_INFO_DESIGN('')
-			
+			console.log('Back');
+			this.SET_PRODUCT_MODEL('');
+			this.SET_INFO_DESIGN('');
 
 			// Xóa tất cả các thành phần trên canvas
 			this.canvas.clear();
@@ -546,7 +633,7 @@ export default {
 		openModeSave() {
 			this.onPreviewDesign('front');
 			this.onPreviewDesign('back');
-			this.typePreview='save'
+			this.typePreview = 'save';
 
 			this.isShowPreview = true;
 		},
@@ -620,8 +707,8 @@ export default {
 
 			this.canvas.renderAll();
 
-			console.log("element canvas", this.canvas.getObjects());
-			console.log("this.canvas", this.canvas);
+			console.log('element canvas', this.canvas.getObjects());
+			console.log('this.canvas', this.canvas);
 
 			img.src = this.canvas.toDataURL({ format: 'png', quality: 1 });
 
@@ -636,10 +723,10 @@ export default {
 		PreviewDesign() {
 			this.onPreviewDesign('front');
 			this.onPreviewDesign('back');
-			this.typePreview='preview'
+			this.typePreview = 'preview';
 
 			this.isShowPreview = true;
-		}
+		},
 	},
 
 	watch: {
@@ -659,6 +746,33 @@ export default {
 				});
 				this.canvas.requestRenderAll();
 			}
+		},
+		shapeDesign() {
+			let activeObject = this.canvas.getActiveObject();
+			if (activeObject) {
+				activeObject.set({
+					fill: this.shapeDesign.color,
+				});
+				this.canvas.requestRenderAll();
+			}
+			this.canvas.requestRenderAll();
+
+			console.log({ activeObject });
+		},
+		drawDesign() {
+			let activeObject = this.canvas.getActiveObject();
+
+			console.log('askdjfksd:', activeObject, this.drawDesign);
+			if (activeObject) {
+				activeObject.set({
+					stroke: this.drawDesign.color,
+					strokeWidth: this.drawDesign.stroke,
+				});
+				this.canvas.requestRenderAll();
+			}
+			this.canvas.requestRenderAll();
+
+			console.log({ activeObject });
 		},
 	},
 };

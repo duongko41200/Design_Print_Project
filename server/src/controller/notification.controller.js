@@ -39,9 +39,11 @@ const updateStatusAcceptShare = async (req, res) => {
 };
 
 const getAllByUser = async (req, res) => {
+
+	console.log("req.query bsdffses:", req.query);
 	const notification = await Notification.find({
 		user_recive: req.query.id,
-	}).populate(['user_recive', 'user_request', 'design']);
+	}).populate(['user_recive', 'user_request', 'design']).sort({createdAt:-1});
 
 	res.status(200).json({
 		status: 'success',

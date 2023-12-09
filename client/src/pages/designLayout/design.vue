@@ -4,7 +4,7 @@
 		<navbarDesign
 			@onSaveDesignByProduct="openModeSave"
 			@onPreviewDesign="PreviewDesign"
-			@onMoveHome = "handleBack"
+			@onMoveHome="handleBack"
 		></navbarDesign>
 
 		<!-- body -->
@@ -44,6 +44,7 @@
 				:isImage="isImage"
 				:strokeDrawing="strokeDrawing"
 				:nameOption="nameOption"
+				@onClickShapes="onClickShapes"
 				@onClickImageUpload="onClickImageUpload"
 				@onClickImageFixabay="onClickImageFixabay"
 				@onClickStrokeDraw="onClickStrokeDraw"
@@ -77,7 +78,7 @@
 
 					<div
 						class="flex justify-center items-center"
-						v-show="isBoxEditText"
+						v-show="customStyle === 'text'"
 					>
 						<div
 							class="container max-w-max mx-auto bg-white rounded-lg overflow-hidden"
@@ -187,6 +188,76 @@
 						</div>
 					</div>
 
+					<!-- /// option shape -->
+
+					<div
+						class="flex justify-start items-center"
+						v-show="customStyle === 'shape'"
+					>
+						<div class="max-w-max bg-white rounded-lg overflow-hidden">
+							<div class="toolbar p-1">
+								<div
+									class="btn-toolbar flex flex-wrap justify-start items-center"
+								>
+									<div
+										class="mr-3 h-10 color bg-white border border-gray-400 rounded outline-none cursor-pointer flex items-center gap-2 px-2"
+									>
+										<input
+											type="color"
+											v-model="shapeDesign.color"
+											@input="changeShapeDesign"
+										/>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- stroke drawing -->
+					<div
+						class="flex justify-start items-center"
+						v-show="customStyle === 'draw'"
+					>
+						<div class="max-w-max bg-white rounded-lg overflow-hidden">
+							<div class="toolbar p-1">
+								<div
+									class="btn-toolbar flex flex-wrap justify-start items-center"
+								>
+									<div
+										class="mr-3 h-10 color bg-white border border-gray-400 rounded outline-none cursor-pointer flex items-center gap-3 px-2"
+									>
+										<span>background</span>
+										<input
+											type="color"
+											v-model="shapeDesign.color"
+											@input="changeShapeDesign"
+										/>
+									</div>
+									<div
+										class="mr-3 h-10 color bg-white border border-gray-400 rounded outline-none cursor-pointer flex items-center gap-3 px-2"
+									>
+										<span>color</span>
+										<input
+											type="color"
+											v-model="drawDesign.color"
+											@input="changeDrawDesign"
+										/>
+									</div>
+									<div
+										class="mr-3 h-10 color bg-white border border-gray-400 rounded outline-none cursor-pointer flex items-center gap-3 px-2"
+									>
+										<span>stroke</span>
+										<input
+											type="range"
+											v-model="drawDesign.stroke"
+											@input="changeDrawDesign"
+										/>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
 					<!-- tool drawing -->
 				</div>
 
@@ -196,7 +267,9 @@
 					<div
 						class="canvas w-[100%] fit-w absolute flex justify-between bg-white p-1 shadow-xl border p-6 rounded-2xl"
 					>
-						<div class="md:w-[80px] 2xl:w-[90px] h-[100%] rounded p-2 md:px-0">
+						<div
+							class="md:w-[80px] 2xl:w-[90px] h-[100%] rounded p-2 md:px-0"
+						>
 							<div
 								@click="changeMode('front')"
 								class="w-[100%] md:h-[100px] cursor-pointer rounded border-2 shadow-lg bg-white"
@@ -229,7 +302,7 @@
 						>
 							<div
 								@click="copySelectedObject"
-								class="w-[100%]  cursor-pointer rounded border-2 p-1 shadow-lg bg-white"
+								class="w-[100%] cursor-pointer rounded border-2 p-1 shadow-lg bg-white"
 							>
 								<icon icon="fa-solid fa-copy" class="w-[2vh] h-[3vh]" />
 							</div>
@@ -249,12 +322,12 @@
 		</div>
 	</div>
 
-	<img class="w-[200px] h-[300px bg-black]" :sr="imgPreviewFront"/>
-	<img :sr="imgPreviewBack"/>
+	<img class="w-[200px] h-[300px bg-black]" :sr="imgPreviewFront" />
+	<img :sr="imgPreviewBack" />
 
 	<modalPreview
 		:showModal="isShowPreview"
-		:infoDesign = 'infoDesign'
+		:infoDesign="infoDesign"
 		:type="typePreview"
 		:previewFront="imgPreviewFront"
 		:previewBack="imgPreviewBack"

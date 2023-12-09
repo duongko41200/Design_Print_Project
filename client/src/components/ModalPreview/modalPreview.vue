@@ -642,11 +642,11 @@ export default {
 			this.$emit('CreateFavoriteDesign', design);
 		},
 	},
-	watch: {
-		showModal() {
-			console.log("mat truoc;", this.previewFront)
-			console.log("mat sau;",this.previewBack)
-		}
-	}
+	// watch: {
+	// 	showModal() {
+	// 		console.log("mat truoc;", this.previewFront)
+	// 		console.log("mat sau;",this.previewBack)
+	// 	}
+	// }
 };
 </script>

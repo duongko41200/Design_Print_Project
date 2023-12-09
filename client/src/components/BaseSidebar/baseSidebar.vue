@@ -81,9 +81,19 @@ export default {
 	},
 	methods: {
 		onClickImage(image) {
-			this.$emit('onClickImageUpload', image);
+			console.log("iamge là :", image)
+			if (image.option === 'shapes') {
+				this.$emit('onClickShapes', image);
+				
+				
+			} else {
+				this.$emit('onClickImageUpload', image);
+			}
+			
 		},
 		onClickImageFixabay(image) {
+
+			
 			this.$emit('onClickImageFixabay', image);
 		},
 		onClickStrokeDraw(stroke) {
