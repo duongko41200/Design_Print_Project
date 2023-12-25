@@ -28,8 +28,15 @@ HUGO - Ứng dụng hỗ trợ thiết kế sản phẩm in ấn
 
 ---
 
-<div align="center">
-  <img src="../client/src/assets/homeScreen.png" alt="Photo" />
+<div align="center" style={display:'flex'}>
+     <div >
+        <img src="https://designimage.s3.ap-southeast-1.amazonaws.com/layoutHome.png"  alt="Photo"  />
+     </div>
+  <br />
+     <div>
+       <img src="https://designimage.s3.ap-southeast-1.amazonaws.com/designScreen.png" alt="Photo" />
+     </div>
+
 </div>
 
 <br />
@@ -50,11 +57,8 @@ Hugo là ứng dụng hỗ trợ thiết kế và quản lý những sản phẩ
 - Quản lý kho ảnh: thêm, xem, xóa ảnh
 - Quản lý sản phẩm yêu thích: CRUD
 - Quản lý sản phẩm thiết kế: CRUD
-- quản lý sản phẩm mẫu: CRUD
+- Quản lý sản phẩm mẫu: CRUD
 - Quản lý và phẩn quyền người dùng
-
-## Hình ảnh mô tả 1 số chức năng chính:
-- Chức năng thiết kế
 
 
 ### 💻 Công nghệ xây dựng
