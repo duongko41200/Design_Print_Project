@@ -37,12 +37,12 @@
 				@click="onClickImage"
 			></div>
 
-			<div
+			<!-- <div
 				class="absolute z-9 top-2 left-2 bg-zinc-900 bg-opacity-30 hover:bg-opacity-100 transition-opacity flex items-center justify-center cursor-pointer rounded text-lg h-8 w-8"
 			>
 				<icon icon="fa-solid fa-magnifying-glass" style="color: #fff" />
-			</div>
-			<div class="flex flex-col space-y-2 absolute top-2 z- 10 right-2">
+			</div> -->
+			<div class="flex flex-col space-y-2 absolute top-2 z- 10 right-2" 	v-if="typeCatolog != 'assets'">
 				<div
 					class="bg-zinc-900 bg-opacity-30 hover:bg-opacity-100 transition-opacity flex items-center justify-center cursor-pointer rounded text-lg h-8 w-8"
 					@click="creatFavoriteDesign()"
@@ -63,7 +63,7 @@
 			<div
 				class="absolute bottom-8 left-2 mx-0.5 overflow-hidden z-0 fit-w text-start z-10 font-bold text-base text-white capitalize"
 			>
-				{{ data.name }}
+				{{typeCatolog != 'assets'? data.name: data.image.replace('upload_Image_Design/','') }}
 			</div>
 			<div
 				class="absolute bottom-2 left-2 mx-0.5 z-0 text-start fit-w z-10 font-bold text-gray"
@@ -71,7 +71,7 @@
 			>
 				by
 				<span class="hover:text-blue-500 hover:underline"
-					>{{ data.user.username }}
+					>{{ typeCatolog != 'assets'?data.user.username:data.name }}
 				</span>
 			</div>
 
@@ -124,7 +124,7 @@
 											: 'text-gray-700',
 										'block px-4 py-2 text-sm',
 									]"
-									@click="deleteDesign(data.id)"
+									@click="deleteDesign(data)"
 								>
 									Delete
 								</div>
@@ -133,7 +133,7 @@
 								v-slot="{ active }"
 								v-if="typeCatolog != 'assets'"
 							>
-								<a
+								<div
 									href="#"
 									:class="[
 										active
@@ -141,7 +141,9 @@
 											: 'text-gray-700',
 										'block px-4 py-2 text-sm',
 									]"
-									>Share</a
+
+									@click="showModalShare(data)"
+									>Share</div
 								>
 							</MenuItem>
 						</div>
@@ -150,11 +152,20 @@
 			</Menu>
 		</div>
 	</div>
+	<modalShare
+		:showModal="isShowModalShare"
+		:infoDesign="data"
+		:type="typePreview"
+
+		@oncloseModal="oncloseModal"
+
+	></modalShare>
 </template>
 
 <script>
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
 import { createNamespacedHelpers } from 'vuex';
+import modalShare from '@/components/ModalShare/modalShare.vue';
 const authMappper = createNamespacedHelpers('auth');
 const designMappper = createNamespacedHelpers('design');
 const productMappper = createNamespacedHelpers('product');
@@ -164,6 +175,7 @@ export default {
 		MenuButton,
 		MenuItem,
 		MenuItems,
+		modalShare,
 	},
 	props: {
 		data: {
@@ -177,10 +189,14 @@ export default {
 			type: String,
 			default: 'design',
 		},
+
+
 	},
 	data() {
 		return {
 			square: null,
+
+			isShowModalShare: false,
 		};
 	},
 	computed: {
@@ -189,11 +205,18 @@ export default {
 	methods: {
 		...designMappper.mapActions(['deleteDesignByUser', 'findDesign']),
 		...productMappper.mapMutations(['SET_PRODUCT_MODEL']),
-		test() {
-			console.log('height:' + this.$refs.square.clientWidth + 'px');
-		},
-		async deleteDesign(id) {
-			this.$emit('deleteDesign', id);
+		// test() {
+		// 	console.log('height:' + this.$refs.square.clientWidth + 'px');
+		// },
+		async deleteDesign(design) {
+			console.log("design;", design)
+			if (this.typeCatolog === 'assets') {
+				this.$emit('deleteImageAsset', design);
+			} else {
+
+				this.$emit('deleteDesign', design);
+			}
+	
 		},
 		async editDesign(id) {
 			const payload = {
@@ -204,7 +227,12 @@ export default {
 			this.SET_PRODUCT_MODEL(null);
 		},
 		onClickImage() {
-			this.$emit('onClickImage');
+
+			console.log("data;", this.data);
+			if (this.typeCatolog != 'assets') {
+				this.$emit('onClickImage');
+			}
+			
 		},
 		onDownload(infoDesign) {
 			this.$emit('onDownload', infoDesign);
@@ -212,6 +240,7 @@ export default {
 		onMoveUserDesign(design) {
 			if (this.userInfo.id !== design.user.id) {
 				this.$router.push(`/user/${design.user.id}`);
+				this.$emit('onMoveUserDesign');	
 			} else {
 				this.$router.push(`/userInfo`);
 			}
@@ -219,9 +248,16 @@ export default {
 		creatFavoriteDesign() {
 			this.$emit('CreateFavoriteDesign', this.data);
 		},
+
+		showModalShare(data) {
+			console.log("data:", data)
+			this.isShowModalShare = true
+		},
+		oncloseModal() {
+			this.isShowModalShare = false
+		}
 	},
 	created() {
-
 		setInterval(() => {
 			try {
 				this.square = 'height:' + this.$refs.square.clientWidth + 'px';

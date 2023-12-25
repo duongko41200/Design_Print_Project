@@ -42,7 +42,7 @@
 				</div>
 			</div>
 
-			<div class="" v-if="typeCatolog !='assets'">
+			<div class="" v-if="typeCatolog != 'assets'">
 				<label
 					id="listbox-label"
 					class="block text-sm font-medium leading-6 text-slate-200 text-left"
@@ -62,7 +62,7 @@
 					</select>
 				</div>
 			</div>
-			<div class="" v-if="isStatus && typeCatolog ==='design'">
+			<div class="" v-if="isStatus && typeCatolog === 'design'">
 				<label
 					id="listbox-label"
 					class="block text-sm font-medium leading-6 text-slate-200 text-left"
@@ -84,7 +84,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="" v-if="typeCatolog !='assets'">
+			<div class="" v-if="typeCatolog != 'assets'">
 				<label
 					id="listbox-label"
 					class="block text-sm font-medium leading-6 text-slate-200 text-left"
@@ -137,15 +137,15 @@ export default {
 		},
 		typeCatolog: {
 			type: String,
-			default:'design'
-		}
+			default: 'design',
+		},
 	},
 	computed: {
 		...productMappper.mapState(['products', 'cataloge']),
 	},
 
 	async mounted() {
-		await this.getAllProducts();
+		await this.getAllProducts({ status: 'accept' });
 		this.catalogeProduct = this.cataloge[0].name;
 	},
 	methods: {
@@ -170,24 +170,25 @@ export default {
 				const dateEnd = dayjs(dateEnds).unix();
 				dateTime = [dateStart, dateEnd];
 			}
-
-			this.filterListDesign({
-				searchKeyword: this.inputSearch,
-				cataloge: this.catalogeProduct,
-				statusPublics: this.statusPublic,
-				date: dateTime,
-				numberLike:this.numberLike
-			});
+			if (this.typeCatolog != 'assets') {
+				this.filterListDesign({
+					searchKeyword: this.inputSearch,
+					cataloge: this.catalogeProduct,
+					statusPublics: this.statusPublic,
+					date: dateTime,
+					numberLike: this.numberLike,
+				});
+			}
 		},
 	},
 	watch: {
 		typeCatolog() {
-			this.date = null
-			this.inputSearch = '',
-			this.catalogeProduct = this.cataloge[0].name;
-			this.statusPublic = 'All'
-		}
-	}
+			this.date = null;
+			(this.inputSearch = ''),
+				(this.catalogeProduct = this.cataloge[0].name);
+			this.statusPublic = 'All';
+		},
+	},
 };
 </script>
 <style>

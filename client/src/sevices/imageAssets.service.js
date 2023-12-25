@@ -17,6 +17,9 @@ const ImageAssetService = {
 	async getAllImagAsset(params) {
 		return ApiService.get(baseUrl + 'all', params);
 	},
+	async deleteImageAsset(param) {
+		return ApiService.delete(baseUrl+'delete', param);
+	}
 
 	
 

@@ -20,6 +20,11 @@ const ImageService = {
 	async uploadImageDesign(params) {
 		return ApiService.post(baseUrl + 'uploadImageDesign', params);
 	},
+	async uploadImageProduct(params) {
+		return ApiService.post(baseUrl + 'uploadImageProduct', params);
+	},
+
+
 	async getRemoteImage(params) {
 		return ApiService.post(baseUrl + 'get-remote-image', params);
 	},

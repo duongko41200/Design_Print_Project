@@ -70,14 +70,19 @@ const UserService = {
 	findByUser(params) {
 		return ApiService.get(baseUrl + 'findByUser', params);
 	},
+	getAllUser(params) {
+		return ApiService.get(baseUrl + 'allUser', params);
+	},
+	deleteByUser(params) {
+		return ApiService.delete(baseUrl + 'deleteUser', params);
+	},
+
 	creatFavoriteDesign(params) {
 		return ApiService.post(baseUrl + 'creatFavoriteDesign', params);
 	},
 	deleteFavoriteDesign(params) {
 		return ApiService.post(baseUrl + 'deleteFavoriteDesign', params);
 	},
-
-	
 };
 
 export default UserService;

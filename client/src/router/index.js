@@ -11,6 +11,8 @@ import userDesign from '@/components/BaseUserDesign/userDesign.vue'
  
 // import home from '../pages/home';
 import homeLayout from '@/pages/home/homeLayout.vue';
+import manageUser from '@/pages/Admin/ManageUser/manageUser.vue';
+import manageProduct from '@/pages/Admin/ManageProduct/manageProduct.vue'
 // import profile from '../pages/profile';
 
 const routes = [
@@ -38,6 +40,16 @@ const routes = [
 				name: 'userDesign',
 				path: '/user/:userId',
 				component: userDesign,
+			},
+			{
+				name: 'manageUser',
+				path: '/manageUser',
+				component: manageUser,
+			},
+			{
+				name: 'manageProduct',
+				path: '/manageProduct',
+				component: manageProduct,
 			},
 		],
 	},
@@ -79,6 +91,16 @@ router.beforeEach(async (to, from, next) => {
 		next('/login');
 		return
 	}
+
+	if (['/design'].includes(to.path)) {
+		
+		if (!store.state.product.product && !store.state.design.designEdit) {
+			next('/')
+		}
+	}
+
+
+
 	try {
 		await store.dispatch(
 			'auth/validateAuth',{token}

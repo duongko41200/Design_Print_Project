@@ -21,7 +21,7 @@
 					class="w-[100%] d-flex justufy-content-start align-items-center"
 				>
 					<span class="font6 prUsername">{{ userInfo.username }}</span>
-					<div class="myEditButton f-bold1 crs-pointer">
+					<div class="myEditButton f-bold1 cursor-pointer" @click= 'onCreatDesign'>
 						Create Design
 					</div>
 				</div>
@@ -102,7 +102,8 @@
 					@onClickImage="onPreviweDesign(item)"
 					@CreateFavoriteDesign="creatFavoriteDesign"
 					@deleteDesign="deleteDesign"
-					@onDownload ="onDownload"
+					@deleteImageAsset ='deleteImageAsset'
+					@onDownload="onDownload"
 				></one-post>
 			</div>
 		</div>
@@ -138,7 +139,7 @@ export default {
 			isShowPreview: false,
 
 			infoDesign: '',
-			statisticalByDesign: '',
+			// statisticalByDesign: '',
 			typePreview: '',
 
 			isUnLike: false,
@@ -146,7 +147,7 @@ export default {
 	},
 	computed: {
 		...authMappper.mapState(['email', 'userInfo']),
-		...designMappper.mapState(['listDesign']),
+		...designMappper.mapState(['listDesign', 'statisticalByDesign']),
 	},
 	async mounted() {
 		const startDate = new Date();
@@ -160,11 +161,11 @@ export default {
 			favoriteDesign: this.userInfo.favoriteDesign,
 		});
 
-		const statistical = await DesignService.statisticalInfoByDesign({
+		await this.statisticalInfoByDesign({
 			idUser: this.userInfo.id,
 		});
 
-		this.statisticalByDesign = statistical.data.data;
+		// this.statisticalByDesign = statistical.data.data;
 	},
 	methods: {
 		...designMappper.mapActions([
@@ -172,7 +173,8 @@ export default {
 			'getFavoriteDesign',
 			'handleFavoriteList',
 			'getAllDesign',
-			'deleteDesignByUser'
+			'deleteDesignByUser',
+			'statisticalInfoByDesign',
 		]),
 		...designMappper.mapMutations(['SET_LIST_DESIGN']),
 		...authMappper.mapMutations(['SET_USER_INFO']),
@@ -200,6 +202,7 @@ export default {
 					let imageAsset = await ImageAssetService.getAllImagAsset({
 						userId: this.userInfo.id,
 					});
+
 					console.log('imageAsset:', imageAsset);
 					this.SET_LIST_DESIGN(imageAsset.data.data);
 					break;
@@ -234,22 +237,34 @@ export default {
 			this.isShowPreview = false;
 		},
 
-		async deleteDesign(id) {
+		async deleteDesign(design) {
 			const payload = {
 				userId: this.userInfo.id,
-				idDesign: id,
+				idDesign: design.id,
+				productId: design.product,
 			};
 			await this.deleteDesignByUser(payload);
-			const statistical = await DesignService.statisticalInfoByDesign({
+
+			await this.statisticalInfoByDesign({
 				idUser: this.userInfo.id,
 			});
-
-			this.statisticalByDesign = statistical.data.data;
 			this.$toast.success('deleted success', {
 				position: 'top-right',
 				duration: 2000,
 			});
 		},
+		async deleteImageAsset(imageAsset) {
+			console.log('image asset', imageAsset)
+
+			const imageAssets = await ImageAssetService.deleteImageAsset(imageAsset)
+			this.SET_LIST_DESIGN(imageAssets.data.data);		
+		},
+		onCreatDesign() {
+			this.$emit('onCreatDesign')
+		},
+
+
+		
 		onDownload(infoDesign) {
 			this.typePreview = 'preview';
 			this.infoDesign = infoDesign;
@@ -257,7 +272,6 @@ export default {
 		},
 
 		async creatFavoriteDesign(design) {
-			console.log('design :', design);
 			let userInfoUpdate = '';
 			if (design.isLike === true) {
 				const favoriteDesign = await UserService.deleteFavoriteDesign({
@@ -290,11 +304,10 @@ export default {
 				});
 				this.isUnLike = false;
 			}
-			const statistical = await DesignService.statisticalInfoByDesign({
+
+			await this.statisticalInfoByDesign({
 				idUser: this.userInfo.id,
 			});
-
-			this.statisticalByDesign = statistical.data.data;
 			this.SET_USER_INFO(userInfoUpdate.data?.data);
 			localStorage.setItem('tokens', userInfoUpdate.data.token);
 

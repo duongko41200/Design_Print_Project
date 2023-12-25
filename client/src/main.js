@@ -43,7 +43,12 @@ import {
 	faMagnifyingGlass,
 	faHeart,
 	faDownload,
-	faEllipsisVertical
+	faEllipsisVertical,
+	faCaretDown,
+	faPlus,
+	faLock,
+	faLockOpen,
+	faCircleXmark
 } from '@fortawesome/free-solid-svg-icons';
 
 // import {faCopy} from '@fortawesome/free-regular-svg-icons'
@@ -79,7 +84,12 @@ library.add(
 	faMagnifyingGlass,
 	faHeart,
 	faDownload,
-	faEllipsisVertical
+	faEllipsisVertical,
+	faCaretDown,
+	faPlus,
+	faLock,
+	faLockOpen,
+	faCircleXmark
 );
 
 // import css
@@ -92,6 +102,9 @@ import store from './store';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 
+import VPagination from "@hennge/vue3-pagination";
+import "@hennge/vue3-pagination/dist/vue3-pagination.css";
+
 
 
 const app = createApp(App);
@@ -101,4 +114,6 @@ app.use(VueToast);
 app.use(store);
 app.use(globalStyle);
 app.component('icon', FontAwesomeIcon);
+
+app.component('VPagination', VPagination)
 app.mount('#app');
