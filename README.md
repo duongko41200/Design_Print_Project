@@ -36,15 +36,11 @@ HUGO - Ứng dụng hỗ trợ thiết kế sản phẩm in ấn
 
 ### 🎯 Mục tiêu
 
-Hugo là ứng dụng học tiếng Anh hoàn toàn miễn phí cho người Việt Nam, được phát triển bởi [Dyno Nguyen](https://dynonguyen.com). Với mong muốn cải thiện tiếng Anh bản thân và mọi người nhưng không gây sự nhàm chán trong việc học, tôi đã xây dựng nên ứng dụng này.
-
-Dynonary sẽ tổng hợp từ vựng, ngữ pháp và các bài viết từ nhiều nguồn đáng tin cậy, kết hợp với những tính năng rất hữu dụng của ứng dụng. Điều này sẽ giúp bạn tiết kiệm rất nhiều thời gian trong việc học tiếng Anh của mình.
-
-Dynonary cũng là một `Pet Project` giúp tôi ôn luyện kỹ năng lập trình của mình. Và đây cũng là một dự án `mã nguồn mở`, vì thế rất mong sự đóng góp, phát triển ứng dụng của mọi người.
+Hugo là ứng dụng hỗ trợ thiết kế và quản lý những sản phẩm in ấn. Ứng dụng giúp cho mọi người không cần phải có kiến thức về đồ họa mà vẫn có thể tạo ra được những thiết kế đẹp. Ví dụ: người dùng chỉ cần kéo thể những thành phần mình muốn thêm vào sản phẩm sau đó người dùng tùy chỉnh thành phần đó phù hợp để tạo được sản phẩm đẹp
 
 ### ✨ Tính năng
 
-![Main Features](https://res.cloudinary.com/dynonary/image/upload/v1627098768/dynonary/logo/dyno-main.png)
+
 
 - Đăng ký, đăng nhập, đăng xuất ứng dụng
 - chức năng thiết kế 
