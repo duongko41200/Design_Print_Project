@@ -91,6 +91,16 @@ router.beforeEach(async (to, from, next) => {
 		next('/login');
 		return
 	}
+
+	if (['/design'].includes(to.path)) {
+		
+		if (!store.state.product.product && !store.state.design.designEdit) {
+			next('/')
+		}
+	}
+
+
+
 	try {
 		await store.dispatch(
 			'auth/validateAuth',{token}

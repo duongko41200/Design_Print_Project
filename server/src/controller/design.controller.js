@@ -106,7 +106,7 @@ const findDesign = async (req, res) => {
 const getAllDesign = async (req, res) => {
 	const listDesign = await Design.find({
 		isPublic: 'public',
-	}).populate('user');
+	}).populate(['user','product']);
 
 	// console.log(
 	// 	'lise All Design :',

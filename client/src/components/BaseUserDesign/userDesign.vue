@@ -104,6 +104,7 @@
 					@onClickImage="onPreviweDesign(item)"
 					@onDownload="onDownload"
 					@CreateFavoriteDesign="creatFavoriteDesign"
+					@onMoveUserDesign="onMoveUserDesign"
 				></one-post>
 			</div>
 		</div>
@@ -141,6 +142,7 @@ export default {
 			infoDesign: '',
 			userInfos: '',
 			statisticalByDesign: '',
+			paramIdUser: '',
 		};
 	},
 	computed: {
@@ -153,6 +155,7 @@ export default {
 			userId: this.$route.params.userId,
 		});
 		this.userInfos = user.data.data[0];
+		console.log('this.userInfos', this.userInfo.id);
 
 		await this.getListDesignByUser({
 			userId: this.$route.params.userId,
@@ -171,7 +174,8 @@ export default {
 		...designMappper.mapActions([
 			'getListDesignByUser',
 			'handleFavoriteList',
-			'getFavoriteDesign'
+			'getFavoriteDesign',
+			'getFavoriteOfUserOther',
 		]),
 		...designMappper.mapMutations(['SET_LIST_DESIGN']),
 		...authMappper.mapMutations(['SET_USER_INFO']),
@@ -215,7 +219,7 @@ export default {
 						'this.userInfo.favoriteDesign',
 						this.userInfos.favoriteDesign
 					);
-					this.getFavoriteDesign(favoriteDesign);
+					this.getFavoriteOfUserOther(favoriteDesign);
 					// await this.getAllDesign(this.userInfo);
 					break;
 				}
@@ -239,25 +243,37 @@ export default {
 			this.isShowPreview = true;
 		},
 
-		async creatFavoriteDesign(design) {
-		
+		async creatFavoriteDesign(design) {																																															
+
+			console.log("design: " , design)
 			let userInfoUpdate = '';
 			if (design.isLike === true) {
-				const favoriteDesign = await UserService.deleteFavoriteDesign({
-					userId: this.userInfo.id,
-					designId: design.id,
-				});
+				console.log('user info update;', this.userInfo);
+
+					console.log('đã vào đây ');
+					const favoriteDesign = await UserService.deleteFavoriteDesign(
+						{
+							userId: this.userInfo.id,
+							designId: design.id,
+						}
+					);
+
+					console.log("favoriteDesign:",favoriteDesign);
+					userInfoUpdate = favoriteDesign;
+				
 				await DesignService.unLikeDesign({
 					idDesign: design.id,
 					idUser: this.userInfo.id,
 				});
-				userInfoUpdate = favoriteDesign;
+
 				this.handleFavoriteList({
 					designId: design.id,
 					type: 'delete',
 				});
 				this.isUnLike = true;
 			} else {
+
+				console.log("đã bắt đầu like")
 				const favoriteDesign = await UserService.creatFavoriteDesign({
 					userId: this.userInfo.id,
 					designId: design.id,
@@ -278,15 +294,42 @@ export default {
 			});
 
 			this.statisticalByDesign = statistical.data.data;
-			this.SET_USER_INFO(userInfoUpdate.data?.data);
-			localStorage.setItem('tokens', userInfoUpdate.data.token);
 
-			if (this.isUnLike === true && this.activeOption === 'favorite') {
+
+				console.log('design false')
+				this.SET_USER_INFO(userInfoUpdate.data?.data);
+				localStorage.setItem('tokens', userInfoUpdate.data.token);
+			
+			// update list design
+			if (this.isUnLike === true && this.activeOption === 'favorite' && this.userInfos.id === this.userInfo.id) {
+
+	
 				this.getFavoriteDesign(this.userInfo.favoriteDesign);
 				this.oncloseModal();
 			}
 			console.log('like :', userInfoUpdate);
 		},
+
+		// async onMoveUserDesign() {
+		// 	console.log('dksjkdsjfksdjfk fjjkfskjf');
+		// 	const user = await UserService.findByUser({
+		// 		userId: this.$route.params.userId,
+		// 	});
+		// 	this.userInfos = user.data.data[0];
+
+		// 	await this.getListDesignByUser({
+		// 		userId: this.$route.params.userId,
+		// 		isPublic: 'public',
+		// 		favoriteDesign: this.userInfo.favoriteDesign,
+		// 	});
+
+		// 	const statistical = await DesignService.statisticalInfoByDesign({
+		// 		idUser: user.data.data[0].id,
+		// 	});
+		// 	this.statisticalByDesign = statistical.data.data;
+
+		// 	console.log({ user });
+		// },
 	},
 };
 </script>
