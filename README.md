@@ -29,7 +29,7 @@ HUGO - Ứng dụng hỗ trợ thiết kế sản phẩm in ấn
 ---
 
 <div align="center">
-  <img src="../client/src/assets/homeScreen.png" alt="Photo" />
+  <img src="../client/src/assets/" alt="Photo" />
 </div>
 
 <br />

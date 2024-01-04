@@ -113,7 +113,7 @@
 										{{ product.numDesigns }}
 									</div>
 								</td>
-								<td>{{ createdAt }}</td>
+								<td>{{ createdAt(idx) }}</td>
 								<td
 									:class="
 										product.status == 'accept'
@@ -301,7 +301,7 @@ export default {
 			role: this.userInfo.role,
 			userId: this.userInfo.id,
 		});
-		console.log('manageProduct asdfsdfdsf', this.manageProduct);
+	
 	},
 	computed: {
 		...authMappper.mapState([
@@ -318,9 +318,7 @@ export default {
 			'originPaginationsProduct',
 			'manageProduct',
 		]),
-		createdAt() {
-			return  dayjs(this.manageProduct.createdAt).format('YYYY/MM/DD');
-		}
+
 	},
 
 	methods: {
@@ -336,6 +334,10 @@ export default {
 			'filterListProduct',
 			'getAllProductsByUser',
 		]),
+		createdAt(id) {
+			console.log("sdfsdfsdf",id)
+			return  dayjs(this.manageProduct[id].createdAt).format('YYYY/MM/DD');
+		},
 
 		async showListDesign(productId) {
 			this.showModal = true;

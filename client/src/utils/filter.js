@@ -14,8 +14,8 @@ const filterKeyWord = (list, keyWord) => {
 const filterDate = (list, date) => {
 	const result = list.filter((item) => {
 		return (
-			date[0] <= dayjs(item.updatedAt).unix() &&
-			dayjs(item.updatedAt).unix() <= date[1]
+			date[0] <= dayjs(item.createdAt).unix() &&
+			dayjs(item.createdAt).unix() <= date[1]
 		);
 	});
 	return result;

@@ -31,7 +31,7 @@ export default {
 				? payload.favoriteDesign
 				: [];
 			const allDesign = await DesignService.getAllDesign();
-			console.log('allDesign duong dep trai:', allDesign);
+			console.log('allDesign ', allDesign);
 			const statusFavorite = allDesign.data.data;
 
 			// add isLike for Design
@@ -73,7 +73,7 @@ export default {
 					}
 				}
 			}
-
+			console.log("data dfggdfgfdgfdgdfg",designUpdate)
 			commit('SET_LIST_DESIGN', designUpdate);
 			commit('SET_ORIGIN_LIST_DESIGN', designUpdate);
 		},
@@ -133,7 +133,7 @@ export default {
 				commit('SET_ALL_DESIGN', state.originAllDesign);
 			} else {
 				const dataFilterCataloge = state.originAllDesign.filter(
-					(design) => design.product === payload.id
+					(design) => design.product.id === payload.id
 				);
 				commit('SET_ALL_DESIGN', dataFilterCataloge);
 			}

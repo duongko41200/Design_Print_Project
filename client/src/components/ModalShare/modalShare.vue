@@ -226,26 +226,33 @@ export default {
 			this.deleteUserShare(user);
 		},
 		async handleShareDesign() {
-			for (let i = 0; i < this.listReceiveShare.length; i++) {
-				const param = {
-					design: this.infoDesign.id,
-					user_request: this.userInfo.id,
-					user_recive: this.listReceiveShare[i].id,
-					type: 'share',
-					message: ' đã chia sẻ cho bạn',
-				};
-				console.log('param:', param);
+			if (this.listReceiveShare.length > 0) {
+				for (let i = 0; i < this.listReceiveShare.length; i++) {
+					const param = {
+						design: this.infoDesign.id,
+						user_request: this.userInfo.id,
+						user_recive: this.listReceiveShare[i].id,
+						type: 'share',
+						message: ' đã chia sẻ cho bạn',
+					};
+					console.log('param:', param);
 
-				console.log('listReceiveShare', this.listReceiveShare);
-				await this.createNotificaShare(param);
-				socket.emit('notification', this.listReceiveShare[i].id);
+					console.log('listReceiveShare', this.listReceiveShare);
+					await this.createNotificaShare(param);
+					socket.emit('notification', this.listReceiveShare[i].id);
+				}
+				this.oncloseModal();
+
+				this.$toast.success('The request has been sent', {
+					position: 'top-right',
+					duration: 2000,
+				});
+			} else {
+				this.$toast.error("you haven't added the recipient yet", {
+					position: 'top-right',
+					duration: 2000,
+				});
 			}
-			this.oncloseModal();
-
-			this.$toast.success('The request has been sent', {
-				position: 'top-right',
-				duration: 2000,
-			});
 		},
 	},
 };
