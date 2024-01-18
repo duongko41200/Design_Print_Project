@@ -104,7 +104,7 @@
 																height: 200px;
 															"
 														>
-															<img v-if="imageProductFront" class="object-contain w-[100%] h-[100%]" :src="imageProductFront?require(`@/uploadImage/${imageProductFront?imageProductFront:'man.png'}`):'#'" />
+															<img v-if="imageProductFront" class="object-contain w-[100%] h-[100%]" :src="imageProductFront?require(`@/uploadImage/${imageProductFront}`):'#'" />
 														</div>
 														<div class="py-0.4 justify-center w-full">
 															<input
@@ -221,6 +221,8 @@ import ProductService from '@/sevices/product.service.js';
 import { createNamespacedHelpers } from 'vuex';
 const authMappper = createNamespacedHelpers('auth');
 const productMappper = createNamespacedHelpers('product');
+
+
 export default {
 	components: {
 		Dialog,
@@ -260,20 +262,30 @@ export default {
 		};
 	},
 	methods: {
-		...productMappper.mapActions(['getAllProducts','getAllProductsByUser']),
+		...productMappper.mapActions(['getAllProducts', 'getAllProductsByUser']),
+		
 		async uploadImageFront() {
-	
-
+			// let valueAwait = 0
 			const fileInput = this.$refs.fileFront;
 			const file = fileInput.files[0];
 			let formData = new FormData();
 			formData.append('file', file);
 			console.log('fileInput', formData, file);
-			const upload = await ImageService.uploadImageProduct(formData);
+			if (!file.type.includes('image/')) {
+				this.$toast.error('this is not a image', {
+					position: 'top-right',
+					duration: 2000,
+				});
+			} else {
+				const upload = await ImageService.uploadImageProduct(formData);		
+				console.log("Upload", upload)
+				setTimeout(() => {
+					this.imageProductFront = upload.data.data
+				}, 1500);
+			
+			
+			}
 
-			setTimeout(() => {
-				this.imageProductFront = upload.data.data;
-			}, 1000);
 		},
 		oncloseModal() {
 			this.$emit('oncloseModal');
@@ -285,11 +297,21 @@ export default {
 			let formData = new FormData();
 			formData.append('file', file);
 			console.log('fileInput', formData, file);
-			const upload = await ImageService.uploadImageProduct(formData);
+
+			if (!file.type.includes('image/')) {
+				this.$toast.error('this is not a image', {
+					position: 'top-right',
+					duration: 2000,
+				});
+			}else{
+				const upload = await ImageService.uploadImageProduct(formData);
 			
-			setTimeout(() => {
-				this.imageProductBack = upload.data.data;
-			}, 1500);
+				setTimeout(() => {
+					this.imageProductBack = upload.data.data;
+				}, 1500);
+
+			}
+
 		},
 		async onCreateProduct() {
 			const param = {
@@ -308,19 +330,28 @@ export default {
 				});
 			} else {
 				const product = await ProductService.creatNewProduct({ param })
-				this.oncloseModal()
+		
 				console.log({ product })
-				
-				this.getAllProducts({ status: 'accept' });
-				await this.getAllProductsByUser({
+				if (product.status == 201) {
+					this.$toast.error(product.data.status, {
+						position: 'top-right',
+						duration: 2000,
+					});
+				} else {
+					this.oncloseModal()
+					this.getAllProducts({ status: 'accept' });
+					await this.getAllProductsByUser({
 					status: 'pending',
 					role: this.userInfo.role,
 					userId: this.userInfo.id,
 				});
-				this.$toast.success('Created product success', {
+					this.$toast.success('Created product success', {
 						position: 'top-right',
 						duration: 2000,
 					});
+				}
+				
+
 			}
 			
 		}

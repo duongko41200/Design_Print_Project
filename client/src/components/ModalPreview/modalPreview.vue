@@ -48,11 +48,18 @@
 												<div
 													class="mt-6 px-4 py-3 bg-zinc-600 rounded-xl shadow bg-opacity-50 font-light flex flex-col space-y-5 text-slate-50"
 												>
-													<p
-														class="bg-opacity-0 rounded font-bold capitalize"
-													>
-														{{ infoDesign.name }}
-													</p>
+													<div class="flex justify-between">
+														<div
+															class="bg-opacity-0 rounded font-bold capitalize"
+														>
+															{{ infoDesign.name }}
+														</div>
+														<div
+															class="text-slate-400 font-bold bg-opacity-50"
+														>
+															{{ initTimeDesign }}
+														</div>
+													</div>
 													<div class="flex text-xs font-light">
 														<div
 															class="flex flex-1 flex-row space-x-2 mr-2"
@@ -246,7 +253,9 @@
 																						<span
 																							class="flex items-center"
 																						>
-																						<icon :icon="selected.icon" />
+																							<icon
+																								:icon="selected.icon"
+																							/>
 																							<span
 																								class="ml-3 block truncate"
 																								>{{
@@ -300,7 +309,11 @@
 																											alt=""
 																											class="h-5 w-5 flex-shrink-0 rounded-full"
 																										/> -->
-																										<icon :icon="option.icon" />
+																										<icon
+																											:icon="
+																												option.icon
+																											"
+																										/>
 																										<span
 																											:class="[
 																												selected
@@ -374,35 +387,45 @@
 														<img
 															v-if="thumbnail === 'front'"
 															alt=""
-															class="absolute top-0 left-0 z-10 "
-															:class="type ==='previewProduct'?'object-contain':'object-cover'"
+															class="absolute top-0 left-0 z-10"
+															:class="
+																type === 'previewProduct'
+																	? 'object-contain'
+																	: 'object-cover'
+															"
 															:src="
 																previewFront
-																	? type === 'previewProduct'?  require(`@/uploadImage/${previewFront}`):previewFront 
+																	? type === 'previewProduct'
+																		? require(`@/uploadImage/${previewFront}`)
+																		: previewFront
 																	: infoDesign.thumbnailFront
 															"
 															style="
 																width: 100%;
 																height: 100%;
 																max-width: none;
-																
 															"
 														/>
 														<img
 															v-if="thumbnail === 'back'"
 															alt=""
-															class="absolute top-0 left-0 z-10 "
-															:class="type ==='previewProduct'?'object-contain':'object-cover'"
+															class="absolute top-0 left-0 z-10"
+															:class="
+																type === 'previewProduct'
+																	? 'object-contain'
+																	: 'object-cover'
+															"
 															:src="
 																previewBack
-																	? type === 'previewProduct'?  require(`@/uploadImage/${previewBack}`):previewBack
+																	? type === 'previewProduct'
+																		? require(`@/uploadImage/${previewBack}`)
+																		: previewBack
 																	: infoDesign.thumbnailBack
 															"
 															style="
 																width: 100%;
 																height: 100%;
 																max-width: none;
-																
 															"
 														/>
 													</div>
@@ -441,11 +464,10 @@
 														<img
 															alt=""
 															class="top-0 left-0 z-10 object-cover"
-														
 															:src="
 																previewFront
 																	? previewFront
-																	:infoDesign.thumbnailFront
+																	: infoDesign.thumbnailFront
 															"
 															style="
 																width: 100%;
@@ -456,7 +478,6 @@
 														<img
 															alt=""
 															class="top-0 left-0 z-10 object-cover"
-														
 															:src="
 																previewBack
 																	? previewBack
@@ -525,6 +546,7 @@ import {
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid';
 import { createNamespacedHelpers } from 'vuex';
 const authMappper = createNamespacedHelpers('auth');
+const dayjs = require('dayjs');
 
 export default {
 	components: {
@@ -552,7 +574,7 @@ export default {
 		previewFront: String,
 		previewBack: String,
 	},
-	
+
 	data() {
 		return {
 			thumbnail: 'front',
@@ -565,20 +587,21 @@ export default {
 				{
 					id: 1,
 					type: 'public',
-					icon:
-						"fa-solid fa-lock-open",
+					icon: 'fa-solid fa-lock-open',
 				},
 				{
 					id: 2,
 					type: 'private',
-					icon:
-					"fa-solid fa-lock",
+					icon: 'fa-solid fa-lock',
 				},
 			],
 		};
 	},
 	computed: {
 		...authMappper.mapState(['email', 'userInfo']),
+		initTimeDesign() {
+			return dayjs(this.infoDesign.createdAt).format('YYYY/MM/DD');
+		},
 	},
 	mounted() {
 		console.log('product ádasd ', this.infoDesign);
@@ -590,22 +613,28 @@ export default {
 			)[0];
 		} else {
 			this.selected = this.options[0];
-		
 		}
 	},
 	methods: {
 		oncloseModal() {
-			this.$emit('oncloseModal');		
+			this.$emit('oncloseModal');
 			setTimeout(() => {
 				this.thumbnail = 'front';
 			}, 1000);
 		},
 		clickSaveDesign() {
-			this.$emit('onclickSaveDesign', {
-				name: this.nameDesign,
-				description: this.description,
-				status: this.selected,
-			});
+			if (this.nameDesign) {
+				this.$emit('onclickSaveDesign', {
+					name: this.nameDesign,
+					description: this.description,
+					status: this.selected,
+				});
+			} else {
+				this.$toast.error("The name field is required", {
+					position: 'top-right',
+					duration: 2000,
+				});
+			}
 		},
 
 		onDesignProduct(product) {

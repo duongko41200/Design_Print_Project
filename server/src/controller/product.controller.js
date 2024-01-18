@@ -2,13 +2,20 @@ const { response } = require('express');
 const Product = require('../models/product.model');
 
 const createProduct = async (req, res) => {
-	const newDesign = await Product.create(req.body.param);
 
-	console.log('newDesign', newDesign);
-	res.status(200).json({
-		status: 'success',
-		data: newDesign,
-	});
+	try {
+		const newDesign = await Product.create(req.body.param);
+
+		console.log('newDesign', newDesign);
+		res.status(200).json({
+			status: 'success',
+			data: newDesign,
+		});
+	} catch (error) {
+		res.status(201).json({
+			status: 'this name was existed',
+		});
+	}
 };
 
 const getAllProduct = async (req, res) => {

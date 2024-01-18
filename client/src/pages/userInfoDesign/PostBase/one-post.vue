@@ -22,7 +22,7 @@
 			class="w-100 h-100 post-img z-10"
 			alt=""
 		/>
-		<div class="post-hover w-100 h-100 z-10 center gap-3 text-white">
+		<div class="post-hover w-100 h-100 z-10 center gap-3 text-white z-20" :class='{"z-30":isShowMoreOptions}'>
 			<!-- <div class="center">
 				<icon-vue name="like" vuestyle="fill:white;"></icon-vue
 				>{{ data.likeCount }}
@@ -83,6 +83,7 @@
 				<div v-if="role != 'view'">
 					<MenuButton
 						class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 transition-opacity z-20 inset-0 bg-zinc-600 bg-opacity-20"
+						@click="showMoreOption"
 					>
 						<icon icon="fa-solid fa-ellipsis-vertical" />
 					</MenuButton>
@@ -97,7 +98,7 @@
 					leave-to-class="transform opacity-0 scale-95"
 				>
 					<MenuItems
-						class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+						class="absolute right-0 z-20 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
 					>
 						<div class="py-1">
 							<MenuItem
@@ -111,7 +112,7 @@
 											: 'text-gray-700',
 										'block px-4 py-2 text-sm',
 									]"
-									@click="editDesign(data.id)"
+									@click="editDesign(data.id,data)"
 								>
 									Edit
 								</div>
@@ -197,6 +198,7 @@ export default {
 			square: null,
 
 			isShowModalShare: false,
+			isShowMoreOptions:false
 		};
 	},
 	computed: {
@@ -218,13 +220,14 @@ export default {
 			}
 	
 		},
-		async editDesign(id) {
+		async editDesign(id, data) {
+			console.log("dâtta",data)
 			const payload = {
 				idDesign: id,
 			};
 			await this.findDesign(payload);
 			this.$router.push('/design');
-			this.SET_PRODUCT_MODEL(null);
+			this.SET_PRODUCT_MODEL(data.product);
 		},
 		onClickImage() {
 
@@ -255,6 +258,9 @@ export default {
 		},
 		oncloseModal() {
 			this.isShowModalShare = false
+		},
+		showMoreOption() {
+			this.isShowMoreOptions = !this.isShowMoreOptions
 		}
 	},
 	created() {

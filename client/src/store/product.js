@@ -64,11 +64,9 @@ export default {
 					getAllProducts = product;
 				}
 
-				console.log('manh xinh gai', getAllProducts.data.data);
 				commit('SET_ORIGIN_MANAGE_PRODUCTS', getAllProducts.data.data);
 				state.originPaginationsProduct = getAllProducts.data.data
 
-				console.log('skdfjksdjf', getAllProducts.data.data);
 
 				dispatch('paginationListProduct', {
 					list: getAllProducts.data.data,

@@ -272,14 +272,15 @@
 						>
 							<div
 								@click="changeMode('front')"
-								class="w-[100%] md:h-[100px] cursor-pointer rounded border-2 shadow-lg bg-white"
+								class="w-[100%] md:h-[100px]  cursor-pointer rounded border-2 shadow-lg bg-white"
 								:class="
 									mode === 'front'
 										? 'border-sky-300'
 										: 'border-gray-200'
 								"
 							>
-								front
+								<div>front</div>
+								<img :src="product?.imageFront?require(`@/uploadImage/${product?.imageFront}`):''"/>
 							</div>
 							<div
 								@click="changeMode('back')"
@@ -288,7 +289,8 @@
 									mode === 'back' ? 'border-sky-300' : 'border-gray-200'
 								"
 							>
-								back
+								<div>back</div>
+								<img :src="product?.imageBack?require(`@/uploadImage/${product?.imageBack}`):''"/>
 							</div>
 						</div>
 						<div class="fit-w flex justify-center">
@@ -315,6 +317,16 @@
 									class="w-[2vh] h-[3vh]"
 								/>
 							</div>
+							<!-- <div
+								@click="PolygonSelectedObject"
+								class="w-[100%] 2xl:h-[4vh] cursor-pointer 2xl:mt-3 md:mt-2 rounded border-2 p-1 shadow-lg bg-white"
+							>
+								<icon
+									icon="fa-solid fa-draw-polygon"
+									class="w-[2vh] h-[3vh]"
+								/>
+							</div> -->
+
 						</div>
 					</div>
 				</div>

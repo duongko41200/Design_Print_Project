@@ -137,7 +137,7 @@ export default {
 		this.canvas = await this.initCanvas(this.$refs.canvas);
 		this.canvas.selection = true;
 		window.addEventListener('popstate', this.handleBack);
-		if (this.product) {
+		if (this.product && !this.designEdit ) {
 			this.setBackgroundBack();
 			this.setBackgroundFront();
 		}
@@ -168,6 +168,8 @@ export default {
 			// khi chọn vào sản phẩm để edit thì chạy cái này
 			if (this.designEdit) {
 				initCanvas?.loadFromJSON(this.designEdit);
+
+				console.log('this.designEdit', this.designEdit)
 			}
 
 			return initCanvas;
@@ -535,6 +537,8 @@ export default {
 
 				copiedObject = fabric.util.object.clone(activeObject);
 
+				console.log('copiedObject', copiedObject)
+
 				copiedObject.set('top', copiedObject.top + 20);
 				copiedObject.set('left', copiedObject.left + 20);
 				if (copiedObject) {
@@ -545,6 +549,15 @@ export default {
 				}
 			}
 		},
+		// PolygonSelectedObject() {
+		// 	let poly = this.canvas.getActiveObject();
+			
+		// 	this.canvas.setActiveObject(poly);
+		// 	if (poly) {
+		// 		// Tạo một bản sao của đối tượng
+		// 		console.log('polygon')
+		// 	}
+		// },
 
 		onClickImageUpload(image) {
 			console.log('uploading image');
