@@ -159,7 +159,7 @@ const uploadImageByS3 = (app) => {
 				}
 			});
 
-			while (isEist === false) {
+			while (isEist === false) {			
 				console.log(
 					'checkImageExists(targetPath) ',
 					checkImageExists(targetPath)
@@ -171,10 +171,13 @@ const uploadImageByS3 = (app) => {
 						checkImageExists(targetPath)
 					);
 					console.log('Image already exists');
-					res.status(200).json({
-						status: 'success',
-						data: pathImage,
-					});
+					
+						res.status(200).json({
+							status: 'success',
+							data: pathImage,
+						});
+	
+			
 
 					isEist = true;
 				}

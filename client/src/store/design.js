@@ -105,7 +105,7 @@ export default {
 			const design = await DesignService.findDesignById({
 				idDesign: payload.idDesign,
 			});
-			console.log('deleted', design);
+	
 
 			const designCanvas = {
 				version: '5.3.0',
