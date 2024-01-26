@@ -140,7 +140,7 @@
 
 										<Menu
 											as="div"
-											class="bottom-5 right-5 inline-block text-left cursor-pointer"
+											class="relative  inline-block text-left cursor-pointer"
 										>
 											<div>
 												<MenuButton
@@ -207,7 +207,7 @@
 						:pages="totalPages"
 						:range-size="1"
 						active-color="#DCEDFF"
-						@update:modelValue="updateHandler"
+						@update:modelValue="updateHandlePagination"
 					/>
 				</div>
 			</div>
@@ -247,6 +247,7 @@
 	<modalFormProduct
 		:showModal="showFormCreatProduct"
 		@oncloseModal="closeModalFormCreateProduct"
+
 	></modalFormProduct>
 </template>
 <script>
@@ -335,7 +336,6 @@ export default {
 			'getAllProductsByUser',
 		]),
 		createdAt(id) {
-			console.log("sdfsdfsdf",id)
 			return  dayjs(this.manageProduct[id].createdAt).format('YYYY/MM/DD');
 		},
 
@@ -352,6 +352,7 @@ export default {
 		},
 		closeModalFormCreateProduct() {
 			this.showFormCreatProduct = false;
+			this.optionStatus = 'pending';
 		},
 		oncloseModal() {
 			this.showModal = false;
@@ -359,12 +360,13 @@ export default {
 		},
 		oncloseModalPreview() {
 			this.isShowPreview = false;
+	
 		},
 
 		closeModalNotify() {
 			this.showModalNotify = false;
 		},
-		updateHandler() {
+		updateHandlePagination() {
 			console.log('all product:', this.originPaginationsProduct);
 			this.paginationListProduct({
 				list: this.originPaginationsProduct,
@@ -475,6 +477,7 @@ export default {
 			}
 			console.log('product:', product);
 		},
+
 	},
 
 };

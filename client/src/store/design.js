@@ -32,26 +32,28 @@ export default {
 				: [];
 			const allDesign = await DesignService.getAllDesign();
 			console.log('allDesign ', allDesign);
-			const statusFavorite = allDesign.data.data;
+			const listFavoriteDesign = allDesign.data.data;
 
-			// add isLike for Design
+			// add isLike to listFavoriteDesign and update status like  for Design
 			if (favoriteDesigns.length > 0) {
-				for (let i = 0; i < statusFavorite.length; i++) {
+				for (let i = 0; i < listFavoriteDesign.length; i++) {
 					for (let j = 0; j < favoriteDesigns.length; j++) {
-						if (statusFavorite[i].id === favoriteDesigns[j]) {
+						if (listFavoriteDesign[i].id === favoriteDesigns[j]) {
 				
-							statusFavorite[i].isLike = true;
+							listFavoriteDesign[i].isLike = true;
 						}
 					}
 				}
 			}
 
-			console.log('allDesign', favoriteDesigns, statusFavorite);
-			commit('SET_ALL_DESIGN', statusFavorite);
-			commit('SET_ORIGINAL_DESIGN', statusFavorite);
+			console.log('allDesign', favoriteDesigns, listFavoriteDesign);
+			commit('SET_ALL_DESIGN', listFavoriteDesign);
+			commit('SET_ORIGINAL_DESIGN', listFavoriteDesign);
 		},
+
+		
 		async getListDesignByUser({ commit }, payload) {
-			console.log('payload AllDesign dffsdf:', payload);
+			console.log('payload AllDesign :', payload);
 
 			const favoriteDesigns = payload?.favoriteDesign
 				? payload.favoriteDesign
@@ -73,7 +75,7 @@ export default {
 					}
 				}
 			}
-			console.log("data dfggdfgfdgfdgdfg",designUpdate)
+			// console.log("data designUdate",designUpdate)
 			commit('SET_LIST_DESIGN', designUpdate);
 			commit('SET_ORIGIN_LIST_DESIGN', designUpdate);
 		},
@@ -145,7 +147,9 @@ export default {
 		) {
 			if (!state.originListDesign) return;
 			let searchResult = [...state.originListDesign];
+		
 			if (searchKeyword) {
+	
 				searchResult = filterKeyWord(searchResult, searchKeyword);
 			}
 			if (statusPublics != 'All') {

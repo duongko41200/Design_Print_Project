@@ -181,6 +181,8 @@
 													like: {{ notification.design.numberLike }}
 												</div>
 											</div>
+
+											
 											<div
 												class="mt-2 flex justify-end items-center gap-2"
 												v-if="notification.type === 'share'"

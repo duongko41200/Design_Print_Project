@@ -281,15 +281,13 @@ export default {
 				console.log("Upload", upload)
 				setTimeout(() => {
 					this.imageProductFront = upload.data.data
-				}, 1500);
+				}, 2000);
 			
 			
 			}
 
 		},
-		oncloseModal() {
-			this.$emit('oncloseModal');
-		},
+
 		async uploadImageBack() {
 		
 			const fileInput = this.$refs.fileBack;
@@ -308,11 +306,16 @@ export default {
 			
 				setTimeout(() => {
 					this.imageProductBack = upload.data.data;
-				}, 1500);
+				}, 2000);
 
 			}
 
 		},
+
+		oncloseModal() {
+			this.$emit('oncloseModal');
+		},
+
 		async onCreateProduct() {
 			const param = {
 				name: this.nameProduct,
@@ -339,16 +342,17 @@ export default {
 					});
 				} else {
 					this.oncloseModal()
-					this.getAllProducts({ status: 'accept' });
+					// this.getAllProducts({ status: 'accept' });
 					await this.getAllProductsByUser({
-					status: 'pending',
-					role: this.userInfo.role,
-					userId: this.userInfo.id,
-				});
+						status: 'pending',
+						role: this.userInfo.role,
+						userId: this.userInfo.id,
+					});
 					this.$toast.success('Created product success', {
 						position: 'top-right',
 						duration: 2000,
 					});
+					this.$emit("changeToPendding")
 				}
 				
 

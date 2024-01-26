@@ -50,7 +50,7 @@ export default {
 
 			mode: 'front',
 
-			//////////////////////-------TextBOx-------------------------
+			// -------TextBOx------------------------- //
 			customStyle: '',
 			isBoldText: false,
 			isItalicText: false,
@@ -71,9 +71,7 @@ export default {
 				fontStyle: '',
 			},
 
-			shapeDesign: {
-				color: 'gray',
-			},
+
 
 			drawDesign: {
 				color: 'black',
@@ -84,13 +82,20 @@ export default {
 
 			/// Draw ////
 
-			isDrawing: false, ///
+			isDrawing: false, 
 			strokeDrawing: [
 				{ stroke: '20', image: 'brushStroke1.svg', active: false },
 				{ stroke: '15', image: 'brushStroke2.svg', active: false },
 				{ stroke: '10', image: 'brushStroke3.svg', active: false },
 				{ stroke: '5', image: 'brushStroke4.svg', active: false },
 			],
+
+
+			// shape //
+			shapeDesign: {
+				color: 'gray',
+			},
+
 
 			shapes: [
 				{
@@ -122,10 +127,7 @@ export default {
 			userId: this.userInfo.id,
 		});
 		this.contentOption = imageAsset.data.data;
-		console.log('imageAsset', imageAsset.data.data);
-
-
-
+		// console.log('imageAsset', imageAsset.data.data);
 
 		const screenWidth = window.innerWidth;
 		const screenHeight = window.innerHeight;
@@ -135,7 +137,7 @@ export default {
 		window.document.body.style.paddingLeft = '0px';
 
 		this.canvas = await this.initCanvas(this.$refs.canvas);
-		this.canvas.selection = true;
+		// this.canvas.selection = true;
 		window.addEventListener('popstate', this.handleBack);
 		if (this.product && !this.designEdit ) {
 			this.setBackgroundBack();
@@ -143,6 +145,7 @@ export default {
 		}
 
 		this.handleEvents();
+		this.changeMode(this.mode)
 		this.fontFamilyOptions = AvailableFontFamilies;
 		WebFont.load(WebFontConfig);
 	},
@@ -179,7 +182,7 @@ export default {
 			fabric.Image.fromURL(
 				require(`@/uploadImage/${this.product.imageFront}`),
 				(img) => {
-					console.log('front');
+			
 					// const imageWidth = img.width;
 					// const imageHeight = img.height;
 					// const left = (800 - imageWidth) / 2;
@@ -387,19 +390,41 @@ export default {
 			});
 		},
 
+
+
+		// custom elements
 		changeTextDesign() {
 			const deepCode = structuredClone(this.textDesign);
 			this.textDesign = deepCode;
 		},
+
 		changeShapeDesign() {
-			const deepCode = structuredClone(this.shapeDesign);
-			this.shapeDesign = deepCode;
+			let activeObject = this.canvas.getActiveObject();
+			if (activeObject) {
+				activeObject.set({
+					fill: this.shapeDesign.color,
+				});
+				this.canvas.requestRenderAll();
+			}
+			this.canvas.requestRenderAll();
+
+			console.log({ activeObject });
 		},
 
 		changeDrawDesign() {
-			console.log('draw design');
-			const deepCode = structuredClone(this.drawDesign);
-			this.drawDesign = deepCode;
+	
+			let activeObject = this.canvas.getActiveObject();
+
+			if (activeObject) {
+				activeObject.set({
+					stroke: this.drawDesign.color,
+					strokeWidth: this.drawDesign.stroke,
+				});
+				this.canvas.requestRenderAll();
+			}
+			this.canvas.requestRenderAll();
+
+			console.log({ activeObject });
 		},
 		changeTextStyle(value) {
 			switch (value) {
@@ -458,10 +483,14 @@ export default {
 			this.changeTextDesign();
 		},
 
+
+
 		handleEvents() {
 			this.canvas.on('selection:created', () => {
 				let activeObject = this.canvas.getActiveObject();
-				console.log('activeObject dfdsfsdf: ', activeObject);
+				console.log('activeObject sadasdasd : ', activeObject);
+
+				
 				if (activeObject && activeObject.type === 'text') {
 					this.customStyle = 'text';
 					this.textDesign.textColor = activeObject.fill;
@@ -472,6 +501,8 @@ export default {
 					this.textDesign.fontStyle = activeObject.fontStyle;
 					this.textDesign.textAlign = activeObject.textAlign;
 					this.textDesign.fontFamily = activeObject.fontFamily;
+
+
 				} else if (activeObject && activeObject.type === 'shape') {
 					this.customStyle = 'shape';
 					this.shapeDesign.color = activeObject.fill;
@@ -514,7 +545,6 @@ export default {
 					this.customStyle = '';
 				}
 
-				console.log('cavas value:', activeObject);
 			});
 
 			this.canvas.on('selection:cleared', () => {
@@ -542,22 +572,13 @@ export default {
 				copiedObject.set('top', copiedObject.top + 20);
 				copiedObject.set('left', copiedObject.left + 20);
 				if (copiedObject) {
-					// Thêm bản sao vào canvas
+	
 					this.canvas.add(copiedObject);
 					this.canvas.setActiveObject(copiedObject);
 					this.canvas.requestRenderAll();
 				}
 			}
 		},
-		// PolygonSelectedObject() {
-		// 	let poly = this.canvas.getActiveObject();
-			
-		// 	this.canvas.setActiveObject(poly);
-		// 	if (poly) {
-		// 		// Tạo một bản sao của đối tượng
-		// 		console.log('polygon')
-		// 	}
-		// },
 
 		onClickImageUpload(image) {
 			console.log('uploading image');
@@ -610,15 +631,17 @@ export default {
 				const square = new fabric.Rect({
 					type: 'shape',
 					mode: this.mode,
-					width: 80, // Độ rộng của hình vuông
-					height: 80, // Độ cao của hình vuông
-					fill: 'gray', // Màu sắc của hình vuông
-					left: 200, // Tọa độ X
-					top: 150, // Tọa độ Y
+					width: 80, 
+					height: 80, 
+					fill: 'gray', 
+					left: 200, 
+					top: 150, 
 				});
 				this.canvas.add(square);
 			}
 		},
+
+
 		changeMode(mode) {
 			this.mode = mode;
 
@@ -636,7 +659,6 @@ export default {
 
 		handleBack() {
 			// Thực hiện tác vụ khi nút "Back" được nhấn
-			console.log('Back');
 			this.SET_PRODUCT_MODEL('');
 			this.SET_INFO_DESIGN('');
 
@@ -661,11 +683,16 @@ export default {
 			 */
 
 			const object = this.canvas.getObjects();
+		
 			const json = this.canvas?.toJSON();
+	
 			const objectCanvas = JSON.parse(JSON.stringify(json));
+	
+
 
 			object.map((value, idx) => {
 				objectCanvas.objects[idx].mode = value.mode;
+
 			});
 
 			// localStorage.setItem('canvas', JSON.stringify(objectCanvas));
@@ -724,10 +751,12 @@ export default {
 			console.log('this.canvas', this.canvas);
 
 			img.src = this.canvas.toDataURL({ format: 'png', quality: 1 });
+			
 
 			img.onload = () => {
 				if (mode === 'front') {
 					this.imgPreviewFront = img.src;
+					console.log("img src", img.src);
 				} else if (mode === 'back') {
 					this.imgPreviewBack = img.src;
 				}
@@ -760,32 +789,6 @@ export default {
 				this.canvas.requestRenderAll();
 			}
 		},
-		shapeDesign() {
-			let activeObject = this.canvas.getActiveObject();
-			if (activeObject) {
-				activeObject.set({
-					fill: this.shapeDesign.color,
-				});
-				this.canvas.requestRenderAll();
-			}
-			this.canvas.requestRenderAll();
 
-			console.log({ activeObject });
-		},
-		drawDesign() {
-			let activeObject = this.canvas.getActiveObject();
-
-			console.log('askdjfksd:', activeObject, this.drawDesign);
-			if (activeObject) {
-				activeObject.set({
-					stroke: this.drawDesign.color,
-					strokeWidth: this.drawDesign.stroke,
-				});
-				this.canvas.requestRenderAll();
-			}
-			this.canvas.requestRenderAll();
-
-			console.log({ activeObject });
-		},
 	},
 };

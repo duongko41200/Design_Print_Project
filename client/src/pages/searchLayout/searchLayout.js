@@ -32,7 +32,7 @@ export default {
 	},
 	async mounted() {
 		await this.getAllDesign(this.userInfo);
-		console.log("allDesign dssdfdsff",this.allDesign)
+
 	},
 	computed: {
 		...designMappper.mapState(['allDesign']),
@@ -107,6 +107,7 @@ export default {
 
 
 		async creatFavoriteDesign(design) {
+		
 	
 			let userInfoUpdate = '';
 			if (design.isLike === true) {
@@ -143,7 +144,7 @@ export default {
 
 			this.SET_USER_INFO(userInfoUpdate.data?.data);
 			localStorage.setItem('tokens', userInfoUpdate.data.token);
-			console.log('like :', userInfoUpdate);
+			// console.log('like :', userInfoUpdate);
 		},
 
 

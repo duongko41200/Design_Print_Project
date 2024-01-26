@@ -41,14 +41,11 @@
 						}}</span>
 						<span> Likes</span>
 					</div>
-					<!-- <div>
-						<span class="f-bold1">20</span>
-						<span> follows</span>
-					</div> -->
+
 				</div>
 				<br />
 				<div class="f-bold1 w-[100%]" style="text-align: left">
-					Avant-Garde Tech Products
+					{{ userInfo.title }}
 				</div>
 				<div
 					style="text-align: left"
@@ -81,6 +78,13 @@
 				:class="activeOption === 'favorite' ? 'text-sky-400' : ''"
 			>
 				Favorite
+			</div>
+			<div
+				class="myButtonProfile center f-bold1 font1 cursor-pointer"
+				@click="onChooseOption('collection')"
+				:class="activeOption === 'collection' ? 'text-sky-400' : ''"
+			>
+				Collection
 			</div>
 		</div>
 
@@ -150,11 +154,11 @@ export default {
 		...designMappper.mapState(['listDesign', 'statisticalByDesign']),
 	},
 	async mounted() {
-		const startDate = new Date();
-		const endDate = new Date(
-			new Date().setDate(startDate.getDate() + 7)
-		);
-		this.date = [startDate, endDate];
+		// const startDate = new Date();
+		// const endDate = new Date(
+		// 	new Date().setDate(startDate.getDate() + 7)
+		// );
+		// this.date = [startDate, endDate];
 		await this.getListDesignByUser({
 			userId: this.userInfo.id,
 			isPublic: 'all',
@@ -222,6 +226,15 @@ export default {
 					// await this.getAllDesign(this.userInfo);
 					break;
 				}
+				case 'collection': {
+					this.SET_LIST_DESIGN([]);
+					this.activeOption = value;
+
+					console.log('userinfo:', this.userInfos);
+
+					break;
+				}
+
 
 				default:
 					break;
@@ -254,7 +267,7 @@ export default {
 			});
 		},
 		async deleteImageAsset(imageAsset) {
-			console.log('image asset', imageAsset)
+	
 
 			const imageAssets = await ImageAssetService.deleteImageAsset(imageAsset)
 			this.SET_LIST_DESIGN(imageAssets.data.data);		

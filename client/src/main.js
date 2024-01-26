@@ -11,6 +11,15 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import globalStyle from '@/assets/globalStyle.css';
 
+
+// import gAuthPlugin from 'vue3-google-oauth2';
+
+// let gauthClientId = "178270251582-l1agsktv6elmcj513d4rrrqs3bb134jh.apps.googleusercontent.com";
+
+
+
+
+
 /* import specific icons */
 import {
 	faUserSecret,
@@ -117,6 +126,7 @@ app.use(VueToast);
 app.use(store);
 app.use(globalStyle);
 app.component('icon', FontAwesomeIcon);
+// app.use(gAuthPlugin, { clientId: gauthClientId, scope: 'email', prompt: 'consent', fetch_basic_profile: false })
 
 app.component('VPagination', VPagination)
 app.mount('#app');

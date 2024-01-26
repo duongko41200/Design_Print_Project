@@ -40,6 +40,8 @@ export default {
 				token: payload.token,
 			});
 
+			// console.log('validateAuth',validate);
+
 			commit('SET_USER_INFO', validate.data.data);
 			commit('SET_EMAIL', validate.data.data.email);
 		},
@@ -58,7 +60,7 @@ export default {
 				arrayAllUsers[i].sumLike = statistical.data.data.sumLike;
 			}
 
-			console.log('allUser dsad ', arrayAllUsers);
+
 			commit('SET_ORIGIN_ALL_LIST_USER', arrayAllUsers);
 			dispatch('paginationListUser', {
 				list: arrayAllUsers,
@@ -88,12 +90,22 @@ export default {
 			});
 		},
 
+		findListUserToShare({ commit,state }, { searchKeyword }) {
+			if (!state.originAllListUser) return;
+			let searchResult = [...state.originAllListUser];
+			if (searchKeyword) {
+				searchResult = filterKeyWord(searchResult, searchKeyword);
+			}
+			console.log("searchResult: ", searchResult);
+			searchResult = searchResult.filter(value => value.id != state.userInfo.id)
+			commit('SET_ALL_LIST_USER', searchResult);
+		},
+
 		async addUserShare({ state, commit }, payload) {
-			console.log('payload', payload);
 		
 			let list = state.listReceiveShare;
 			const check = list.find((user) => user && user.id === payload.id)
-			console.log('check', check)
+	
 
 			if ( !check) {
 				list = [...list, payload];
@@ -114,7 +126,7 @@ export default {
 			console.log("state",state.allListUser)
 			const notifi = await NotificationService.creatNotification(payload)
 
-			console.log('gia tri notifi',notifi)
+			console.log('notifi',notifi)
 		},
 		async getAllNotificationByUser({ commit }, payload) {
 			console.log('payload', payload)
@@ -127,7 +139,7 @@ export default {
 			let count = countNotifi(notifi.data.data)
 
 
-			console.log('count', count)
+
 			commit('SET_COUNT_NOT_READ_NOTIFI', count)
 			commit('SET_LIST_NOTIFICATIONS',notifi.data.data)
 			

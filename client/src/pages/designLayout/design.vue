@@ -70,8 +70,8 @@
 				</template>
 			</baseSidebar>
 
-			<!--  <canvas></canvas>  -->
 
+			<!-- canvas content -->
 			<div class="swap-design relative bg-slate-100 w-[78%] h-[88vh]">
 				<div class="design-nav bg-white w-[100%] h-[6vh] md:h-[50px]">
 					<!-- tool text -->
@@ -261,12 +261,13 @@
 					<!-- tool drawing -->
 				</div>
 
-				<!-- canvas content -->
+		
 
 				<div class="fit-h w-[80%] absolute left-[6%] pt-6 pl-0">
 					<div
 						class="canvas w-[100%] fit-w absolute flex justify-between bg-white p-1 shadow-xl border p-6 rounded-2xl"
 					>
+						<!-- //left canvas content -->
 						<div
 							class="md:w-[80px] 2xl:w-[90px] h-[100%] rounded p-2 md:px-0"
 						>
@@ -293,12 +294,15 @@
 								<img :src="product?.imageBack?require(`@/uploadImage/${product?.imageBack}`):''"/>
 							</div>
 						</div>
+
+						<!-- //center canvas content -->
 						<div class="fit-w flex justify-center">
 							<canvas ref="canvas" class="">
 								<!-- <img src="../../assets/anh_test.png" ref="image" /> -->
 							</canvas>
 						</div>
 
+						<!-- right canvas content -->
 						<div
 							class="w-[60px] h-[100%] rounded p-2 flex justify-center flex-col"
 						>
@@ -334,8 +338,7 @@
 		</div>
 	</div>
 
-	<img class="w-[200px] h-[300px bg-black]" :sr="imgPreviewFront" />
-	<img :sr="imgPreviewBack" />
+
 
 	<modalPreview
 		:showModal="isShowPreview"

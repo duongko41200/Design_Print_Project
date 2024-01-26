@@ -22,7 +22,7 @@
 				</div>
 			</div>
 
-			<div class="">
+			<div class="" v-if="typeCatolog === 'design'">
 				<label
 					id="listbox-label"
 					class="block text-sm font-medium leading-6 text-slate-200 text-left"
@@ -107,6 +107,21 @@
 					</div>
 				</div>
 			</div>
+
+			<div class="" v-if="typeCatolog == 'collection'">
+				<label
+					id="listbox-label"
+					class="block text-sm font-medium leading-6 text-slate-200 text-left"
+					>Likes</label
+				>
+				<div class="mt-2">
+					<div
+						class="bg-zinc-700 pl-4 border rounded-xl text-sm py-2 px-8 flex items-center text-slate-50"
+					>
+						
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -153,6 +168,7 @@ export default {
 		...designMappper.mapActions(['filterListDesign']),
 
 		filterDesign() {
+		
 			let dateTime = [];
 
 			if (this.date) {
@@ -178,15 +194,16 @@ export default {
 					date: dateTime,
 					numberLike: this.numberLike,
 				});
-			}
+			} 
 		},
 	},
 	watch: {
 		typeCatolog() {
-			this.date = null;
-			(this.inputSearch = ''),
-				(this.catalogeProduct = this.cataloge[0].name);
-			this.statusPublic = 'All';
+			this.date = null 
+			this.inputSearch = ''
+			this.catalogeProduct = this.cataloge[0].name
+			
+			this.statusPublic = 'All'
 		},
 	},
 };

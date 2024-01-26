@@ -69,7 +69,7 @@ const deleteDesign = async (req, res) => {
 	const productId = req.query.productId;
 
 	console.log(
-		'deleteDesign sjdhfkjsdhfkhfskjhfdjk:',
+		'deleteDesign',
 		id,
 		user,
 		productId

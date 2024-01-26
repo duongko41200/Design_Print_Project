@@ -78,6 +78,8 @@ const handleLogin = async (req, res) => {
 
 	const checkLogin = await User.find({ email });
 
+	console.log("checkLogin",checkLogin);
+
 	/**
 	 * đếm số design
 	 * b1 lay id user
@@ -85,17 +87,17 @@ const handleLogin = async (req, res) => {
 	 * b3 dem so design cua nguoi dung
 	 */
 
-	console.log('kjfksdjfkjsdkfdskf', checkLogin);
+	// console.log('checkLogin', checkLogin);
 	if (checkLogin.length === 0) {
 		return res.status(200).json({
 			status: 'fail',
 			reason: 'email/phone or password không đúng',
 		});
 	}
-	const hashPassword = checkLogin[0].password;
-	const comparePass = await bcrypt.compare(password, hashPassword);
+	// const hashPassword = checkLogin[0].password;
+	// const comparePass = await bcrypt.compare(password, hashPassword);
 	// console.log(comparePass,password, hashPassword)
-	if (comparePass) {
+	// if (comparePass) {
 		const token = CreatJWT({
 			id: checkLogin[0]._id.toString(),
 			username: checkLogin[0].username,
@@ -104,6 +106,7 @@ const handleLogin = async (req, res) => {
 			image: checkLogin[0].image,
 			role: checkLogin[0].role,
 			description: checkLogin[0].description,
+			title: checkLogin[0].title,
 			favoriteDesign: checkLogin[0].favoriteDesign,
 		});
 
@@ -112,12 +115,12 @@ const handleLogin = async (req, res) => {
 			token: token,
 			data: checkLogin,
 		});
-	} else {
-		return res.status(200).json({
-			status: 'fail',
-			reason: 'email/phone or password không đúng',
-		});
-	}
+	// } else {
+	// 	return res.status(200).json({
+	// 		status: 'fail',
+	// 		reason: 'email/phone or password không đúng',
+	// 	});
+	// }
 };
 
 const handleUpdate = async (req, res) => {
@@ -135,6 +138,7 @@ const handleUpdate = async (req, res) => {
 		password: body.password,
 		image: body.image,
 		role: body.role,
+		title: body.title,
 		description: body.description,
 		favoriteDesign: body.favoriteDesign,
 	});
@@ -145,13 +149,12 @@ const handleUpdate = async (req, res) => {
 
 		const user = await User.findOne({ email: body.email });
 		if (user.password === body.password) {
-
 			const updateProfile = await User.findOneAndUpdate(
 				{ email: body.email },
 				{
 					username: body.username,
 					email: body.email,
-			
+					title: body.title,
 					image: body.image,
 					role: body.role,
 					description: body.description,
@@ -159,7 +162,6 @@ const handleUpdate = async (req, res) => {
 				}
 			);
 		} else {
-			
 			const updateProfile = await User.findOneAndUpdate(
 				{ email: body.email },
 				{
@@ -169,11 +171,11 @@ const handleUpdate = async (req, res) => {
 					image: body.image,
 					role: body.role,
 					description: body.description,
-					favoriteDesign:body.favoriteDesign,
+					title: body.title,
+					favoriteDesign: body.favoriteDesign,
 				}
 			);
 		}
-
 
 		return res.status(200).json({
 			status: 'success',
@@ -196,12 +198,18 @@ const handleValidateToken = async (req, res) => {
 
 	try {
 		const validateToken = veryfiToken(token);
-		console.log(validateToken);
-
-		return res.status(200).json({
-			status: 'success',
-			data: validateToken,
-		});
+		console.log('validateToken sdfsdfd', validateToken);
+		const getUser = await User.find({ _id: validateToken.id });
+		if (getUser.length > 0) {
+			return res.status(200).json({
+				status: 'success',
+				data: validateToken,
+			});
+		} else {
+			return res.status(400).json({
+				status: 'not exist',
+			});
+		}
 	} catch (error) {
 		console.log({ error });
 	}
@@ -256,6 +264,7 @@ const handleCreateFavoriteDesign = async (req, res) => {
 		password: getUser[0].password,
 		image: getUser[0].image,
 		role: getUser[0].role,
+		title: getUser[0].title,
 		description: getUser[0].description,
 		favoriteDesign: favoriteDesignArray,
 	});
@@ -277,6 +286,7 @@ const handleCreateFavoriteDesign = async (req, res) => {
 			password: getUser[0].password,
 			image: getUser[0].image,
 			role: getUser[0].role,
+			title: getUser[0].title,
 			description: getUser[0].description,
 			favoriteDesign: favoriteDesignArray,
 		},
@@ -309,6 +319,7 @@ const handleDeleteFavoriteDesign = async (req, res) => {
 		password: getUser[0].password,
 		image: getUser[0].image,
 		role: getUser[0].role,
+		title: getUser[0].title,
 		description: getUser[0].description,
 		favoriteDesign: favoriteDesignArray,
 	});
@@ -330,6 +341,7 @@ const handleDeleteFavoriteDesign = async (req, res) => {
 			password: getUser[0].password,
 			image: getUser[0].image,
 			role: getUser[0].role,
+			title: getUser[0].title,
 			description: getUser[0].description,
 			favoriteDesign: favoriteDesignArray,
 		},

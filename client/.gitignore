@@ -22,5 +22,5 @@ pnpm-debug.log*
 *.sln
 *.sw?
 *.[Jj][Pp][Gg]
-# *.[Pp][Nn][Gg]
+*.[Pp][Nn][Gg]
 *.[Gg][Ii][Ff]

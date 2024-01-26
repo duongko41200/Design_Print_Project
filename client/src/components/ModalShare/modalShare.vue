@@ -55,7 +55,7 @@
 												v-if="valueKey"
 											>
 												<div
-													v-for="(user, idx) in allListUser.data"
+													v-for="(user, idx) in allListUser"
 													:key="idx"
 													class="w-full h-[20px] cursor-pointer hover:bg-gray-300"
 												>
@@ -78,6 +78,7 @@
 														v-for="(user, idx) in listReceiveShare"
 														:key="idx"
 													>
+												
 														<icon
 															icon="fa-solid fa-user"
 															class="w-[20px] h-[20px]"
@@ -199,7 +200,7 @@ export default {
 			'getAllProductsByUser',
 		]),
 		...authMappper.mapActions([
-			'filterListUser',
+			'findListUserToShare',
 			'getAllListUser',
 			'addUserShare',
 			'deleteUserShare',
@@ -213,8 +214,7 @@ export default {
 			this.SET_LIST_RECIEVE_USER([]);
 		},
 		onSearchUser() {
-			console.log('duong dep trai', this.allListUser);
-			this.filterListUser({
+			this.findListUserToShare({
 				searchKeyword: this.valueKey,
 			});
 		},
@@ -235,9 +235,7 @@ export default {
 						type: 'share',
 						message: ' đã chia sẻ cho bạn',
 					};
-					console.log('param:', param);
 
-					console.log('listReceiveShare', this.listReceiveShare);
 					await this.createNotificaShare(param);
 					socket.emit('notification', this.listReceiveShare[i].id);
 				}

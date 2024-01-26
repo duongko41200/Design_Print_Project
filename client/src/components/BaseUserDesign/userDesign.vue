@@ -48,7 +48,7 @@
 				</div>
 				<br />
 				<div class="f-bold1 w-[100%]" style="text-align: left">
-					Avant-Garde Tech Products
+					{{ userInfos.title }}
 				</div>
 				<div
 					style="text-align: left"
@@ -82,6 +82,14 @@
 			>
 				Favorite
 			</div>
+
+			<div
+				class="myButtonProfile center f-bold1 font1 cursor-pointer"
+				@click="onChooseOption('collection')"
+				:class="activeOption === 'collection' ? 'text-sky-400' : ''"
+			>
+				Collection
+			</div>
 		</div>
 		<baseFilter
 			:isStatus="false"
@@ -101,6 +109,8 @@
 					v-for="(item, idx) in listDesign"
 					:key="idx"
 					class="border"
+					
+					:typeCatolog="activeOption"
 					@onClickImage="onPreviweDesign(item)"
 					@onDownload="onDownload"
 					@CreateFavoriteDesign="creatFavoriteDesign"
@@ -221,6 +231,14 @@ export default {
 					);
 					this.getFavoriteOfUserOther(favoriteDesign);
 					// await this.getAllDesign(this.userInfo);
+					break;
+				}
+				case 'collection': {
+					this.SET_LIST_DESIGN([]);
+					this.activeOption = value;
+
+					console.log('userinfo:', this.userInfos);
+
 					break;
 				}
 

@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="flex  w-[100vw] justify-center  h-[100vh] py-4 lg:px-8 bg-zinc-800"
+		class="flex w-[100vw] justify-center h-[100vh] py-4 lg:px-8 bg-zinc-800"
 	>
 		<div
 			class="w-[40%] p-4 rounded fit-h bg-zinc-700 flex flex-col shadow-lg justify-center items-center"
@@ -8,7 +8,6 @@
 			<div class="sm:mx-auto sm:w-full sm:max-w-sm">
 				<h2
 					class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 text-white"
-				
 				>
 					Sign in to your account
 				</h2>
@@ -92,12 +91,13 @@
 				</div>
 			</div>
 			<div class="mt-6 grid grid-cols-3 items-center text-gray-400">
-					<hr class="border-gray-400" />
-					<p class="text-center text-sm">OR</p>
-					<hr class="border-gray-400" />
-				</div>
+				<hr class="border-gray-400" />
+				<p class="text-center text-sm">OR</p>
+				<hr class="border-gray-400" />
+			</div>
 			<button
 				class="bg-white border w-[60%] rounded-xl mt-2 flex justify-center items-center text-sm hover:scale-105 duration-300 text-[#002D74]"
+				@click="handleClickSignIn"
 			>
 				<svg
 					class="mr-3"
@@ -168,6 +168,29 @@ export default {
 				});
 			}
 		},
+
+		async handleClickSignIn(){
+      try {
+        const googleUser = await this.$gAuth.signIn();
+        if (!googleUser) {
+          return null;
+        }
+        console.log("googleUser", googleUser);
+        this.user = googleUser.getBasicProfile().getEmail();
+        console.log("getId", this.user);
+        console.log("getBasicProfile", googleUser.getBasicProfile());
+        console.log("getAuthResponse", googleUser.getAuthResponse());
+        console.log(
+          "getAuthResponse",
+          this.$gAuth.instance.currentUser.get().getAuthResponse()
+        );
+
+      } catch (error) {
+        //on fail do something
+        console.error(error);
+        return null;
+      }
+    },
 
 		onShowPassword() {
 			this.showPassword = !this.showPassword;

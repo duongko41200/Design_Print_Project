@@ -11,6 +11,7 @@
 				rgba(0, 0, 0, 0) 60%,
 				rgba(0, 0, 0, 0) 100%
 			);
+			height: 283px;
 		"
 	>
 		<img
@@ -221,7 +222,7 @@ export default {
 	
 		},
 		async editDesign(id, data) {
-			console.log("dâtta",data)
+		
 			const payload = {
 				idDesign: id,
 			};
@@ -252,8 +253,8 @@ export default {
 			this.$emit('CreateFavoriteDesign', this.data);
 		},
 
-		showModalShare(data) {
-			console.log("data:", data)
+		showModalShare() {
+		
 			this.isShowModalShare = true
 		},
 		oncloseModal() {
@@ -263,15 +264,16 @@ export default {
 			this.isShowMoreOptions = !this.isShowMoreOptions
 		}
 	},
-	created() {
-		setInterval(() => {
-			try {
-				this.square = 'height:' + this.$refs.square.clientWidth + 'px';
-			} catch (error) {
-				error;
-			}
-		}, 300);
-	},
+	// created() {
+	// 	setInterval(() => {
+	// 		try {
+	// 			this.square = 'height:' + this.$refs.square.clientWidth + 'px';
+	// 			console.log("chieu height",this.square)
+	// 		} catch (error) {
+	// 			error;
+	// 		}
+	// 	}, 300);
+	// },
 };
 </script>
 

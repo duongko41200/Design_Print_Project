@@ -84,13 +84,7 @@ router.beforeEach(async (to, from, next) => {
 		return;
 	}
 
-	let token =await localStorage.getItem('tokens');
 
-	console.log('token: ' , token);
-	if (!token) {
-		next('/login');
-		return
-	}
 
 	if (['/design'].includes(to.path)) {
 		
@@ -99,9 +93,15 @@ router.beforeEach(async (to, from, next) => {
 		}
 	}
 
-
+	let token = await localStorage.getItem('tokens');
+	// console.log('token: ' , token);
 
 	try {
+		
+		if (!token) {
+			next('/login');
+			return
+		}
 		await store.dispatch(
 			'auth/validateAuth',{token}
 		);

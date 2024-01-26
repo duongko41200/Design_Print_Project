@@ -1,6 +1,6 @@
 <template>
 	<div class="flex items-center justify-center h-[100vh] bg-zinc-800">
-		<div class=" w-[70vw] p-4 bg-zinc-700 text-white rounded-xl shadow-lg mt-8">
+		<div class=" w-[70vw] p-4 bg-zinc-700 text-white rounded-xl shadow-lg mt-8 wrapper" >
 			<h2 class="font-bold text-3xl text-center mb-3">
 				Chỉnh sửa hồ sơ
 			</h2>
@@ -43,16 +43,18 @@
 						v-model="username"
 					/>
 				</div>
+
 				<div class="my-2 flex justify-start flex-col col-6">
-					<p class="font-semibold text-start">Địa chỉ Email:</p>
+					<p class="font-semibold text-start">Title:</p>
 					<input
 						type="text"
-						placeholder="Example@gmail.com"
+				
 						class="border border-[#e9e9e9] rounded-2xl p-3 gap-3 w-full focus:outline-none bg-zinc-600"
-						v-model="userInfo.email"
-						disabled
+						v-model="title"
+				
 					/>
 				</div>
+
 			</div>
 
 			<div class="row">
@@ -65,7 +67,22 @@
 						v-model="password"
 					/>
 				</div>
+
 				<div class="my-2 flex justify-start flex-col col-6">
+					<p class="font-semibold text-start">Email:</p>
+					<input
+						type="text"
+						placeholder="Example@gmail.com"
+						class="border border-[#e9e9e9] rounded-2xl p-3 gap-3 w-full focus:outline-none bg-zinc-600"
+						v-model="userInfo.email"
+						disabled
+					/>
+				</div>
+
+			</div>
+			<div class="row">
+
+			<div class="my-2 flex justify-start flex-col col-12">
 					<p class="font-semibold text-start">Giới thiệu:</p>
 					<input
 						type="text"
@@ -73,7 +90,7 @@
 						class="border border-[#e9e9e9] rounded-2xl p-3 gap-3 w-full focus:outline-none bg-zinc-700"
 						v-model="description"
 					/>
-				</div>
+			</div>
 			</div>
 
 			<button
@@ -99,6 +116,7 @@ export default {
 			email: '',
 			password: '',
 			description: '',
+			title:''
 		};
 	},
 	computed: {
@@ -114,6 +132,7 @@ export default {
 		this.email = this.userInfo.email;
 		this.password = this.userInfo.password;
 		this.description = this.userInfo.description;
+		this.title = this.userInfo.title;
 	},
 	methods: {
 		...authMappper.mapMutations(['SET_USER_INFO', 'SET_IMAGE_PROFILE']),
@@ -141,6 +160,7 @@ export default {
 				username: this.username,
 				image: this.imageProfile,
 				email: this.email,
+				title: this.title,
 				password: this.password,
 				role: this.userInfo.role,
 				description: this.description,
@@ -167,3 +187,9 @@ export default {
 	},
 };
 </script>
+<style>
+.wrapper{
+	height:calc(100vh - 104px);
+	overflow:auto;
+}
+</style>

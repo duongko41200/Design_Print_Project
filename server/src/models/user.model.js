@@ -18,9 +18,9 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			default: 'users/default.jpg',
 		},
-		tiltle: {
+		title: {
 			type: String,
-			default: 'Welcome to my store',
+			default: 'Welcome to my channel',
 		},
 		email: {
 			type: String,
