@@ -1,5 +1,6 @@
 import { getField, updateField } from 'vuex-map-fields';
 import DesignService from '@/sevices/design.service';
+import CollectionService from '@/sevices/collection.service.js';
 import {
 	filterKeyWord,
 	filterCatalogeProduct,
@@ -20,6 +21,9 @@ export default {
 			allDesign: [],
 
 			statisticalByDesign: [],
+
+			originDesignByCollection: [],
+			allDesignByCollection: [],
 		};
 	},
 
@@ -79,6 +83,9 @@ export default {
 			commit('SET_LIST_DESIGN', designUpdate);
 			commit('SET_ORIGIN_LIST_DESIGN', designUpdate);
 		},
+
+				
+
 		///product
 		async getListDesignByProduct({ commit }, payload) {
 			const allDesigns = await DesignService.getDesignByProduct({
@@ -253,6 +260,53 @@ export default {
 			});
 			state.statisticalByDesign =statistical.data.data
 		},
+
+
+		/// collection action
+				
+		async getAllCollectionByUser({commit, state }, payload) {
+			console.log("payload dskjsdkfj:", payload);
+
+			const collection = await CollectionService.getCollectionByUser({ userId: payload?.id })
+			
+			console.log("collection", collection);
+
+			console.log(state.statisticalByDesign);
+
+			commit('SET_LIST_DESIGN', collection.data.data);
+			commit('SET_ORIGIN_LIST_DESIGN', collection.data.data);
+		},
+
+		async getListDesignByCollection({ commit }, payload) {
+
+			const allDesigns = await DesignService.getAllDesignByUser({
+				userId: payload.userId,
+				isPublic: payload.isPublic,
+			});
+			const designUpdate = allDesigns.data.data;
+
+
+			commit('SET_ORIGIN_DESIGN_BY_COLLECTION', designUpdate);
+			commit('SET_ALL_DESIGN_BY_COLLECTION', designUpdate);
+		},
+
+		async filterCollectionByCategory({ commit,state }, {cataloge}) { 
+			if (!state.originDesignByCollection) return;
+			let searchResult = [...state.originDesignByCollection];
+
+			console.log('searchResult', searchResult);
+
+			if (cataloge != 'All') {
+				searchResult = filterCatalogeProduct(searchResult, cataloge);
+			}
+
+			console.log("RESULT", searchResult);
+
+			// commit('SET_ORIGIN_DESIGN_BY_COLLECTION', searchResult);
+			commit('SET_ALL_DESIGN_BY_COLLECTION', searchResult);
+
+		}
+
 	},
 
 	mutations: {
@@ -275,6 +329,13 @@ export default {
 		SET_ORIGIN_LIST_DESIGN(state, payload) {
 			state.originListDesign = payload;
 		},
+
+		SET_ORIGIN_DESIGN_BY_COLLECTION(state, payload) { 
+			state.originDesignByCollection = payload;
+		},
+		SET_ALL_DESIGN_BY_COLLECTION(state, payload) { 
+			state.allDesignByCollection = payload;
+		}
 	},
 
 	getters: {

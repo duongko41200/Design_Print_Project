@@ -88,7 +88,10 @@
 			</div>
 		</div>
 
-		<baseFilter :typeCatolog="activeOption"></baseFilter>
+		<baseFilter :typeCatolog="activeOption"
+		@onShowModalCollection="onShowModalCollection"
+		
+		></baseFilter>
 		<div>
 			<div
 				:style="
@@ -104,9 +107,11 @@
 					:typeCatolog="activeOption"
 					class="border"
 					@onClickImage="onPreviweDesign(item)"
+					@onClickImagePreviewCollection = "onPreviweCollection(item)"
 					@CreateFavoriteDesign="creatFavoriteDesign"
 					@deleteDesign="deleteDesign"
 					@deleteImageAsset ='deleteImageAsset'
+					@deleteCollection ='deleteCollection'
 					@onDownload="onDownload"
 				></one-post>
 			</div>
@@ -119,6 +124,22 @@
 		@oncloseModal="oncloseModal"
 		@CreateFavoriteDesign="creatFavoriteDesign"
 	></modalPreview>
+
+	<ModalPreviewCollection
+	:showModal="isShowPreviewCollection"
+	:infoDesign="collection"
+	@oncloseModal="oncloseModalPreviewCollection"
+
+	>
+
+	</ModalPreviewCollection>
+
+	
+
+	<ModalCollection 
+	:showModal="isShowModalCollection"
+	@oncloseModal="oncloseModalCollection"
+	></ModalCollection>
 </template>
 <script>
 import { createNamespacedHelpers } from 'vuex';
@@ -128,6 +149,9 @@ import DesignService from '@/sevices/design.service';
 import modalPreview from '@/components/ModalPreview/modalPreview.vue';
 import baseFilter from '@/components/BaseFilter/baseFilter.vue';
 import UserService from '@/sevices/user.service';
+import ModalCollection from '@/components/ModalCollection/ModalCollection.vue'
+import ModalPreviewCollection from '@/components/ModalPreviewCollection/ModalPreviewCollection'
+import CollectionService from '@/sevices/collection.service.js';
 const authMappper = createNamespacedHelpers('auth');
 const designMappper = createNamespacedHelpers('design');
 export default {
@@ -135,14 +159,19 @@ export default {
 		onePost,
 		modalPreview,
 		baseFilter,
+		ModalCollection,
+		ModalPreviewCollection
 	},
 	data() {
 		return {
 			isPopoverOpen: false,
 			activeOption: 'design',
 			isShowPreview: false,
+			isShowModalCollection: false,
+			isShowPreviewCollection: false,
 
 			infoDesign: '',
+			collection: '',
 			// statisticalByDesign: '',
 			typePreview: '',
 
@@ -179,6 +208,7 @@ export default {
 			'getAllDesign',
 			'deleteDesignByUser',
 			'statisticalInfoByDesign',
+			'getAllCollectionByUser'
 		]),
 		...designMappper.mapMutations(['SET_LIST_DESIGN']),
 		...authMappper.mapMutations(['SET_USER_INFO']),
@@ -230,6 +260,8 @@ export default {
 					this.SET_LIST_DESIGN([]);
 					this.activeOption = value;
 
+					this.getAllCollectionByUser(this.userInfo)
+
 					console.log('userinfo:', this.userInfos);
 
 					break;
@@ -245,6 +277,18 @@ export default {
 			this.infoDesign = infoDesign;
 			this.isShowPreview = true;
 			this.typePreview = 'detail';
+		},
+
+		onPreviweCollection(collection) {
+			console.log("collection :", collection);
+			this.isShowPreviewCollection = true
+			this.collection = collection;
+
+
+
+		},
+		oncloseModalPreviewCollection() {
+			this.isShowPreviewCollection = false;	
 		},
 		oncloseModal() {
 			this.isShowPreview = false;
@@ -272,8 +316,26 @@ export default {
 			const imageAssets = await ImageAssetService.deleteImageAsset(imageAsset)
 			this.SET_LIST_DESIGN(imageAssets.data.data);		
 		},
+
+		async deleteCollection(collection) { 
+			console.log('c1o', collection)
+			await CollectionService.deleteCollection({ id: collection.id })
+			await this.getAllCollectionByUser(this.userInfo)
+			this.$toast.success('deleted success', {
+				position: 'top-right',
+				duration: 2000,
+			});
+
+			
+		},
 		onCreatDesign() {
 			this.$emit('onCreatDesign')
+		},
+		onShowModalCollection() {
+			this.isShowModalCollection = true
+		},
+		oncloseModalCollection() {
+			this.isShowModalCollection = false
 		},
 
 

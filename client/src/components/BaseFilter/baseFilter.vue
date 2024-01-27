@@ -42,7 +42,7 @@
 				</div>
 			</div>
 
-			<div class="" v-if="typeCatolog != 'assets'">
+			<div class="" v-if="typeCatolog != 'assets' && typeCatolog != 'collection' ">
 				<label
 					id="listbox-label"
 					class="block text-sm font-medium leading-6 text-slate-200 text-left"
@@ -62,7 +62,7 @@
 					</select>
 				</div>
 			</div>
-			<div class="" v-if="isStatus && typeCatolog === 'design'">
+			<div class="" v-if="isStatus && (typeCatolog === 'design' || typeCatolog == 'collection') ">
 				<label
 					id="listbox-label"
 					class="block text-sm font-medium leading-6 text-slate-200 text-left"
@@ -84,7 +84,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="" v-if="typeCatolog != 'assets'">
+			<div class="" v-if="typeCatolog != 'assets' && typeCatolog != 'collection'">
 				<label
 					id="listbox-label"
 					class="block text-sm font-medium leading-6 text-slate-200 text-left"
@@ -112,14 +112,14 @@
 				<label
 					id="listbox-label"
 					class="block text-sm font-medium leading-6 text-slate-200 text-left"
-					>Likes</label
+					></label
 				>
-				<div class="mt-2">
-					<div
-						class="bg-zinc-700 pl-4 border rounded-xl text-sm py-2 px-8 flex items-center text-slate-50"
-					>
-						
+				<div class="mt-4">
+	
+					<div class=" btn-collection f-bold1 cursor-pointer" @click= 'onShowModalCollection'>
+						Create Collection
 					</div>
+					
 				</div>
 			</div>
 		</div>
@@ -196,6 +196,10 @@ export default {
 				});
 			} 
 		},
+
+		onShowModalCollection() {
+			this.$emit('onShowModalCollection');
+		}
 	},
 	watch: {
 		typeCatolog() {
@@ -239,5 +243,14 @@ export default {
 	);
 	--dp-range-between-dates-text-color: var(--dp-hover-text-color, #fff);
 	--dp-range-between-border-color: var(--dp-hover-color, #fff);
+}
+.btn-collection{
+	width: fit-content;
+	border:1px solid rgba(255, 255, 255, 0.483);
+	padding: 7px;
+	border-radius: 10px;
+}
+.btn-collection:hover{
+	background-color: black;
 }
 </style>

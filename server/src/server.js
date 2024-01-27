@@ -7,6 +7,7 @@ const uploadImageByS3 = require('./routes/image.api');
 const productApi = require('./routes/product.api');
 const DesignApi = require('./routes/design.api');
 const notificationApi = require('./routes/notification.api');
+const CollectionApi = require('./routes/collection.api');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
 require('dotenv').config();
@@ -57,6 +58,7 @@ imageAssetApi(app);
 productApi(app);
 DesignApi(app);
 notificationApi(app)
+CollectionApi(app)
 
 mongoose
 	.connect(process.env.DATABASE, {

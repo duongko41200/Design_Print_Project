@@ -59,6 +59,7 @@ import {
 	faLockOpen,
 	faCircleXmark,
 	faDrawPolygon,
+	faCirclePlus
 	
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -101,7 +102,8 @@ library.add(
 	faLock,
 	faLockOpen,
 	faCircleXmark,
-	faDrawPolygon
+	faDrawPolygon,
+	faCirclePlus
 );
 
 // import css

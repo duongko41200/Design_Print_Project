@@ -22,12 +22,12 @@ const collectionSchema = new mongoose.Schema(
 		},
 		upperBody: {
 			type: mongoose.Schema.ObjectId,
-			ref: 'Product',
+			ref: 'Design',
 			required: [true, 'A design should belong to a product'],
 		},
 		lowerBody: {
 			type: mongoose.Schema.ObjectId,
-			ref: 'Product',
+			ref: 'Design',
 			required: [true, 'A design should belong to a product'],
 		},
 		// product_export: Object,
@@ -57,7 +57,7 @@ const collectionSchema = new mongoose.Schema(
 	}
 );
 
-designSchema.index({ name: 'text' });
+
 
 
 

@@ -4,6 +4,7 @@
 		@click="test"
 		:style="square"
 		class="cursor-pointer post center transition-opacity inset-0 bg-zinc-600 bg-opacity-20"
+		:class="typeCatolog === 'collection' ? 'h-[200px]' : 'h-[283px]'"
 		style="
 			background: linear-gradient(
 				to top,
@@ -11,10 +12,39 @@
 				rgba(0, 0, 0, 0) 60%,
 				rgba(0, 0, 0, 0) 100%
 			);
-			height: 283px;
+			/* height: 283px; */
 		"
 	>
+		<div style="height: -webkit-fill-available"  class="flex">
+			<div class="">
+				<img
+					v-if="typeCatolog === 'collection'"
+					:src="
+						data.upperBody.thumbnailFront
+							? data.upperBody.thumbnailFront
+							: require(`@/uploadImage/${data.image}`)
+					"
+					class="w-100 h-100 post-img z-10 upper-collection"
+					alt=""
+				/>
+			</div>
+
+			<div class="">
+				<img
+					v-if="typeCatolog === 'collection'"
+					:src="
+						data.lowerBody.thumbnailFront
+							? data.lowerBody.thumbnailFront
+							: require(`@/uploadImage/${data.image}`)
+					"
+					class="w-100 h-100 post-img z-10 lower-collection"
+					alt=""
+				/>
+			</div>
+		</div>
+
 		<img
+			v-if="typeCatolog !== 'collection'"
 			:src="
 				data.thumbnailFront
 					? data.thumbnailFront
@@ -23,27 +53,21 @@
 			class="w-100 h-100 post-img z-10"
 			alt=""
 		/>
-		<div class="post-hover w-100 h-100 z-10 center gap-3 text-white z-20" :class='{"z-30":isShowMoreOptions}'>
-			<!-- <div class="center">
-				<icon-vue name="like" vuestyle="fill:white;"></icon-vue
-				>{{ data.likeCount }}
-			</div>
-			<div class="center">
-				<icon-vue name="comment" vuestyle="fill:white;"></icon-vue
-				>{{ data.commentCount }}
-			</div> -->
+
+		<div
+			class="post-hover w-100 h-100 z-10 center gap-3 text-white"
+			:class="{ 'z-30': isShowMoreOptions && typeCatolog !== 'collection' }"
+		>
+
 
 			<div
 				class="absolute bg-red w-full h-full inset-0"
 				@click="onClickImage"
 			></div>
-
-			<!-- <div
-				class="absolute z-9 top-2 left-2 bg-zinc-900 bg-opacity-30 hover:bg-opacity-100 transition-opacity flex items-center justify-center cursor-pointer rounded text-lg h-8 w-8"
+			<div
+				class="flex flex-col space-y-2 absolute top-2 z- 10 right-2"
+				v-if="typeCatolog != 'assets' && typeCatolog != 'collection' "
 			>
-				<icon icon="fa-solid fa-magnifying-glass" style="color: #fff" />
-			</div> -->
-			<div class="flex flex-col space-y-2 absolute top-2 z- 10 right-2" 	v-if="typeCatolog != 'assets'">
 				<div
 					class="bg-zinc-900 bg-opacity-30 hover:bg-opacity-100 transition-opacity flex items-center justify-center cursor-pointer rounded text-lg h-8 w-8"
 					@click="creatFavoriteDesign()"
@@ -64,7 +88,11 @@
 			<div
 				class="absolute bottom-8 left-2 mx-0.5 overflow-hidden z-0 fit-w text-start z-10 font-bold text-base text-white capitalize"
 			>
-				{{typeCatolog != 'assets'? data.name: data.image.replace('upload_Image_Design/','') }}
+				{{
+					typeCatolog != 'assets'
+						? data.name
+						: data.image.replace('upload_Image_Design/', '')
+				}}
 			</div>
 			<div
 				class="absolute bottom-2 left-2 mx-0.5 z-0 text-start fit-w z-10 font-bold text-gray"
@@ -72,7 +100,9 @@
 			>
 				by
 				<span class="hover:text-blue-500 hover:underline"
-					>{{ typeCatolog != 'assets'?data.user.username:data.name }}
+					>{{
+						typeCatolog != 'assets' ? data.user.username : data.name
+					}}
 				</span>
 			</div>
 
@@ -113,7 +143,7 @@
 											: 'text-gray-700',
 										'block px-4 py-2 text-sm',
 									]"
-									@click="editDesign(data.id,data)"
+									@click="editDesign(data.id, data)"
 								>
 									Edit
 								</div>
@@ -133,7 +163,7 @@
 							</MenuItem>
 							<MenuItem
 								v-slot="{ active }"
-								v-if="typeCatolog != 'assets'"
+								v-if="typeCatolog != 'assets' && typeCatolog != 'collection' "
 							>
 								<div
 									href="#"
@@ -143,10 +173,10 @@
 											: 'text-gray-700',
 										'block px-4 py-2 text-sm',
 									]"
-
 									@click="showModalShare(data)"
-									>Share</div
 								>
+									Share
+								</div>
 							</MenuItem>
 						</div>
 					</MenuItems>
@@ -158,9 +188,7 @@
 		:showModal="isShowModalShare"
 		:infoDesign="data"
 		:type="typePreview"
-
 		@oncloseModal="oncloseModal"
-
 	></modalShare>
 </template>
 
@@ -168,6 +196,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
 import { createNamespacedHelpers } from 'vuex';
 import modalShare from '@/components/ModalShare/modalShare.vue';
+
 const authMappper = createNamespacedHelpers('auth');
 const designMappper = createNamespacedHelpers('design');
 const productMappper = createNamespacedHelpers('product');
@@ -191,15 +220,13 @@ export default {
 			type: String,
 			default: 'design',
 		},
-
-
 	},
 	data() {
 		return {
 			square: null,
 
 			isShowModalShare: false,
-			isShowMoreOptions:false
+			isShowMoreOptions: false,
 		};
 	},
 	computed: {
@@ -212,17 +239,18 @@ export default {
 		// 	console.log('height:' + this.$refs.square.clientWidth + 'px');
 		// },
 		async deleteDesign(design) {
-			console.log("design;", design)
+			console.log('design;', design);
 			if (this.typeCatolog === 'assets') {
 				this.$emit('deleteImageAsset', design);
-			} else {
-
+			}
+			else if (this.typeCatolog === 'collection') {
+				this.$emit('deleteCollection', design);
+			}
+			else {
 				this.$emit('deleteDesign', design);
 			}
-	
 		},
 		async editDesign(id, data) {
-		
 			const payload = {
 				idDesign: id,
 			};
@@ -231,10 +259,12 @@ export default {
 			this.SET_PRODUCT_MODEL(data.product);
 		},
 		onClickImage() {
-
-			console.log("data;", this.data);
-			if (this.typeCatolog != 'assets') {
+			console.log('data;', this.data);
+			if (this.typeCatolog != 'assets' && this.typeCatolog !== 'collection') {
 				this.$emit('onClickImage');
+			}
+			if (this.typeCatolog != 'assets' && this.typeCatolog === 'collection') {
+				this.$emit('onClickImagePreviewCollection'); 
 			}
 			
 		},
@@ -244,7 +274,7 @@ export default {
 		onMoveUserDesign(design) {
 			if (this.userInfo.id !== design.user.id) {
 				this.$router.push(`/user/${design.user.id}`);
-				this.$emit('onMoveUserDesign');	
+				this.$emit('onMoveUserDesign');
 			} else {
 				this.$router.push(`/userInfo`);
 			}
@@ -254,15 +284,14 @@ export default {
 		},
 
 		showModalShare() {
-		
-			this.isShowModalShare = true
+			this.isShowModalShare = true;
 		},
 		oncloseModal() {
-			this.isShowModalShare = false
+			this.isShowModalShare = false;
 		},
 		showMoreOption() {
-			this.isShowMoreOptions = !this.isShowMoreOptions
-		}
+			this.isShowMoreOptions = !this.isShowMoreOptions;
+		},
 	},
 	// created() {
 	// 	setInterval(() => {
@@ -301,4 +330,10 @@ export default {
 .post-img {
 	object-fit: cover;
 }
+/* .upper-collection {
+	clip-path: polygon(0 0, 200px 0, 99px 289px, 0 282px);
+}
+.lower-collection {
+	clip-path: polygon(0 0, 200px 0, 99px 289px, 0 282px);
+} */
 </style>

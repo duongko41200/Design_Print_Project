@@ -124,15 +124,15 @@ export default {
 		async createNotificaShare({ state }, payload) { 
 			console.log('payload', payload)
 			console.log("state",state.allListUser)
-			const notifi = await NotificationService.creatNotification(payload)
+			await NotificationService.creatNotification(payload)
 
-			console.log('notifi',notifi)
+			// console.log('notifi',notifi)
 		},
 		async getAllNotificationByUser({ commit }, payload) {
 			console.log('payload', payload)
 			
 			const notifi = await NotificationService.getAllNotificationByUser(payload)
-			console.log('gia tri notifi',notifi.data.data)
+			// console.log('gia tri notifi',notifi.data.data)
 		
 			// let data = notifi.data.data
 
@@ -148,8 +148,8 @@ export default {
 			console.log('payload', payload)
 			console.log("state", state.allListUser)
 			
-			const notifi = await NotificationService.updateNotifiShare(payload)
-			console.log('gia tri notifi',notifi.data.data)
+			await NotificationService.updateNotifiShare(payload)
+			// console.log('gia tri notifi',notifi.data.data)
 
 		},
 
