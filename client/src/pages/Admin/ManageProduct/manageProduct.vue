@@ -247,6 +247,7 @@
 	<modalFormProduct
 		:showModal="showFormCreatProduct"
 		@oncloseModal="closeModalFormCreateProduct"
+		@changeToPendding="changeToPendding"
 
 	></modalFormProduct>
 </template>
@@ -302,6 +303,8 @@ export default {
 			role: this.userInfo.role,
 			userId: this.userInfo.id,
 		});
+
+		console.log("manageProduct", this.manageProduct)
 	
 	},
 	computed: {
@@ -352,6 +355,9 @@ export default {
 		},
 		closeModalFormCreateProduct() {
 			this.showFormCreatProduct = false;
+			// this.optionStatus = 'pending';
+		},
+		changeToPendding() {
 			this.optionStatus = 'pending';
 		},
 		oncloseModal() {

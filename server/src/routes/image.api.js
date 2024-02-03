@@ -121,16 +121,16 @@ const uploadImageByS3 = (app) => {
 					checkImageExists(targetPath)
 				);
 
-				if (checkImageExists(targetPath) === true) {
-					console.log(
-						'checkImageExists(targetPath) ',
-						checkImageExists(targetPath)
-					);
+				if (fs.existsSync(targetPath) === true) {
+
 					console.log('Image already exists');
-					res.status(200).json({
-						status: 'success',
-						data: pathImage,
-					});
+				
+						res.status(200).json({
+							status: 'success',
+							data: pathImage,
+						});
+			
+
 
 					isEist = true;
 				} else {
@@ -158,29 +158,34 @@ const uploadImageByS3 = (app) => {
 					return res.status(500).send('Lỗi khi lưu tệp.');
 				}
 			});
-
+	
 			while (isEist === false) {			
 				console.log(
-					'checkImageExists(targetPath) ',
-					checkImageExists(targetPath)
+					'checkImageExists(targetPath) fdgdfgfdsg: ',
+					fs.existsSync(targetPath)
 				);
 
-				if (checkImageExists(targetPath) === true) {
+
+				if (fs.existsSync(targetPath) === true) {
 					console.log(
-						'checkImageExists(targetPath) ',
-						checkImageExists(targetPath)
+					"Tệp tồn tại"
 					);
-					console.log('Image already exists');
-					
+		
+					setTimeout(() => {
 						res.status(200).json({
 							status: 'success',
 							data: pathImage,
 						});
+					
+					}, 1000);
+					isEist = true;
+
 	
 			
 
-					isEist = true;
+			
 				}
+
 			}
 		}
 	);

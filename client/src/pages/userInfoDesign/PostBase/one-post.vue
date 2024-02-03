@@ -20,8 +20,8 @@
 				<img
 					v-if="typeCatolog === 'collection'"
 					:src="
-						data.upperBody.thumbnailFront
-							? data.upperBody.thumbnailFront
+						data.upperBody?.thumbnailFront != 'underfind'
+							? data.upperBody?.thumbnailFront
 							: require(`@/uploadImage/${data.image}`)
 					"
 					class="w-100 h-100 post-img z-10 upper-collection"
@@ -33,8 +33,8 @@
 				<img
 					v-if="typeCatolog === 'collection'"
 					:src="
-						data.lowerBody.thumbnailFront
-							? data.lowerBody.thumbnailFront
+						data.lowerBody?.thumbnailFront != 'underfind'
+							? data.lowerBody?.thumbnailFront
 							: require(`@/uploadImage/${data.image}`)
 					"
 					class="w-100 h-100 post-img z-10 lower-collection"
@@ -46,8 +46,8 @@
 		<img
 			v-if="typeCatolog !== 'collection'"
 			:src="
-				data.thumbnailFront
-					? data.thumbnailFront
+				data?.thumbnailFront
+					? data?.thumbnailFront
 					: require(`@/uploadImage/${data.image}`)
 			"
 			class="w-100 h-100 post-img z-10"
@@ -232,6 +232,11 @@ export default {
 	computed: {
 		...authMappper.mapState(['email', 'userInfo']),
 	},
+
+	// mounted() {
+	// 	console.log('data ádfsdf',this.data)	
+	// },
+	
 	methods: {
 		...designMappper.mapActions(['deleteDesignByUser', 'findDesign']),
 		...productMappper.mapMutations(['SET_PRODUCT_MODEL']),

@@ -26,6 +26,7 @@ export default {
 			titleOption: 'Upload',
 			contentOption: [],
 			isShowPreview: false,
+			countShowBgBack:0,
 			typePreview: '',
 			width: '',
 			height: '',
@@ -142,6 +143,8 @@ export default {
 		if (this.product && !this.designEdit ) {
 			this.setBackgroundBack();
 			this.setBackgroundFront();
+
+			// this.changeMode(this.mode)
 		}
 
 		this.handleEvents();
@@ -296,18 +299,26 @@ export default {
 					imageUrl: imageUrl,
 					filename: this.userInfo.username,
 				});
-
 				const imageAsset = await ImageAssetService.getAllImagAsset({
 					userId: this.userInfo.id,
+
 				});
-				setTimeout(() => {
-					this.contentOption = imageAsset.data.data;
+
+				setTimeout( () => {
+				
+					
+
+					const imageData = structuredClone(imageAsset.data.data)
+
+					this.contentOption = imageData;
+
+					console.log('content',this.contentOption)
 
 					this.$toast.success('update image success', {
 						position: 'top-right',
 						duration: 2000,
 					});
-				}, 1500);
+				}, 1000);
 			} catch (error) {
 				console.log({ error });
 			}
@@ -644,6 +655,11 @@ export default {
 
 		changeMode(mode) {
 			this.mode = mode;
+
+			// if (this.mode == 'back' && this.countShowBgBack == 0) {
+			// 	this.setBackgroundBack();
+			// 	this.countShowBgBack ++
+			// }
 
 			console.log('get object mode', this.canvas.getObjects());
 

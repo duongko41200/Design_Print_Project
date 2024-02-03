@@ -305,7 +305,7 @@
 						<!-- right canvas content -->
 						<div
 							class="w-[60px] h-[100%] rounded p-2 flex justify-center flex-col"
-						>
+						> 
 							<div
 								@click="copySelectedObject"
 								class="w-[100%] cursor-pointer rounded border-2 p-1 shadow-lg bg-white"

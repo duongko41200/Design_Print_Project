@@ -281,7 +281,7 @@ export default {
 				console.log("Upload", upload)
 				setTimeout(() => {
 					this.imageProductFront = upload.data.data
-				}, 2000);
+				}, 1000);
 			
 			
 			}
@@ -306,7 +306,7 @@ export default {
 			
 				setTimeout(() => {
 					this.imageProductBack = upload.data.data;
-				}, 2000);
+				}, 1000);
 
 			}
 
@@ -334,7 +334,7 @@ export default {
 			} else {
 				const product = await ProductService.creatNewProduct({ param })
 		
-				console.log({ product })
+				// console.log({ product })
 				if (product.status == 201) {
 					this.$toast.error(product.data.status, {
 						position: 'top-right',

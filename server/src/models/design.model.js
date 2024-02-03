@@ -66,9 +66,11 @@ designSchema.pre('save', async function (next) {
 	if (!product) {
 		return next(new AppError('No product found with that id', 404));
 	}
+	product.numDesigns += 1;
 
-
-	await product.save();	product.numDesigns += 1;
+	await product.save(); 
+	
+	console.log({product})
 
 	if (!this.thumbnail) {
 		this.thumbnail = product.image;

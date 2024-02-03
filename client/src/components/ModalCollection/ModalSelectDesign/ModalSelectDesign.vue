@@ -29,7 +29,7 @@
 						leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
 					>
 						<DialogPanel
-							class="relative transform bg-sky-700  text-left rounded shadow-lg transition-all sm:my-8 sm:max-w-xlg"
+							class="relative transform bg-sky-700  text-left  shadow-lg transition-all sm:my-8 sm:max-w-xlg"
 						>
 							<div class="z-10 mt-8 flex ">
 								<div
@@ -40,7 +40,7 @@
 					<select
 						id="currency"
 						name="currency"
-						class="bg-zinc-500 border flex-1 pl-4 rounded-xl text-sm px-12 py-2.5 text-slate-50 focus:outline-none focus:ring-1 focus:ring-indigo-700"
+						class=" border-2 flex-1 pl-4 text-slate-500 text-sm px-12 py-2.5 text-slate-50 focus:outline-none focus:ring-1 focus:ring-indigo-700"
 						v-model="catalogeProduct"
 						@change="filterSelectDesign"
 					>

@@ -19,14 +19,14 @@ const createDesign = async (req, res) => {
 			{ _id: req.body.idDesign },
 			req.body.params
 		);
-		console.log('updateDesign', updateDesign);
+		// console.log('updateDesign', updateDesign);
 		res.status(200).json({
 			status: 'success',
 		});
 	} else {
 		const newDesign = await Design.create(req.body.params);
 
-		console.log('newDesign', newDesign);
+
 		res.status(200).json({
 			status: 'success',
 			data: newDesign,
