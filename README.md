@@ -44,14 +44,14 @@ HUGO - Ứng dụng hỗ trợ thiết kế sản phẩm in ấn
 
 ### 🎯 Mục tiêu
 
-Hugo là ứng dụng hỗ trợ thiết kế và quản lý những sản phẩm in ấn. Ứng dụng giúp cho mọi người không cần phải có kiến thức về đồ họa mà vẫn có thể tạo ra được những thiết kế đẹp. Ví dụ: người dùng chỉ cần kéo thả những thành phần mình muốn thêm vào sản phẩm sau đó người dùng tùy chỉnh thành phần đó phù hợp để tạo được sản phẩm đẹp
+Hugo là ứng dụng hỗ trợ thiết kế và quản lý những sản phẩm in ấn. Ứng dụng giúp cho mọi người khSau đó người dùng tùy chỉnh thành phần đó phù hợp để tạo được sản phẩm đẹp
 
 ### ✨ Tính năng
 
 
 
 - Đăng ký, đăng nhập, đăng xuất ứng dụng
-- chức năng thiết kế 
+- Chức năng thiết kế 
 - Chia sẻ thiết kế
 - Chức năng yêu thích sản phẩm
 - Chức năng tìm kiếm
@@ -69,7 +69,7 @@ Hugo là ứng dụng hỗ trợ thiết kế và quản lý những sản phẩ
   - Nodejs, ExpressJS, RESTFul APIs.
   - MongoDB, MongooseJS.
   - JWT (JSON Web Token).
-  - websocket
+  - Websocket
 
 
 - Frontend
